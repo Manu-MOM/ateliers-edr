@@ -1371,8 +1371,9 @@ var TITRES_BLOCS = [
   "Autre (texte libre)"
 ];
 
-var AXES_TRAVAIL = [
-  "-- Choisir un axe --",
+// Axes paramétrables par le responsable EDR (stockés dans planData["__config__"])
+var AXES_COLLECTIF_DEFAULT = [
+  "-- Choisir --",
   "Duel offensif et continuite debout",
   "Alternance jeu penetrant / jeu deploye / jeu au pied",
   "Liberation au sol et dynamisme autour de l'accident de jeu",
@@ -1381,30 +1382,55 @@ var AXES_TRAVAIL = [
   "Exploiter les espaces libres",
   "Creer et exploiter les desequilibres",
   "Contre-attaquer",
-  "Adaptation au rapport de force",
-  "Zones du terrain",
-  "Plaquages offensifs",
-  "Rush defense",
-  "Defense autour des rucks",
-  "Defense en controle",
-  "Organisation collective defensive",
-  "Jeu au poste : melee",
-  "Jeu au poste : touche",
+  "Adaptation au rapport de force / Zones du terrain",
   "Projet Bleu / Lecture du jeu",
   "Autre (texte libre)"
 ];
 
-var FIL_ROUGE_ITEMS = [
-  {id:"fr-manip",  label:"Manipulation / Transmissions"},
-  {id:"fr-duels",  label:"Jouer des duels"},
-  {id:"fr-plaq",   label:"Plaquer"},
-  {id:"fr-lib",    label:"Liberation au contact"},
-  {id:"fr-coord",  label:"Coordination / Motricite"},
-  {id:"fr-echauf", label:"Echauffements specifiques"},
-  {id:"fr-jaupied",label:"Jeu au pied"}
+var AXES_PHYSIQUE_DEFAULT = [
+  "-- Choisir --",
+  "Coordination et motricite",
+  "Echauffements specifiques",
+  "Endurance / Cardio",
+  "Vitesse et acceleration",
+  "Puissance et impact",
+  "Souplesse et mobilite",
+  "Recuperation active",
+  "Autre (texte libre)"
 ];
 
-// Clé Drive : planif-{cat}-2025-2026.json
+var AXES_POSTE_DEFAULT = [
+  "-- Choisir --",
+  "Melee (Passeport JDD)",
+  "Touche (Lancer, Sauter, Lifter)",
+  "Passe du 9",
+  "Combinaisons avants",
+  "Autre (texte libre)"
+];
+
+// Items fixes Technique individuelle (liés à la bibliothèque)
+var AXE_INDIV_ITEMS = [
+  {id:"ti-manip",  label:"Manipulation / Transmissions"},
+  {id:"ti-duels",  label:"Jouer des duels"},
+  {id:"ti-plaq",   label:"Plaquer"},
+  {id:"ti-lib",    label:"Liberation au contact"}
+];
+
+function getConfig() {
+  return (planData["__config__"] && planData["__config__"].axes) ? planData["__config__"].axes : {
+    collectif: AXES_COLLECTIF_DEFAULT.slice(),
+    physique:  AXES_PHYSIQUE_DEFAULT.slice(),
+    poste:     AXES_POSTE_DEFAULT.slice(),
+    titres:    TITRES_BLOCS.slice()
+  };
+}
+
+function ordinal(n) {
+  if (n === 1) return "1er";
+  return n + "ème";
+}
+
+// Clé Drive
 function planKey(cat) { return "planif-" + cat.toLowerCase() + ".json"; }
 
 // ─── Charger depuis Drive ───
@@ -1480,8 +1506,11 @@ function defaultPlan(cat) {
 }
 
 function newBloc() {
-  return { id: Date.now() + Math.random(), titre: "", titreCustom: "", dateDebut: "", dateFin: "",
-    axe: "", axeCustom: "", intercale: false, filRouge: [] };
+  return { id: Date.now() + Math.random(), titre: "", titreCustom: "",
+    dateDebut: "", dateFin: "", intercale: false,
+    axeIndiv: [], axeCollectif: "", axeCollectifCustom: "",
+    axePhysique: "", axePhysiqueCustom: "",
+    axePoste: "", axePosteCustom: "", commentaires: "" };
 }
 
 // ─── Section Planification ───
@@ -1567,29 +1596,28 @@ function renderPlanSaison(data) {
 }
 
 function renderBloc(bloc, i, total) {
+  var cfg = getConfig();
   var h = '<div class="bloc-card" id="bloc-' + bloc.id + '">';
 
-  // Header vert foncé
+  // Header
   h += '<div class="bloc-card-header">';
-  h += '<div class="bloc-num">' + (i + 1) + '</div>';
+  h += '<div class="bloc-num">' + ordinal(i + 1) + '<br><span style="font-size:10px;font-weight:500;color:rgba(255,255,255,.5)">bloc</span></div>';
   h += '<div class="bloc-title-wrap">';
 
   // Menu titre
+  var titresList = cfg.titres || TITRES_BLOCS;
   h += '<select class="bloc-select" onchange="onBlocTitreChange(this,\'' + bloc.id + '\')">';
-  TITRES_BLOCS.forEach(function(t) {
+  titresList.forEach(function(t) {
     var sel = (bloc.titre === t) ? " selected" : "";
     h += '<option value="' + t + '"' + sel + '>' + t + '</option>';
   });
   h += '</select>';
-
-  // Champ texte libre si "Autre"
-  var showCustom = (bloc.titre === "Autre (texte libre)" || (!bloc.titre && bloc.titreCustom));
-  h += '<input class="bloc-custom-input" id="btc-' + bloc.id + '" placeholder="Titre libre..." value="' + (bloc.titreCustom || "") + '" style="' + (showCustom ? "" : "display:none") + '" oninput="onBlocCustomTitre(this,\'' + bloc.id + '\')">';
+  var showCustom = (bloc.titre === "Autre (texte libre)");
+  h += '<input class="bloc-custom-input" id="btc-' + bloc.id + '" placeholder="Titre du bloc..." value="' + (bloc.titreCustom || "") + '" style="' + (showCustom ? "" : "display:none") + '" oninput="onBlocCustomTitre(this,\'' + bloc.id + '\')">';
 
   // Dates
   h += '<div class="bloc-dates">Du <input type="date" class="bloc-date-input" value="' + (bloc.dateDebut || "") + '" onchange="onBlocField(\'' + bloc.id + '\',\'dateDebut\',this.value)"> au <input type="date" class="bloc-date-input" value="' + (bloc.dateFin || "") + '" onchange="onBlocField(\'' + bloc.id + '\',\'dateFin\',this.value)"></div>';
-
-  h += '</div>'; // fin bloc-title-wrap
+  h += '</div>';
 
   // Actions
   h += '<div class="bloc-actions">';
@@ -1597,41 +1625,64 @@ function renderBloc(bloc, i, total) {
   if (i < total - 1) h += '<button class="bloc-btn" onclick="moveBloc(\'' + bloc.id + '\',1)" title="Descendre">↓</button>';
   h += '<button class="bloc-btn del" onclick="deleteBloc(\'' + bloc.id + '\')" title="Supprimer">✕</button>';
   h += '</div>';
-
   h += '</div>'; // fin header
 
   // Body
   h += '<div class="bloc-body">';
 
-  // Axe de travail général
-  h += '<div class="bloc-field"><div class="bloc-field-label">Axe de travail general</div>';
-  h += '<div class="bloc-field-row">';
-  h += '<select class="bloc-axe-select" onchange="onBlocAxeChange(this,\'' + bloc.id + '\')">';
-  AXES_TRAVAIL.forEach(function(a) {
-    var sel = (bloc.axe === a) ? " selected" : "";
+  // 1 — AXE INDIVIDUEL (4 items fixes avec cases à cocher)
+  h += '<div class="bloc-field">';
+  h += '<div class="bloc-field-label" style="color:var(--g5)">🧍 Axe de travail individuel <span style="font-weight:400;font-style:italic;text-transform:none">(Technique individuelle)</span></div>';
+  h += '<div class="fil-rouge-grid">';
+  AXE_INDIV_ITEMS.forEach(function(it) {
+    var checked = (bloc.axeIndiv || []).indexOf(it.id) >= 0 ? " checked" : "";
+    h += '<label class="fil-rouge-item"><input type="checkbox"' + checked + ' onchange="onAxeIndiv(\'' + bloc.id + '\',\'' + it.id + '\',this.checked)"> ' + it.label + '</label>';
+  });
+  h += '</div></div>';
+
+  // 2 — AXE COLLECTIF
+  h += '<div class="bloc-field"><div class="bloc-field-label" style="color:var(--g5)">🧠 Axe de travail collectif</div>';
+  h += '<select class="bloc-axe-select" onchange="onAxeSelect(this,\'' + bloc.id + '\',\'axeCollectif\',\'acc\')">';
+  (cfg.collectif || AXES_COLLECTIF_DEFAULT).forEach(function(a) {
+    var sel = (bloc.axeCollectif === a) ? " selected" : "";
     h += '<option value="' + a + '"' + sel + '>' + a + '</option>';
   });
   h += '</select>';
+  h += '<textarea class="bloc-axe-input" id="acc-' + bloc.id + '" placeholder="Preciser..." style="' + (bloc.axeCollectif === "Autre (texte libre)" ? "" : "display:none") + '" oninput="onBlocField(\'' + bloc.id + '\',\'axeCollectifCustom\',this.value)">' + (bloc.axeCollectifCustom || "") + '</textarea>';
   h += '</div>';
-  var showAxeCustom = (bloc.axe === "Autre (texte libre)");
-  h += '<textarea class="bloc-axe-input" id="bac-' + bloc.id + '" placeholder="Decrivez votre axe de travail..." style="' + (showAxeCustom ? "" : "display:none") + '" oninput="onBlocField(\'' + bloc.id + '\',\'axeCustom\',this.value)">' + (bloc.axeCustom || "") + '</textarea>';
+
+  // 3 — AXE PHYSIQUE
+  h += '<div class="bloc-field"><div class="bloc-field-label" style="color:var(--g5)">💪 Axe de travail physique</div>';
+  h += '<select class="bloc-axe-select" onchange="onAxeSelect(this,\'' + bloc.id + '\',\'axePhysique\',\'aph\')">';
+  (cfg.physique || AXES_PHYSIQUE_DEFAULT).forEach(function(a) {
+    var sel = (bloc.axePhysique === a) ? " selected" : "";
+    h += '<option value="' + a + '"' + sel + '>' + a + '</option>';
+  });
+  h += '</select>';
+  h += '<textarea class="bloc-axe-input" id="aph-' + bloc.id + '" placeholder="Preciser..." style="' + (bloc.axePhysique === "Autre (texte libre)" ? "" : "display:none") + '" oninput="onBlocField(\'' + bloc.id + '\',\'axePhysiqueCustom\',this.value)">' + (bloc.axePhysiqueCustom || "") + '</textarea>';
+  h += '</div>';
+
+  // 4 — AXE JEU AU POSTE
+  h += '<div class="bloc-field"><div class="bloc-field-label" style="color:var(--g5)">🏟️ Axe jeu au poste</div>';
+  h += '<select class="bloc-axe-select" onchange="onAxeSelect(this,\'' + bloc.id + '\',\'axePoste\',\'apo\')">';
+  (cfg.poste || AXES_POSTE_DEFAULT).forEach(function(a) {
+    var sel = (bloc.axePoste === a) ? " selected" : "";
+    h += '<option value="' + a + '"' + sel + '>' + a + '</option>';
+  });
+  h += '</select>';
+  h += '<textarea class="bloc-axe-input" id="apo-' + bloc.id + '" placeholder="Preciser..." style="' + (bloc.axePoste === "Autre (texte libre)" ? "" : "display:none") + '" oninput="onBlocField(\'' + bloc.id + '\',\'axePosteCustom\',this.value)">' + (bloc.axePosteCustom || "") + '</textarea>';
   h += '</div>';
 
   // Bloc intercalé
   h += '<div class="bloc-intercale"><input type="checkbox" id="int-' + bloc.id + '"' + (bloc.intercale ? " checked" : "") + ' onchange="onBlocField(\'' + bloc.id + '\',\'intercale\',this.checked)"><label for="int-' + bloc.id + '">Bloc intercale sur la saison (ex: bloc defense en plusieurs parties)</label></div>';
 
-  // Fil rouge TI
-  h += '<div class="fil-rouge-card"><div class="fil-rouge-title">🧵 Fil rouge — Technique individuelle en parallele</div>';
-  h += '<div class="fil-rouge-grid">';
-  FIL_ROUGE_ITEMS.forEach(function(fr) {
-    var checked = (bloc.filRouge || []).indexOf(fr.id) >= 0 ? " checked" : "";
-    h += '<label class="fil-rouge-item"><input type="checkbox" id="fr-' + bloc.id + '-' + fr.id + '"' + checked + ' onchange="onFilRouge(\'' + bloc.id + '\',\'' + fr.id + '\',this.checked)"> ' + fr.label + '</label>';
-  });
-  h += '</div></div>';
+  // Commentaires libres
+  h += '<div class="bloc-field"><div class="bloc-field-label">💬 Commentaires libres</div>';
+  h += '<textarea class="bloc-axe-input" placeholder="Objectifs specifiques, notes, remarques..." oninput="onBlocField(\'' + bloc.id + '\',\'commentaires\',this.value)" style="min-height:60px">' + (bloc.commentaires || "") + '</textarea>';
+  h += '</div>';
 
   h += '</div>'; // fin body
   h += '</div>'; // fin bloc-card
-
   return h;
 }
 
@@ -1647,36 +1698,29 @@ function onBlocTitreChange(sel, id) {
   if (!b) return;
   b.titre = sel.value;
   planDirty = true;
-  var customInput = document.getElementById("btc-" + id);
-  if (customInput) customInput.style.display = (sel.value === "Autre (texte libre)") ? "" : "none";
+  var ci = document.getElementById("btc-" + id);
+  if (ci) ci.style.display = (sel.value === "Autre (texte libre)") ? "" : "none";
 }
 function onBlocCustomTitre(inp, id) {
-  var b = getBlocById(id);
-  if (!b) return;
-  b.titreCustom = inp.value;
-  planDirty = true;
+  var b = getBlocById(id); if (!b) return;
+  b.titreCustom = inp.value; planDirty = true;
 }
-function onBlocAxeChange(sel, id) {
-  var b = getBlocById(id);
-  if (!b) return;
-  b.axe = sel.value;
-  planDirty = true;
-  var ta = document.getElementById("bac-" + id);
+function onAxeSelect(sel, id, field, taPrefix) {
+  var b = getBlocById(id); if (!b) return;
+  b[field] = sel.value; planDirty = true;
+  var ta = document.getElementById(taPrefix + "-" + id);
   if (ta) ta.style.display = (sel.value === "Autre (texte libre)") ? "" : "none";
 }
-function onBlocField(id, field, value) {
-  var b = getBlocById(id);
-  if (!b) return;
-  b[field] = value;
+function onAxeIndiv(blocId, itemId, checked) {
+  var b = getBlocById(blocId); if (!b) return;
+  if (!b.axeIndiv) b.axeIndiv = [];
+  if (checked && b.axeIndiv.indexOf(itemId) < 0) b.axeIndiv.push(itemId);
+  if (!checked) b.axeIndiv = b.axeIndiv.filter(function(x){ return x !== itemId; });
   planDirty = true;
 }
-function onFilRouge(blocId, frId, checked) {
-  var b = getBlocById(blocId);
-  if (!b) return;
-  if (!b.filRouge) b.filRouge = [];
-  if (checked && b.filRouge.indexOf(frId) < 0) b.filRouge.push(frId);
-  if (!checked) b.filRouge = b.filRouge.filter(function(x){ return x !== frId; });
-  planDirty = true;
+function onBlocField(id, field, value) {
+  var b = getBlocById(id); if (!b) return;
+  b[field] = value; planDirty = true;
 }
 function addBloc() {
   var d = window._curPlanData;
