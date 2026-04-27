@@ -1410,10 +1410,10 @@ var AXES_POSTE_DEFAULT = [
 
 // Items fixes Technique individuelle (liés à la bibliothèque)
 var AXE_INDIV_ITEMS = [
-  {id:"ti-manip",  label:"Manipulation / Transmissions"},
+  {id:"ti-manip",  label:"Passer / Receptionner le ballon"},
   {id:"ti-duels",  label:"Jouer des duels"},
   {id:"ti-plaq",   label:"Plaquer"},
-  {id:"ti-lib",    label:"Liberation au contact"}
+  {id:"ti-lib",    label:"Se comporter sur les zones de blocage"}
 ];
 
 function getConfig() {
@@ -1426,8 +1426,8 @@ function getConfig() {
 }
 
 function ordinal(n) {
-  if (n === 1) return "1er";
-  return n + "ème";
+  if (n === 1) return "1er bloc";
+  return n + "\u00e8me bloc";
 }
 
 // Clé Drive
@@ -1601,7 +1601,7 @@ function renderBloc(bloc, i, total) {
 
   // Header
   h += '<div class="bloc-card-header">';
-  h += '<div class="bloc-num">' + ordinal(i + 1) + '<br><span style="font-size:10px;font-weight:500;color:rgba(255,255,255,.5)">bloc</span></div>';
+  h += '<div class="bloc-num">' + ordinal(i + 1) + '</div>';
   h += '<div class="bloc-title-wrap">';
 
   // Menu titre
@@ -1783,14 +1783,134 @@ function savePlan() {
   });
 }
 
-// ─── Export PDF ───
+// ─── Export PDF avec frise chronologique ───
 function printPlan() {
-  // Mettre à jour le titre d'impression
-  var sp = document.getElementById("saison-print");
-  var si = document.getElementById("saison-input");
-  if (sp && si) sp.textContent = si.value;
-  // Déclencher l'impression
-  window.print();
+  var d = window._curPlanData;
+  if (!d) return;
+  var saison = (document.getElementById("saison-input") || {}).value || d.saison || "2025-2026";
+  var cat = d.cat || curPlanCat;
+  var catLabel = cat === "Commun" ? "Planification commune du club" : "Categorie " + cat;
+  var blocs = d.blocs || [];
+
+  // Couleurs des blocs
+  var COLORS = ["#0a3a1e","#166334","#1d7a40","#1a4a8a","#5a1a1a","#4a1a7a","#b06010","#2a4a10"];
+
+  // Construire la frise HTML
+  var friseHtml = '<div style="font-family:Arial,sans-serif;max-width:900px;margin:0 auto;padding:24px">';
+  friseHtml += '<div style="border-bottom:3px solid #0a3a1e;padding-bottom:12px;margin-bottom:20px">';
+  friseHtml += '<div style="font-size:22px;font-weight:900;color:#0a3a1e;font-family:Arial Black,Arial">MOM Rugby \u2014 Planification de saison</div>';
+  friseHtml += '<div style="font-size:13px;color:#666;margin-top:3px">' + catLabel + ' \u00b7 Saison ' + saison + '</div>';
+  friseHtml += '</div>';
+
+  // FRISE GRAPHIQUE
+  friseHtml += '<div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Frise chronologique de la saison</div>';
+  friseHtml += '<div style="position:relative;background:#f0f0ea;border-radius:8px;padding:16px 12px;margin-bottom:24px;overflow:hidden">';
+
+  // Ligne centrale
+  friseHtml += '<div style="position:absolute;top:50%;left:12px;right:12px;height:3px;background:#0a3a1e;border-radius:2px;transform:translateY(-50%);z-index:0"></div>';
+
+  // Conteneur flex des blocs
+  friseHtml += '<div style="display:flex;gap:8px;position:relative;z-index:1;align-items:stretch">';
+  blocs.forEach(function(bloc, i) {
+    var color = COLORS[i % COLORS.length];
+    var titre = bloc.titre && bloc.titre !== "-- Choisir un titre --"
+      ? bloc.titre : (bloc.titreCustom || "Bloc " + (i+1));
+    if (titre === "Autre (texte libre)") titre = bloc.titreCustom || "Bloc " + (i+1);
+    var debut = bloc.dateDebut ? new Date(bloc.dateDebut).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}) : "?";
+    var fin   = bloc.dateFin   ? new Date(bloc.dateFin).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}) : "?";
+    var intercaleStyle = bloc.intercale ? "border:2px dashed " + color + ";background:rgba(255,255,255,.7)" : "background:" + color;
+    var textColor = bloc.intercale ? color : "#fff";
+
+    friseHtml += '<div style="flex:1;min-width:90px;border-radius:8px;' + intercaleStyle + ';padding:10px 8px;text-align:center">';
+    friseHtml += '<div style="font-size:10px;font-weight:700;color:' + textColor + ';opacity:.8;margin-bottom:3px">' + ordinal(i+1) + '</div>';
+    friseHtml += '<div style="font-size:11px;font-weight:800;color:' + textColor + ';line-height:1.2;margin-bottom:6px">' + titre + '</div>';
+    friseHtml += '<div style="font-size:9px;color:' + textColor + ';opacity:.85">' + debut + '</div>';
+    friseHtml += '<div style="font-size:9px;color:' + textColor + ';opacity:.6;margin:1px 0">\u2193</div>';
+    friseHtml += '<div style="font-size:9px;color:' + textColor + ';opacity:.85">' + fin + '</div>';
+    if (bloc.intercale) {
+      friseHtml += '<div style="font-size:8px;color:' + color + ';margin-top:4px;font-style:italic">intercale</div>';
+    }
+    friseHtml += '</div>';
+  });
+  friseHtml += '</div></div>';
+
+  // DETAIL DES BLOCS
+  friseHtml += '<div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Detail des blocs</div>';
+
+  blocs.forEach(function(bloc, i) {
+    var color = COLORS[i % COLORS.length];
+    var titre = bloc.titre && bloc.titre !== "-- Choisir un titre --"
+      ? bloc.titre : (bloc.titreCustom || "");
+    if (titre === "Autre (texte libre)") titre = bloc.titreCustom || "";
+    var debut = bloc.dateDebut ? new Date(bloc.dateDebut).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}) : "";
+    var fin   = bloc.dateFin   ? new Date(bloc.dateFin).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}) : "";
+
+    friseHtml += '<div style="border-radius:8px;overflow:hidden;margin-bottom:14px;border:1px solid #ccc;page-break-inside:avoid">';
+
+    // Header
+    friseHtml += '<div style="background:' + color + ';padding:10px 14px;display:flex;align-items:center;gap:12px">';
+    friseHtml += '<div style="font-size:13px;font-weight:900;color:#d4a820;min-width:80px">' + ordinal(i+1) + '</div>';
+    friseHtml += '<div style="font-size:14px;font-weight:800;color:#fff;flex:1">' + (titre || "Sans titre") + '</div>';
+    if (debut || fin) friseHtml += '<div style="font-size:11px;color:rgba(255,255,255,.7)">' + debut + (fin ? ' \u2192 ' + fin : '') + '</div>';
+    if (bloc.intercale) friseHtml += '<div style="font-size:10px;background:rgba(255,255,255,.2);color:#fff;padding:2px 8px;border-radius:4px">Intercale</div>';
+    friseHtml += '</div>';
+
+    // Body
+    friseHtml += '<div style="padding:12px 14px;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+
+    // Axe individuel
+    var indivChecked = (bloc.axeIndiv || []).map(function(id) {
+      var it = AXE_INDIV_ITEMS.find(function(x){ return x.id === id; });
+      return it ? it.label : id;
+    });
+    friseHtml += '<div><div style="font-size:9px;font-weight:700;color:#1d7a40;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">🧍 Axe individuel</div>';
+    if (indivChecked.length) {
+      indivChecked.forEach(function(l){ friseHtml += '<div style="font-size:11px;color:#333;padding:1px 0">&#10003; ' + l + '</div>'; });
+    } else {
+      friseHtml += '<div style="font-size:11px;color:#999;font-style:italic">Non renseigne</div>';
+    }
+    friseHtml += '</div>';
+
+    // Axe collectif
+    var axeC = bloc.axeCollectif && bloc.axeCollectif !== "-- Choisir --" ? bloc.axeCollectif : "";
+    if (axeC === "Autre (texte libre)") axeC = bloc.axeCollectifCustom || "";
+    friseHtml += '<div><div style="font-size:9px;font-weight:700;color:#1a4a8a;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">🧠 Axe collectif</div>';
+    friseHtml += '<div style="font-size:11px;color:' + (axeC ? '#333' : '#999') + ';font-style:' + (axeC ? 'normal' : 'italic') + '">' + (axeC || "Non renseigne") + '</div></div>';
+
+    // Axe physique
+    var axeP = bloc.axePhysique && bloc.axePhysique !== "-- Choisir --" ? bloc.axePhysique : "";
+    if (axeP === "Autre (texte libre)") axeP = bloc.axePhysiqueCustom || "";
+    friseHtml += '<div><div style="font-size:9px;font-weight:700;color:#5a3a00;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">💪 Axe physique</div>';
+    friseHtml += '<div style="font-size:11px;color:' + (axeP ? '#333' : '#999') + ';font-style:' + (axeP ? 'normal' : 'italic') + '">' + (axeP || "Non renseigne") + '</div></div>';
+
+    // Axe jeu au poste
+    var axeJ = bloc.axePoste && bloc.axePoste !== "-- Choisir --" ? bloc.axePoste : "";
+    if (axeJ === "Autre (texte libre)") axeJ = bloc.axePosteCustom || "";
+    friseHtml += '<div><div style="font-size:9px;font-weight:700;color:#1a3a8a;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">🏟️ Jeu au poste</div>';
+    friseHtml += '<div style="font-size:11px;color:' + (axeJ ? '#333' : '#999') + ';font-style:' + (axeJ ? 'normal' : 'italic') + '">' + (axeJ || "Non renseigne") + '</div></div>';
+
+    friseHtml += '</div>'; // fin grid
+
+    // Commentaires
+    if (bloc.commentaires) {
+      friseHtml += '<div style="padding:8px 14px 12px;border-top:1px solid #eee;background:#fff">';
+      friseHtml += '<div style="font-size:9px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">💬 Commentaires</div>';
+      friseHtml += '<div style="font-size:11px;color:#444;line-height:1.5">' + bloc.commentaires + '</div>';
+      friseHtml += '</div>';
+    }
+
+    friseHtml += '</div>'; // fin bloc-card
+  });
+
+  friseHtml += '</div>'; // fin wrapper
+
+  // Ouvrir dans une fenêtre d'impression
+  var win = window.open("", "_blank", "width=960,height=700");
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Planification ' + catLabel + ' ' + saison + '</title>');
+  win.document.write('<style>@media print{@page{margin:15mm;size:A4}body{margin:0}}body{margin:0;padding:0;font-family:Arial,sans-serif}</style>');
+  win.document.write('</head><body>' + friseHtml + '</body></html>');
+  win.document.close();
+  win.onload = function(){ win.print(); };
 }
 
 function doSearch() {
