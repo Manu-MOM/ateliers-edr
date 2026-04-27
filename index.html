@@ -287,6 +287,33 @@ button,input{font-family:'Barlow',sans-serif}
 .plan-status.ok{background:var(--g0);color:var(--g6);border:1px solid var(--g1);display:block}
 .plan-status.err{background:#fff0ed;color:var(--red);border:1px solid #ffd0c8;display:block}
 @media(max-width:768px){.plan-saison-wrap{flex-direction:column}.cat-switcher{gap:4px}.bloc-card-header{flex-wrap:wrap}}
+.cfg-section{background:var(--w);border:1px solid var(--gray2);border-radius:var(--rl);margin-bottom:14px;overflow:hidden}
+.cfg-section-hd{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--g8);color:var(--w)}
+.cfg-section-icon{font-size:16px;flex-shrink:0}
+.cfg-section-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;flex:1}
+.cfg-section-sub{font-size:10px;color:rgba(255,255,255,.55)}
+.cfg-list{padding:12px 16px;display:flex;flex-direction:column;gap:6px}
+.cfg-item{display:flex;align-items:center;gap:8px;background:var(--gray1);border:1px solid var(--gray2);border-radius:7px;padding:6px 10px}
+.cfg-item-drag{color:var(--gray3);cursor:grab;font-size:14px;flex-shrink:0;user-select:none}
+.cfg-item-input{flex:1;font-size:12px;border:none;background:transparent;outline:none;color:var(--gray7);padding:0}
+.cfg-item-del{width:22px;height:22px;border-radius:4px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.cfg-item-del:hover{background:var(--red);color:var(--w)}
+.cfg-item.fixed{background:var(--g0);border-color:var(--g1)}
+.cfg-item.fixed .cfg-item-drag{opacity:0;pointer-events:none}
+.cfg-item.fixed .cfg-item-del{opacity:0;pointer-events:none}
+.cfg-item.fixed .cfg-item-input{color:var(--g6);font-weight:600}
+.cfg-add-btn{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px dashed var(--gray2);border-radius:7px;background:none;color:var(--gray5);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;width:100%}
+.cfg-add-btn:hover{border-color:var(--g6);color:var(--g6);background:var(--g0)}
+.cfg-lock{background:var(--goldl);border:1px solid var(--gold);border-radius:var(--rl);padding:16px 18px;margin-bottom:16px;text-align:center}
+.cfg-lock-icon{font-size:32px;margin-bottom:8px}
+.cfg-lock-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:var(--goldd);margin-bottom:6px}
+.cfg-lock-sub{font-size:12px;color:var(--goldd);opacity:.8;margin-bottom:12px}
+.cfg-lock-input{padding:8px 14px;border:1.5px solid var(--gold);border-radius:7px;font-size:16px;letter-spacing:3px;text-align:center;outline:none;background:var(--w);width:160px;transition:border-color .2s}
+.cfg-lock-input:focus{border-color:var(--goldd)}
+.cfg-lock-btn{margin-left:8px;padding:8px 16px;background:var(--gold);color:var(--g9);border:none;border-radius:7px;font-weight:700;font-size:13px;cursor:pointer}
+.cfg-lock-err{color:var(--red);font-size:11px;margin-top:6px;display:none}
+.cfg-save-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g0);border:1px solid var(--g1);border-radius:var(--r);margin-bottom:14px}
+.cfg-save-bar-text{flex:1;font-size:12px;color:var(--g6);font-weight:600}
 .mob-nav{display:none;background:var(--g9);border-top:1px solid rgba(255,255,255,.07);flex-shrink:0;padding-bottom:var(--safe-bottom)}
 .plan-save-btn.preview{background:var(--g5);margin-left:4px}
 .plan-print-title{display:none;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#0a3a1e;margin-bottom:4px}
@@ -1353,8 +1380,10 @@ function buildCrossRefHtml(ssId) {
 var DRIVE_FOLDER_PLAN = "16zWlSMKjrzQlGIXrYfxB8Dy4nAj-aij9";
 var CATS_PLAN = ["Commun","M6","M8","M10","M12","M14","M1618","SEN"];
 var curPlanCat = "Commun";
-var planData = {}; // { "M14": { saison:"2025-2026", blocs:[...] }, ... }
+var curPlanView = "plan"; // "plan" | "config"
+var planData = {};
 var planDirty = false;
+var CFG_CODE = "EDR2025"; // code responsable EDR
 
 var TITRES_BLOCS = [
   "-- Choisir un titre --",
@@ -1519,12 +1548,16 @@ function goSection_saison() {
   document.getElementById("tc").style.display = "none";
   document.getElementById("vbtns").style.display = "none";
   document.getElementById("afbar").style.display = "none";
+  curPlanView = "plan";
   buildSbSaison();
 
   var ct = document.getElementById("content");
   ct.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray5)"><div style="font-size:32px;margin-bottom:10px">⏳</div>Chargement...</div>';
   ct.classList.remove("lv");
 
+  loadPlanFromDrive("__config__", function(cfg){
+    if (cfg && cfg.axes) planData["__config__"] = cfg;
+  });
   loadPlanFromDrive(curPlanCat, function(data) {
     renderPlanSaison(data);
   });
@@ -1534,12 +1567,16 @@ function buildSbSaison() {
   var sb = document.getElementById("sidebar");
   var h = '<div class="sb-sec"><div class="sb-sec-lbl">Planification — Categorie</div>';
   CATS_PLAN.forEach(function(c) {
-    var act = c === curPlanCat ? " act" : "";
+    var act = (c === curPlanCat && curPlanView === "plan") ? " act" : "";
     var icon = c === "Commun" ? "🏛️" : "📅";
     h += '<div class="sb-item' + act + '" onclick="switchPlanCat(\'' + c + '\')">' +
       '<div class="sb-icon">' + icon + "</div>" + (c === "Commun" ? "Planification commune" : c) + "</div>";
   });
-  h += "</div>";
+  h += '</div><div class="sb-div"></div>';
+  h += '<div class="sb-sec"><div class="sb-sec-lbl">Responsable EDR</div>';
+  h += '<div class="sb-item' + (curPlanView === "config" ? " act" : "") + '" onclick="openConfig()">' +
+    '<div class="sb-icon">⚙️</div>Configuration des axes</div>';
+  h += '</div>';
   sb.innerHTML = h;
 }
 
@@ -1549,6 +1586,7 @@ function switchPlanCat(cat) {
     planDirty = false;
   }
   curPlanCat = cat;
+  curPlanView = "plan";
   buildSbSaison();
   var ct = document.getElementById("content");
   ct.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray5)"><div style="font-size:32px;margin-bottom:10px">⏳</div>Chargement...</div>';
@@ -1958,6 +1996,172 @@ function printPlan() {
   win.document.write(h);
   win.document.close();
   win.onload = function(){ win.print(); };
+}
+
+// ═══ CONFIGURATION DES AXES ══════════════════════════════════════
+
+var cfgUnlocked = false;
+
+function openConfig() {
+  curPlanView = "config";
+  buildSbSaison();
+  document.getElementById("bc").innerHTML = "<b>Configuration des axes</b>";
+  document.getElementById("tc").style.display = "none";
+  document.getElementById("vbtns").style.display = "none";
+  document.getElementById("afbar").style.display = "none";
+
+  if (!cfgUnlocked) {
+    renderConfigLock();
+  } else {
+    renderConfigEditor();
+  }
+}
+
+function renderConfigLock() {
+  var h = '<div class="cfg-lock">';
+  h += '<div class="cfg-lock-icon">🔐</div>';
+  h += '<div class="cfg-lock-title">Espace Responsable EDR</div>';
+  h += '<div class="cfg-lock-sub">Saisissez le code responsable pour acceder a la configuration des listes deroulantes</div>';
+  h += '<div style="display:flex;align-items:center;justify-content:center;gap:8px">';
+  h += '<input class="cfg-lock-input" id="cfg-code-input" type="password" maxlength="10" placeholder="Code..." autocomplete="off" onkeydown="if(event.key===\'Enter\')checkCfgCode()">';
+  h += '<button class="cfg-lock-btn" onclick="checkCfgCode()">Acceder →</button>';
+  h += '</div>';
+  h += '<div class="cfg-lock-err" id="cfg-lock-err">Code incorrect</div>';
+  h += '</div>';
+  document.getElementById("content").innerHTML = h;
+  document.getElementById("content").classList.remove("lv");
+  setTimeout(function(){ var el = document.getElementById("cfg-code-input"); if(el) el.focus(); }, 100);
+}
+
+function checkCfgCode() {
+  var v = (document.getElementById("cfg-code-input") || {}).value || "";
+  if (v.toUpperCase() === CFG_CODE) {
+    cfgUnlocked = true;
+    renderConfigEditor();
+  } else {
+    var err = document.getElementById("cfg-lock-err");
+    if (err) err.style.display = "block";
+    var inp = document.getElementById("cfg-code-input");
+    if (inp) { inp.value = ""; inp.focus(); }
+  }
+}
+
+function renderConfigEditor() {
+  var cfg = getConfig();
+
+  var h = '<div class="cfg-save-bar">';
+  h += '<div class="cfg-save-bar-text">⚙️ Mode Responsable EDR — Vous pouvez modifier les listes deroulantes de tous les blocs de planification</div>';
+  h += '<button class="plan-save-btn" onclick="saveConfig()">💾 Sauvegarder la configuration</button>';
+  h += '<span class="plan-save-ok" id="cfg-save-ok" style="display:none">✅ Sauvegarde!</span>';
+  h += '</div>';
+
+  // Section titres des blocs
+  h += renderCfgSection("titres", "📌 Titres des blocs",
+    "Propositions dans le menu deroulant du titre de chaque bloc",
+    cfg.titres || TITRES_BLOCS.slice(), ["-- Choisir un titre --", "Autre (texte libre)"]);
+
+  // Section axe collectif
+  h += renderCfgSection("collectif", "🧠 Axe de travail collectif",
+    "Options du menu Organisation collective",
+    cfg.collectif || AXES_COLLECTIF_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
+
+  // Section axe physique
+  h += renderCfgSection("physique", "💪 Axe de travail physique",
+    "Options du menu Activations physiques",
+    cfg.physique || AXES_PHYSIQUE_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
+
+  // Section axe jeu au poste
+  h += renderCfgSection("poste", "🏟️ Axe jeu au poste",
+    "Options du menu Jeu au poste",
+    cfg.poste || AXES_POSTE_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
+
+  h += '<div style="height:20px"></div>';
+
+  document.getElementById("content").innerHTML = h;
+  document.getElementById("content").classList.remove("lv");
+}
+
+function renderCfgSection(key, title, subtitle, items, fixed) {
+  var h = '<div class="cfg-section">';
+  h += '<div class="cfg-section-hd">';
+  h += '<div class="cfg-section-icon">' + title.split(' ')[0] + '</div>';
+  h += '<div><div class="cfg-section-title">' + title.split(' ').slice(1).join(' ') + '</div>';
+  h += '<div class="cfg-section-sub">' + subtitle + '</div></div>';
+  h += '</div>';
+  h += '<div class="cfg-list" id="cfg-list-' + key + '">';
+
+  items.forEach(function(item, i) {
+    var isFixed = fixed.indexOf(item) >= 0;
+    h += renderCfgItem(key, i, item, isFixed);
+  });
+
+  h += '<button class="cfg-add-btn" onclick="addCfgItem(\'' + key + '\')">+ Ajouter une option</button>';
+  h += '</div></div>';
+  return h;
+}
+
+function renderCfgItem(key, i, value, isFixed) {
+  var h = '<div class="cfg-item' + (isFixed ? " fixed" : "") + '" id="cfg-item-' + key + '-' + i + '">';
+  h += '<div class="cfg-item-drag" title="Glisser pour reordonner">⠿</div>';
+  h += '<input class="cfg-item-input" value="' + value.replace(/"/g, '&quot;') + '"' +
+    (isFixed ? ' readonly' : ' oninput="cfgDirty=true"') + '>';
+  h += '<button class="cfg-item-del" onclick="delCfgItem(\'' + key + '\',' + i + ')" title="Supprimer">✕</button>';
+  h += '</div>';
+  return h;
+}
+
+function getCfgValues(key) {
+  var list = document.getElementById("cfg-list-" + key);
+  if (!list) return [];
+  var inputs = list.querySelectorAll(".cfg-item-input");
+  var vals = [];
+  inputs.forEach(function(inp){ if(inp.value.trim()) vals.push(inp.value.trim()); });
+  return vals;
+}
+
+function addCfgItem(key) {
+  var list = document.getElementById("cfg-list-" + key);
+  if (!list) return;
+  var addBtn = list.querySelector(".cfg-add-btn");
+  var idx = list.querySelectorAll(".cfg-item").length;
+  var div = document.createElement("div");
+  div.innerHTML = renderCfgItem(key, idx, "", false);
+  list.insertBefore(div.firstChild, addBtn);
+  // Focus sur le nouveau champ
+  var newInput = list.querySelectorAll(".cfg-item-input");
+  var last = newInput[newInput.length - 1];
+  if (last) last.focus();
+}
+
+function delCfgItem(key, idx) {
+  var item = document.getElementById("cfg-item-" + key + "-" + idx);
+  if (item) item.remove();
+}
+
+function saveConfig() {
+  // Lire les valeurs actuelles de chaque section
+  var newCfg = {
+    titres:    getCfgValues("titres"),
+    collectif: getCfgValues("collectif"),
+    physique:  getCfgValues("physique"),
+    poste:     getCfgValues("poste")
+  };
+
+  // Sauvegarder dans planData
+  if (!planData["__config__"]) planData["__config__"] = {};
+  planData["__config__"].axes = newCfg;
+
+  // Sauvegarder sur Drive
+  var ok = document.getElementById("cfg-save-ok");
+  savePlanToDrive("__config__", planData["__config__"], function(success) {
+    if (ok) {
+      ok.style.display = "inline";
+      ok.textContent = success ? "✅ Sauvegarde!" : "⚠️ Sauvegarde locale uniquement";
+      setTimeout(function(){ if(ok) ok.style.display = "none"; }, 3000);
+    }
+    // Rafraîchir l'éditeur avec les nouvelles valeurs
+    renderConfigEditor();
+  });
 }
 
 function doSearch() {
