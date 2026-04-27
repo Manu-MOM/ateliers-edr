@@ -235,7 +235,78 @@ button,input{font-family:'Barlow',sans-serif}
 .mref-btn{font-size:10px;font-weight:700;padding:4px 8px;background:var(--gold);color:var(--g9);border-radius:5px;border:none;cursor:pointer;flex-shrink:0;white-space:nowrap}
 .mref-btn:hover{opacity:.85}
 @media(max-width:768px){.res-grid{grid-template-columns:1fr 1fr}.age-grid-section{grid-template-columns:1fr 1fr}}
+.plan-saison-wrap{display:flex;gap:18px;align-items:flex-start}
+.plan-saison-main{flex:1;min-width:0}
+.cat-switcher{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.cat-sw-btn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;padding:5px 12px;border-radius:16px;border:1.5px solid var(--gray2);background:var(--w);color:var(--gray5);cursor:pointer;transition:all .15s}
+.cat-sw-btn:hover{border-color:var(--g6);color:var(--g6)}
+.cat-sw-btn.on{background:var(--g8);color:var(--w);border-color:var(--g8)}
+.cat-sw-btn.commun{background:var(--goldl);color:var(--goldd);border-color:var(--gold)}
+.cat-sw-btn.commun.on{background:var(--gold);color:var(--g9);border-color:var(--gold)}
+.plan-header{background:var(--w);border:1px solid var(--gray2);border-radius:var(--rl);padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.plan-header-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--gray7);flex:1}
+.plan-header-meta{font-size:11px;color:var(--gray5)}
+.plan-saison-input{font-size:13px;border:1px solid var(--gray2);border-radius:7px;padding:5px 10px;outline:none;background:var(--gray1);color:var(--gray7);transition:border-color .2s}
+.plan-saison-input:focus{border-color:var(--g6);background:var(--w)}
+.plan-save-btn{padding:7px 16px;background:var(--g7);color:var(--w);border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.plan-save-btn:hover{opacity:.88}
+.plan-save-btn.saving{opacity:.5;cursor:wait}
+.plan-save-ok{font-size:11px;color:var(--g5);margin-left:6px;display:none}
+.bloc-card{background:var(--w);border:1px solid var(--gray2);border-radius:var(--rl);margin-bottom:12px;overflow:hidden;position:relative}
+.bloc-card-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g8);color:var(--w)}
+.bloc-num{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--gold);min-width:28px}
+.bloc-title-wrap{flex:1;display:flex;flex-direction:column;gap:5px}
+.bloc-select{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;border:none;background:rgba(255,255,255,.15);color:var(--w);border-radius:6px;padding:4px 8px;outline:none;cursor:pointer;width:100%}
+.bloc-select option{color:var(--gray9);background:var(--w);font-weight:600}
+.bloc-custom-input{font-size:12px;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border-radius:5px;padding:3px 8px;outline:none;width:100%;margin-top:2px}
+.bloc-custom-input::placeholder{color:rgba(255,255,255,.4)}
+.bloc-dates{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.65)}
+.bloc-date-input{font-size:11px;border:none;background:rgba(255,255,255,.15);color:var(--w);border-radius:5px;padding:3px 7px;outline:none;cursor:pointer}
+.bloc-actions{display:flex;gap:5px;margin-left:auto}
+.bloc-btn{width:26px;height:26px;border-radius:5px;border:none;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.bloc-btn:hover{background:rgba(255,255,255,.25);color:var(--w)}
+.bloc-btn.del:hover{background:var(--red);color:var(--w)}
+.bloc-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.bloc-field{display:flex;flex-direction:column;gap:4px}
+.bloc-field-label{font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.09em}
+.bloc-field-row{display:flex;gap:6px;align-items:flex-start}
+.bloc-axe-select{font-size:12px;border:1px solid var(--gray2);border-radius:6px;padding:6px 9px;outline:none;background:var(--gray1);color:var(--gray7);cursor:pointer;flex:1;transition:border-color .2s}
+.bloc-axe-select:focus{border-color:var(--g6);background:var(--w)}
+.bloc-axe-input{font-size:12px;border:1px solid var(--gray2);border-radius:6px;padding:6px 9px;outline:none;background:var(--gray1);color:var(--gray7);width:100%;transition:border-color .2s;resize:vertical;min-height:40px}
+.bloc-axe-input:focus{border-color:var(--g6);background:var(--w)}
+.bloc-intercale{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--gray5);padding:6px 0}
+.bloc-intercale input[type=checkbox]{accent-color:var(--g6);width:14px;height:14px}
+.fil-rouge-card{background:var(--goldl);border:1px solid var(--gold);border-radius:var(--rl);padding:14px 16px;margin-bottom:12px}
+.fil-rouge-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:var(--goldd);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.fil-rouge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
+.fil-rouge-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--goldd);cursor:pointer}
+.fil-rouge-item input[type=checkbox]{accent-color:var(--goldd);width:13px;height:13px;flex-shrink:0}
+.add-bloc-btn{width:100%;padding:10px;border:2px dashed var(--gray2);border-radius:var(--rl);background:none;color:var(--gray5);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;margin-bottom:12px}
+.add-bloc-btn:hover{border-color:var(--g6);color:var(--g6);background:var(--g0)}
+.plan-status{font-size:11px;padding:8px 12px;border-radius:7px;margin-bottom:12px;display:none}
+.plan-status.ok{background:var(--g0);color:var(--g6);border:1px solid var(--g1);display:block}
+.plan-status.err{background:#fff0ed;color:var(--red);border:1px solid #ffd0c8;display:block}
+@media(max-width:768px){.plan-saison-wrap{flex-direction:column}.cat-switcher{gap:4px}.bloc-card-header{flex-wrap:wrap}}
 .mob-nav{display:none;background:var(--g9);border-top:1px solid rgba(255,255,255,.07);flex-shrink:0;padding-bottom:var(--safe-bottom)}
+.plan-save-btn.preview{background:var(--g5);margin-left:4px}
+.plan-print-title{display:none;font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#0a3a1e;margin-bottom:4px}
+.plan-print-sub{display:none;font-size:13px;color:#666;margin-bottom:20px}
+@media print{
+  body{background:white!important}
+  #app .topbar,.section-tabs,.sidebar,.mob-nav,.plan-header button,.plan-header input,.bloc-actions,.bloc-btn,.add-bloc-btn,.plan-status,.afbar,.vbtns,.toolbar{display:none!important}
+  #app{position:static!important;height:auto!important;overflow:visible!important}
+  .app-body,.main,.content{overflow:visible!important;height:auto!important;min-height:0!important}
+  .content{padding:20px!important}
+  .plan-saison-wrap{display:block!important}
+  .plan-header{border:none!important;padding:0 0 10px!important;margin-bottom:14px!important;border-bottom:2px solid #0a3a1e!important}
+  .plan-header-title{font-size:20px!important;color:#0a3a1e!important}
+  .plan-header-meta{font-size:12px!important}
+  .bloc-card{break-inside:avoid;margin-bottom:12px!important;border:1px solid #ccc!important}
+  .bloc-card-header{background:#0a3a1e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .fil-rouge-card{background:#fdf3d0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .plan-print-title,.plan-print-sub{display:block!important}
+  .bloc-select,.bloc-custom-input,.bloc-date-input,.bloc-axe-select,.bloc-axe-input,.plan-saison-input{border:none!important;background:transparent!important;-webkit-appearance:none;font-size:inherit}
+}
 .mob-nav-inner{display:flex}
 .mni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 3px 7px;cursor:pointer;color:rgba(255,255,255,.35);font-size:7.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;gap:3px;transition:color .15s}
 .mni.act{color:var(--gold)}
@@ -286,7 +357,7 @@ button,input{font-family:'Barlow',sans-serif}
     <div class="stab act" id="stab-bib"    onclick="goSection('bib')">📚 Bibliotheque <span class="stab-badge" id="stab-cnt"></span></div>
     <div class="stab"     id="stab-plan"   onclick="goSection('plan')">🗂️ Plan des ateliers</div>
     <div class="stab"     id="stab-ressources" onclick="goSection('ressources')">📖 Ressources</div>
-    <div class="stab"     id="stab-saison" onclick="goSection('saison')">📅 Planification <span class="stab-soon">Bientot</span></div>
+    <div class="stab"     id="stab-saison" onclick="goSection('saison')">📅 Planification</div>
     <div class="stab"     id="stab-seance" onclick="goSection('seance')">📋 Ma seance <span class="stab-soon">Bientot</span></div>
   </div>
   <div class="app-body">
@@ -674,7 +745,7 @@ function goSection(s) {
   if (s === "bib")    { buildSbBib(); goPage("home"); }
   else if (s === "plan")   { buildSbPlan(); renderPlan(); }
   else if (s === "ressources") { goSection_ressources(); }
-  else if (s === "saison") { buildSbEmpty(); renderSoon("📅", "Planification de saison", "Creez et gerez vos blocs chronologiques par categorie.", "Livrable 2 — en developpement"); }
+  else if (s === "saison") { goSection_saison(); }
   else if (s === "seance") { buildSbEmpty(); renderSoon("📋", "Ma seance", "Preparez votre canevas de seance avec blocs variables et sauvegarde Drive.", "Livrable 3 — en developpement"); }
 }
 
@@ -1275,6 +1346,407 @@ function buildCrossRefHtml(ssId) {
   });
   h += '</div>';
   return h;
+}
+
+// ═══ PLANIFICATION DE SAISON ═════════════════════════════════════
+
+var DRIVE_FOLDER_PLAN = "16zWlSMKjrzQlGIXrYfxB8Dy4nAj-aij9";
+var CATS_PLAN = ["Commun","M6","M8","M10","M12","M14","M1618","SEN"];
+var curPlanCat = "Commun";
+var planData = {}; // { "M14": { saison:"2025-2026", blocs:[...] }, ... }
+var planDirty = false;
+
+var TITRES_BLOCS = [
+  "-- Choisir un titre --",
+  "Utilisation des formes de jeu",
+  "Gestion des blocages et relance",
+  "Lancer le jeu",
+  "Approche strategique",
+  "Organisation et pression defensive",
+  "Bloc defense",
+  "Technique individuelle",
+  "Jeu au poste",
+  "Preparation physique",
+  "Tournoi / Competition",
+  "Autre (texte libre)"
+];
+
+var AXES_TRAVAIL = [
+  "-- Choisir un axe --",
+  "Duel offensif et continuite debout",
+  "Alternance jeu penetrant / jeu deploye / jeu au pied",
+  "Liberation au sol et dynamisme autour de l'accident de jeu",
+  "Notion de ballon rapide et ballon lent",
+  "Travail autour de la cellule d'action",
+  "Exploiter les espaces libres",
+  "Creer et exploiter les desequilibres",
+  "Contre-attaquer",
+  "Adaptation au rapport de force",
+  "Zones du terrain",
+  "Plaquages offensifs",
+  "Rush defense",
+  "Defense autour des rucks",
+  "Defense en controle",
+  "Organisation collective defensive",
+  "Jeu au poste : melee",
+  "Jeu au poste : touche",
+  "Projet Bleu / Lecture du jeu",
+  "Autre (texte libre)"
+];
+
+var FIL_ROUGE_ITEMS = [
+  {id:"fr-manip",  label:"Manipulation / Transmissions"},
+  {id:"fr-duels",  label:"Jouer des duels"},
+  {id:"fr-plaq",   label:"Plaquer"},
+  {id:"fr-lib",    label:"Liberation au contact"},
+  {id:"fr-coord",  label:"Coordination / Motricite"},
+  {id:"fr-echauf", label:"Echauffements specifiques"},
+  {id:"fr-jaupied",label:"Jeu au pied"}
+];
+
+// Clé Drive : planif-{cat}-2025-2026.json
+function planKey(cat) { return "planif-" + cat.toLowerCase() + ".json"; }
+
+// ─── Charger depuis Drive ───
+function loadPlanFromDrive(cat, cb) {
+  if (planData[cat]) { cb(planData[cat]); return; }
+  var fname = planKey(cat);
+  var url = "https://www.googleapis.com/drive/v3/files?q=name%3D'" + fname + "'+and+'" + DRIVE_FOLDER_PLAN + "'+in+parents&fields=files(id,name)";
+  fetch(url, { headers: { "Authorization": "Bearer " + getGToken() } })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var files = data.files || [];
+      if (!files.length) {
+        var def = defaultPlan(cat);
+        planData[cat] = def;
+        cb(def);
+        return;
+      }
+      var fid = files[0].id;
+      fetch("https://www.googleapis.com/drive/v3/files/" + fid + "?alt=media", {
+        headers: { "Authorization": "Bearer " + getGToken() }
+      }).then(function(r){ return r.json(); })
+        .then(function(d){ planData[cat] = d; cb(d); })
+        .catch(function(){ var def = defaultPlan(cat); planData[cat] = def; cb(def); });
+    })
+    .catch(function(){ var def = defaultPlan(cat); planData[cat] = def; cb(def); });
+}
+
+// ─── Sauvegarder sur Drive ───
+function savePlanToDrive(cat, data, cb) {
+  var fname = planKey(cat);
+  var content = JSON.stringify(data, null, 2);
+  var url = "https://www.googleapis.com/drive/v3/files?q=name%3D'" + fname + "'+and+'" + DRIVE_FOLDER_PLAN + "'+in+parents&fields=files(id)";
+  fetch(url, { headers: { "Authorization": "Bearer " + getGToken() } })
+    .then(function(r){ return r.json(); })
+    .then(function(data2){
+      var files = data2.files || [];
+      var boundary = "mom_rugby_boundary";
+      var body = "--" + boundary + "\r\nContent-Type: application/json\r\n\r\n" +
+        JSON.stringify({name: fname, parents: files.length ? undefined : [DRIVE_FOLDER_PLAN]}) +
+        "\r\n--" + boundary + "\r\nContent-Type: application/json\r\n\r\n" +
+        content + "\r\n--" + boundary + "--";
+      var method = files.length ? "PATCH" : "POST";
+      var endpoint = files.length
+        ? "https://www.googleapis.com/upload/drive/v3/files/" + files[0].id + "?uploadType=multipart"
+        : "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
+      return fetch(endpoint, {
+        method: method,
+        headers: { "Authorization": "Bearer " + getGToken(), "Content-Type": "multipart/related; boundary=" + boundary },
+        body: body
+      });
+    })
+    .then(function(r){ if (r.ok) { if(cb) cb(true); } else { if(cb) cb(false); } })
+    .catch(function(){ if(cb) cb(false); });
+}
+
+// Token Google Drive via l'API Anthropic MCP
+function getGToken() {
+  // Récupérer le token depuis le cookie ou localStorage si disponible
+  // En production avec le compte ecolederugby.mom@gmail.com via MCP
+  return window._gtoken || "";
+}
+
+// ─── Structure par défaut ───
+function defaultPlan(cat) {
+  return {
+    cat: cat,
+    saison: "2025-2026",
+    blocs: [
+      { id: Date.now(), titre: "", titreCustom: "", dateDebut: "", dateFin: "",
+        axe: "", axeCustom: "", intercale: false, filRouge: [] }
+    ]
+  };
+}
+
+function newBloc() {
+  return { id: Date.now() + Math.random(), titre: "", titreCustom: "", dateDebut: "", dateFin: "",
+    axe: "", axeCustom: "", intercale: false, filRouge: [] };
+}
+
+// ─── Section Planification ───
+function goSection_saison() {
+  document.getElementById("bc").innerHTML = "<b>Planification de saison</b>";
+  document.getElementById("tc").style.display = "none";
+  document.getElementById("vbtns").style.display = "none";
+  document.getElementById("afbar").style.display = "none";
+  buildSbSaison();
+
+  var ct = document.getElementById("content");
+  ct.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray5)"><div style="font-size:32px;margin-bottom:10px">⏳</div>Chargement...</div>';
+  ct.classList.remove("lv");
+
+  loadPlanFromDrive(curPlanCat, function(data) {
+    renderPlanSaison(data);
+  });
+}
+
+function buildSbSaison() {
+  var sb = document.getElementById("sidebar");
+  var h = '<div class="sb-sec"><div class="sb-sec-lbl">Planification — Categorie</div>';
+  CATS_PLAN.forEach(function(c) {
+    var act = c === curPlanCat ? " act" : "";
+    var icon = c === "Commun" ? "🏛️" : "📅";
+    h += '<div class="sb-item' + act + '" onclick="switchPlanCat(\'' + c + '\')">' +
+      '<div class="sb-icon">' + icon + "</div>" + (c === "Commun" ? "Planification commune" : c) + "</div>";
+  });
+  h += "</div>";
+  sb.innerHTML = h;
+}
+
+function switchPlanCat(cat) {
+  if (planDirty) {
+    if (!confirm("Des modifications non sauvegardees seront perdues. Continuer ?")) return;
+    planDirty = false;
+  }
+  curPlanCat = cat;
+  buildSbSaison();
+  var ct = document.getElementById("content");
+  ct.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray5)"><div style="font-size:32px;margin-bottom:10px">⏳</div>Chargement...</div>';
+  loadPlanFromDrive(cat, function(data) { renderPlanSaison(data); });
+}
+
+function renderPlanSaison(data) {
+  var cat = data.cat || curPlanCat;
+  var saison = data.saison || "2025-2026";
+  var blocs = data.blocs || [];
+  var isCommun = cat === "Commun";
+
+  var catLabel = cat === "Commun" ? "🏛️ Planification commune du club" : "📅 Categorie " + cat;
+
+  var h = '<div class="plan-saison-wrap"><div class="plan-saison-main">';
+
+  // En-tete
+  h += '<div class="plan-header">';
+  h += '<div><div class="plan-print-title">MOM Rugby — Planification de saison</div>';
+  h += '<div class="plan-print-sub">' + catLabel + ' · Saison <span id="saison-print"></span></div>';
+  h += '<div class="plan-header-title">' + catLabel + '</div>';
+  h += '<div class="plan-header-meta">Saison : <input class="plan-saison-input" id="saison-input" value="' + saison + '" style="width:90px" onchange="planDirty=true;document.getElementById(\'saison-print\').textContent=this.value"></div></div>';
+  h += '<button class="plan-save-btn" id="save-btn" onclick="savePlan()">💾 Sauvegarder</button>';
+  h += '<button class="plan-save-btn preview" onclick="printPlan()">🖨️ Exporter PDF</button>';
+  h += '<span class="plan-save-ok" id="save-ok">✅ Sauvegarde!</span>';
+  h += '</div>';
+
+  // Statut
+  h += '<div class="plan-status" id="plan-status"></div>';
+
+  // Blocs
+  blocs.forEach(function(bloc, i) {
+    h += renderBloc(bloc, i, blocs.length);
+  });
+
+  // Ajouter un bloc
+  h += '<button class="add-bloc-btn" onclick="addBloc()">+ Ajouter un bloc</button>';
+
+  h += '</div></div>'; // fin plan-saison-main + wrap
+
+  document.getElementById("content").innerHTML = h;
+
+  // Stocker les données en mémoire pour les mises à jour
+  window._curPlanData = JSON.parse(JSON.stringify(data));
+}
+
+function renderBloc(bloc, i, total) {
+  var h = '<div class="bloc-card" id="bloc-' + bloc.id + '">';
+
+  // Header vert foncé
+  h += '<div class="bloc-card-header">';
+  h += '<div class="bloc-num">' + (i + 1) + '</div>';
+  h += '<div class="bloc-title-wrap">';
+
+  // Menu titre
+  h += '<select class="bloc-select" onchange="onBlocTitreChange(this,\'' + bloc.id + '\')">';
+  TITRES_BLOCS.forEach(function(t) {
+    var sel = (bloc.titre === t) ? " selected" : "";
+    h += '<option value="' + t + '"' + sel + '>' + t + '</option>';
+  });
+  h += '</select>';
+
+  // Champ texte libre si "Autre"
+  var showCustom = (bloc.titre === "Autre (texte libre)" || (!bloc.titre && bloc.titreCustom));
+  h += '<input class="bloc-custom-input" id="btc-' + bloc.id + '" placeholder="Titre libre..." value="' + (bloc.titreCustom || "") + '" style="' + (showCustom ? "" : "display:none") + '" oninput="onBlocCustomTitre(this,\'' + bloc.id + '\')">';
+
+  // Dates
+  h += '<div class="bloc-dates">Du <input type="date" class="bloc-date-input" value="' + (bloc.dateDebut || "") + '" onchange="onBlocField(\'' + bloc.id + '\',\'dateDebut\',this.value)"> au <input type="date" class="bloc-date-input" value="' + (bloc.dateFin || "") + '" onchange="onBlocField(\'' + bloc.id + '\',\'dateFin\',this.value)"></div>';
+
+  h += '</div>'; // fin bloc-title-wrap
+
+  // Actions
+  h += '<div class="bloc-actions">';
+  if (i > 0) h += '<button class="bloc-btn" onclick="moveBloc(\'' + bloc.id + '\',-1)" title="Monter">↑</button>';
+  if (i < total - 1) h += '<button class="bloc-btn" onclick="moveBloc(\'' + bloc.id + '\',1)" title="Descendre">↓</button>';
+  h += '<button class="bloc-btn del" onclick="deleteBloc(\'' + bloc.id + '\')" title="Supprimer">✕</button>';
+  h += '</div>';
+
+  h += '</div>'; // fin header
+
+  // Body
+  h += '<div class="bloc-body">';
+
+  // Axe de travail général
+  h += '<div class="bloc-field"><div class="bloc-field-label">Axe de travail general</div>';
+  h += '<div class="bloc-field-row">';
+  h += '<select class="bloc-axe-select" onchange="onBlocAxeChange(this,\'' + bloc.id + '\')">';
+  AXES_TRAVAIL.forEach(function(a) {
+    var sel = (bloc.axe === a) ? " selected" : "";
+    h += '<option value="' + a + '"' + sel + '>' + a + '</option>';
+  });
+  h += '</select>';
+  h += '</div>';
+  var showAxeCustom = (bloc.axe === "Autre (texte libre)");
+  h += '<textarea class="bloc-axe-input" id="bac-' + bloc.id + '" placeholder="Decrivez votre axe de travail..." style="' + (showAxeCustom ? "" : "display:none") + '" oninput="onBlocField(\'' + bloc.id + '\',\'axeCustom\',this.value)">' + (bloc.axeCustom || "") + '</textarea>';
+  h += '</div>';
+
+  // Bloc intercalé
+  h += '<div class="bloc-intercale"><input type="checkbox" id="int-' + bloc.id + '"' + (bloc.intercale ? " checked" : "") + ' onchange="onBlocField(\'' + bloc.id + '\',\'intercale\',this.checked)"><label for="int-' + bloc.id + '">Bloc intercale sur la saison (ex: bloc defense en plusieurs parties)</label></div>';
+
+  // Fil rouge TI
+  h += '<div class="fil-rouge-card"><div class="fil-rouge-title">🧵 Fil rouge — Technique individuelle en parallele</div>';
+  h += '<div class="fil-rouge-grid">';
+  FIL_ROUGE_ITEMS.forEach(function(fr) {
+    var checked = (bloc.filRouge || []).indexOf(fr.id) >= 0 ? " checked" : "";
+    h += '<label class="fil-rouge-item"><input type="checkbox" id="fr-' + bloc.id + '-' + fr.id + '"' + checked + ' onchange="onFilRouge(\'' + bloc.id + '\',\'' + fr.id + '\',this.checked)"> ' + fr.label + '</label>';
+  });
+  h += '</div></div>';
+
+  h += '</div>'; // fin body
+  h += '</div>'; // fin bloc-card
+
+  return h;
+}
+
+// ─── Interactions blocs ───
+function getBlocById(id) {
+  var d = window._curPlanData;
+  if (!d) return null;
+  return d.blocs.find(function(b){ return String(b.id) === String(id); });
+}
+
+function onBlocTitreChange(sel, id) {
+  var b = getBlocById(id);
+  if (!b) return;
+  b.titre = sel.value;
+  planDirty = true;
+  var customInput = document.getElementById("btc-" + id);
+  if (customInput) customInput.style.display = (sel.value === "Autre (texte libre)") ? "" : "none";
+}
+function onBlocCustomTitre(inp, id) {
+  var b = getBlocById(id);
+  if (!b) return;
+  b.titreCustom = inp.value;
+  planDirty = true;
+}
+function onBlocAxeChange(sel, id) {
+  var b = getBlocById(id);
+  if (!b) return;
+  b.axe = sel.value;
+  planDirty = true;
+  var ta = document.getElementById("bac-" + id);
+  if (ta) ta.style.display = (sel.value === "Autre (texte libre)") ? "" : "none";
+}
+function onBlocField(id, field, value) {
+  var b = getBlocById(id);
+  if (!b) return;
+  b[field] = value;
+  planDirty = true;
+}
+function onFilRouge(blocId, frId, checked) {
+  var b = getBlocById(blocId);
+  if (!b) return;
+  if (!b.filRouge) b.filRouge = [];
+  if (checked && b.filRouge.indexOf(frId) < 0) b.filRouge.push(frId);
+  if (!checked) b.filRouge = b.filRouge.filter(function(x){ return x !== frId; });
+  planDirty = true;
+}
+function addBloc() {
+  var d = window._curPlanData;
+  if (!d) return;
+  d.blocs.push(newBloc());
+  planDirty = true;
+  renderPlanSaison(d);
+}
+function deleteBloc(id) {
+  var d = window._curPlanData;
+  if (!d || d.blocs.length <= 1) return;
+  if (!confirm("Supprimer ce bloc ?")) return;
+  d.blocs = d.blocs.filter(function(b){ return String(b.id) !== String(id); });
+  planDirty = true;
+  renderPlanSaison(d);
+}
+function moveBloc(id, dir) {
+  var d = window._curPlanData;
+  if (!d) return;
+  var idx = d.blocs.findIndex(function(b){ return String(b.id) === String(id); });
+  if (idx < 0) return;
+  var newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= d.blocs.length) return;
+  var tmp = d.blocs[idx]; d.blocs[idx] = d.blocs[newIdx]; d.blocs[newIdx] = tmp;
+  planDirty = true;
+  renderPlanSaison(d);
+}
+
+// ─── Sauvegarde ───
+function savePlan() {
+  var d = window._curPlanData;
+  if (!d) return;
+  // Mettre à jour le champ saison depuis l'input
+  var saisonInput = document.getElementById("saison-input");
+  if (saisonInput) d.saison = saisonInput.value;
+  d.cat = curPlanCat;
+
+  var btn = document.getElementById("save-btn");
+  var ok  = document.getElementById("save-ok");
+  var st  = document.getElementById("plan-status");
+  if (btn) { btn.textContent = "⏳ Sauvegarde..."; btn.classList.add("saving"); }
+  if (ok)  ok.style.display = "none";
+  if (st)  st.className = "plan-status";
+
+  // Sauvegarder dans planData en mémoire (toujours disponible)
+  planData[curPlanCat] = JSON.parse(JSON.stringify(d));
+  planDirty = false;
+
+  // Tenter la sauvegarde Drive (nécessite authentification Google)
+  savePlanToDrive(curPlanCat, d, function(success) {
+    if (btn) { btn.textContent = "💾 Sauvegarder"; btn.classList.remove("saving"); }
+    if (success) {
+      if (ok) { ok.style.display = "inline"; setTimeout(function(){ if(ok) ok.style.display = "none"; }, 3000); }
+      if (st) { st.textContent = "✅ Planification sauvegardee sur Google Drive !"; st.className = "plan-status ok"; setTimeout(function(){ if(st) st.className = "plan-status"; }, 4000); }
+    } else {
+      // Sauvegarde locale en fallback (sessionStorage)
+      try { sessionStorage.setItem("plan_" + curPlanCat, JSON.stringify(d)); } catch(e){}
+      if (st) { st.textContent = "⚠️ Sauvegarde Drive indisponible — donnees conservees en memoire pour cette session. Reconnectez-vous avec le compte ecolederugby.mom@gmail.com pour activer la sauvegarde Drive."; st.className = "plan-status err"; }
+    }
+  });
+}
+
+// ─── Export PDF ───
+function printPlan() {
+  // Mettre à jour le titre d'impression
+  var sp = document.getElementById("saison-print");
+  var si = document.getElementById("saison-input");
+  if (sp && si) sp.textContent = si.value;
+  // Déclencher l'impression
+  window.print();
 }
 
 function doSearch() {
