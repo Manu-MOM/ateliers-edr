@@ -466,7 +466,7 @@ button,input{font-family:'Barlow',sans-serif}
 <body>
 <div id="login">
   <div class="lcard">
-    <div class="llogo" style="background:none;box-shadow:none;width:80px;height:80px"><img id="_logo_img_<img id="logo-img-1" src="" style="visibility:hidden"" src="" onload="" style="width:80px;height:80px;object-fit:contain"></div>
+    <div class="llogo" style="background:none;box-shadow:none;width:80px;height:80px"><img id="logo-img-login" src="" style="width:80px;height:80px;object-fit:contain"></div>
     <div class="ltitle">Espace Educateurs EDR</div>
     <div class="lsub">Mutzig Ovalie Molsheim</div>
     <label class="lage-label">1. Votre categorie d'age</label>
@@ -490,7 +490,7 @@ button,input{font-family:'Barlow',sans-serif}
 </div>
 <div id="app">
   <div class="topbar">
-    <div class="tb-logo" style="background:none;padding:0;width:36px;height:36px"><img id="_logo_img_<img id="logo-img-1" src="" style="visibility:hidden"" src="" onload="" style="width:36px;height:36px;object-fit:contain"></div>
+    <div class="tb-logo" style="background:none;padding:0;width:36px;height:36px"><img id="logo-img-topbar" src="" style="width:36px;height:36px;object-fit:contain"></div>
     <div class="tb-title">Espace Educateurs <small>Mutzig Ovalie Molsheim</small></div>
     <div class="tb-search">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -2486,7 +2486,7 @@ function renderSeance() {
   // Boutons ajout
   h += '<div style="padding:4px 8px 8px;display:flex;flex-wrap:wrap;gap:3px">';
   BLOC_TYPES.forEach(function(bt) {
-    var burl = 'addSBloc("' + bt.val + '")';
+    var burl = "addSBloc('" + bt.val + "')";
     h += '<button class="add-trame-btn" style="width:auto;padding:3px 7px;font-size:9px;border-color:' + bt.color + ';color:' + bt.color + ';cursor:pointer" onclick="' + burl + '">' + bt.label + '</button>';
   });
   h += '</div>';
@@ -3042,10 +3042,10 @@ function doSearch() {
 }
 // Injecter les logos dans les balises img après chargement
 document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('#logo-img-1').forEach(function(el) {
-    el.src = _LOGO_PNG;
-    el.style.visibility = '';
-  });
+  var loginLogo = document.getElementById('logo-img-login');
+  if (loginLogo) loginLogo.src = _LOGO_PNG;
+  var topbarLogo = document.getElementById('logo-img-topbar');
+  if (topbarLogo) topbarLogo.src = _LOGO_PNG;
 });
 
 </script>
