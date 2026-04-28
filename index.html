@@ -340,20 +340,23 @@ button,input{font-family:'Barlow',sans-serif}
 .seance-col-hd{background:var(--g9);color:var(--w);padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--gold)}
 /* Col 1 : Trame */
 .trame-col{display:flex;flex-direction:column;position:relative}
-.trame-timeline{position:absolute;left:22px;top:40px;bottom:10px;width:3px;background:linear-gradient(180deg,var(--gold) 0%,var(--g4) 100%);border-radius:2px;z-index:0}
-.trame-blocs{display:flex;flex-direction:column;gap:0;padding:8px 8px 8px 14px;position:relative;z-index:1}
-.trame-bloc{background:var(--w);border:1px solid var(--gray2);border-radius:8px;margin-bottom:8px;overflow:hidden;position:relative}
-.trame-bloc-dot{position:absolute;left:-18px;top:12px;width:10px;height:10px;border-radius:50%;border:2px solid var(--gold);background:var(--w);z-index:2;flex-shrink:0}
-.trame-bloc-hdr{display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:pointer}
-.trame-bloc-heure{font-size:9px;font-weight:700;color:var(--gray5);min-width:36px;flex-shrink:0}
-.trame-bloc-type{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;padding:2px 6px;border-radius:4px;color:var(--w);flex-shrink:0}
-.trame-bloc-titre{font-size:10px;font-weight:600;color:var(--gray7);flex:1;line-height:1.2}
-.trame-bloc-dur{font-size:9px;font-weight:700;color:var(--gold);flex-shrink:0;white-space:nowrap}
-.trame-bloc-actions{display:flex;gap:2px;flex-shrink:0}
+.trame-blocs{display:flex;flex-direction:column;gap:0;padding:6px 6px 6px 6px;position:relative;z-index:1}
+/* Nouveau bloc avec barre laterale */
+.trame-bloc{display:flex;background:var(--w);border:1px solid var(--gray2);border-radius:8px;margin-bottom:6px;overflow:hidden;position:relative;transition:box-shadow .15s}
+.trame-bloc:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.trame-bloc-pause{opacity:.85}
+.trame-bloc-bar{width:32px;min-width:32px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:6px 2px;flex-shrink:0}
+.trame-bloc-bar-heure{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:900;color:#fff;text-align:center;line-height:1;letter-spacing:.02em}
+.trame-bloc-bar-dur{font-size:8px;font-weight:700;color:rgba(255,255,255,.8);text-align:center;line-height:1}
+.trame-bloc-content{flex:1;display:flex;flex-direction:column;min-width:0}
+.trame-bloc-hdr{display:flex;align-items:center;gap:5px;padding:5px 7px;cursor:pointer;flex-wrap:wrap}
+.trame-bloc-type{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;color:var(--w);flex-shrink:0}
+.trame-bloc-titre{font-size:10px;font-weight:600;color:var(--gray7);flex:1;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trame-bloc-actions{display:flex;gap:2px;flex-shrink:0;margin-left:auto}
 .trame-bloc-btn{width:18px;height:18px;border-radius:3px;border:none;background:var(--gray1);color:var(--gray5);cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .trame-bloc-btn:hover{background:var(--g8);color:var(--w)}
 .trame-bloc-btn.del:hover{background:var(--red);color:var(--w)}
-.trame-bloc-edit{padding:8px;background:var(--gray1);border-top:1px solid var(--gray2);display:flex;flex-direction:column;gap:5px}
+.trame-bloc-edit{padding:7px;background:var(--gray1);border-top:1px solid var(--gray2);display:flex;flex-direction:column;gap:4px}
 .trame-sel{font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;outline:none;background:var(--w);color:var(--gray7);cursor:pointer;width:100%}
 .trame-sel:focus{border-color:var(--g6)}
 .trame-inp{font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;outline:none;background:var(--w);color:var(--gray7);width:100%}
@@ -361,17 +364,13 @@ button,input{font-family:'Barlow',sans-serif}
 .trame-row{display:flex;gap:5px;align-items:center}
 .trame-row-lbl{font-size:9px;color:var(--gray5);white-space:nowrap;min-width:40px}
 .intensite-btns{display:flex;gap:3px;flex-wrap:wrap}
-.int-btn{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;border:1px solid var(--gray2);background:var(--w);cursor:pointer;transition:all .15s;color:var(--gray5)}
+.int-btn{font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;border:1.5px solid var(--gray2);background:var(--w);cursor:pointer;transition:all .15s;color:var(--gray5)}
 .int-btn.on{color:var(--w)}
-.int-btn.t1{border-color:#28944f}
-.int-btn.t1.on{background:#28944f}
-.int-btn.t2{border-color:#d4a820}
-.int-btn.t2.on{background:#d4a820;color:var(--g9)}
-.int-btn.t3{border-color:#e06020}
-.int-btn.t3.on{background:#e06020}
-.int-btn.t4{border-color:#c53a22}
-.int-btn.t4.on{background:#c53a22}
-.add-trame-btn{margin:6px 10px 10px;padding:6px;border:1.5px dashed var(--gray2);border-radius:6px;background:none;color:var(--gray5);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;width:calc(100% - 20px)}
+.int-btn.t1{border-color:#28944f}.int-btn.t1.on{background:#28944f}
+.int-btn.t2{border-color:#d4a820}.int-btn.t2.on{background:#d4a820;color:var(--g9)}
+.int-btn.t3{border-color:#e06020}.int-btn.t3.on{background:#e06020}
+.int-btn.t4{border-color:#c53a22}.int-btn.t4.on{background:#c53a22}
+.add-trame-btn{margin:4px 6px 6px;padding:5px;border:1.5px dashed var(--gray2);border-radius:6px;background:none;color:var(--gray5);font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;width:calc(100% - 12px)}
 .add-trame-btn:hover{border-color:var(--g6);color:var(--g6);background:var(--g0)}
 /* Col 2 : Comportements */
 .comp-col{display:flex;flex-direction:column}
@@ -783,11 +782,31 @@ var RUBRIQUES = [
   id:"jp", num:"4", label:"Jeu au poste", icon:"🏟️",
   color:"#1a3a7a", badge:"#ddeaff", badgeText:"#1a2a7a",
   desc:"Techniques specifiques aux postes",
-  soon:true,
   subs:[
-    {id:"jp-melee",  label:"4a — Melee",  sub:"Passeport JDD",             color:"#1a3a7a", badge:"#ddeaff", badgeText:"#1a2a7a", icon:"⚙️",  soon:true, comp:[], ss:[]},
-    {id:"jp-touche", label:"4b — Touche", sub:"Lancer Sauter Lifter",       color:"#1a3a7a", badge:"#ddeaff", badgeText:"#1a2a7a", icon:"⬆️",  soon:true, comp:[], ss:[]},
-    {id:"jp-9",      label:"4c — Passe du 9", sub:"Technique demi de melee", color:"#1a3a7a", badge:"#ddeaff", badgeText:"#1a2a7a", icon:"9️⃣", soon:true, comp:[], ss:[]}
+    {
+      id:"jp-melee", label:"4a — Mêlée", sub:"Passeport JDD",
+      color:"#1a3a7a", badge:"#ddeaff", badgeText:"#1a2a7a", icon:"⚙️",
+      comp:["Cadrer son vis-a-vis","Pousser dans l'axe","Maintenir la pression","Etre solide sur ses appuis","Sortir vite du regroupement"],
+      ss:[
+        { id:"jp-melee-1", label:"Melee ordonnee", soon:true, items:[] }
+      ]
+    },
+    {
+      id:"jp-touche", label:"4b — Touche", sub:"Lancer Sauter Lifter",
+      color:"#1a3a7a", badge:"#ddeaff", badgeText:"#1a2a7a", icon:"⬆️",
+      comp:["Lancer droit et precis","Sauter au bon moment","Lifter en securite","Signal discret","Gagner sa touche"],
+      ss:[
+        { id:"jp-touche-1", label:"Touche ordonnee", soon:true, items:[] }
+      ]
+    },
+    {
+      id:"jp-9", label:"4c — Passe du 9", sub:"Technique demi de melee",
+      color:"#1a3a7a", badge:"#ddeaff", badgeText:"#1a2a7a", icon:"9️⃣",
+      comp:["Passe rapide et precise","Pied d'appui pres du ballon","Regard sur la cible","Variation de passes","Feinter avant de passer"],
+      ss:[
+        { id:"jp-9-1", label:"Passes du demi", soon:true, items:[] }
+      ]
+    }
   ]
 }
 ];
@@ -2324,7 +2343,8 @@ var BLOC_TYPES = [
   {val:"bulle",   label:"🫁 Bulle",                  color:"#4a4a40"},
   {val:"video",   label:"Analyse vidéo",             color:"#1a2a7a"},
   {val:"retour",  label:"Retour au calme",           color:"#28944f"},
-  {val:"libre",   label:"Bloc libre",                color:"#5a5a50"}
+  {val:"libre",   label:"Bloc libre",                color:"#5a5a50"},
+  {val:"pause",   label:"💧 Pause boisson",            color:"#1a6a8a"}
 ];
 
 // Titres prédéfinis des blocs
@@ -2335,16 +2355,16 @@ var TITRES_BLOCS_SEANCE = [
   "Vagues de Passes",
   "Footing",
   "Touché 2s",
-  "Touché All Blacks",
-  "Touché Gratte Poule",
+  "Touché « All Blacks »",
+  "Touché « Gratte Poule »",
   "Jeu dirigé",
   "Ball in Play",
   "Jeu au Contact (JCO)",
   "Rugby Éducatif (RE)",
   "Étirements",
-  "Brieffing",
-  "Débrieffing",
-  "Autre (texte libre)"
+  "Briefing",
+  "Débriefing",
+  "Autre..."
 ];
 
 // Intensités
@@ -2371,8 +2391,28 @@ function newSeance() {
   return {
     id: Date.now(), date: "", categorie: selAge_ || "",
     effectif: "", coachs: [], timekeeper: "", duree: 90, axe: "",
+    heureDebut: "14:00",
     blocs: [], joueurs: [], groupes: [[],[],[]]
   };
+}
+
+// Calcule les heures de début de chaque bloc depuis l'heure de départ
+function calcHeures(blocs, heureDebut) {
+  var parts = (heureDebut || "14:00").split(":");
+  var totalMin = parseInt(parts[0]||14)*60 + parseInt(parts[1]||0);
+  blocs.forEach(function(bloc) {
+    var hh = Math.floor(totalMin/60);
+    var mm = totalMin % 60;
+    bloc._heureCalc = (hh < 10 ? "0" : "") + hh + "h" + (mm < 10 ? "0" : "") + mm;
+    var dur = parseInt((bloc.duree||"").replace(/[^\d]/g,"")) || 15;
+    totalMin += dur;
+  });
+}
+
+function totalDureeBlocs(blocs) {
+  return blocs.reduce(function(acc, b) {
+    return acc + (parseInt((b.duree||"").replace(/[^\d]/g,"")) || 15);
+  }, 0);
 }
 
 function newBloc_(type) {
@@ -2415,6 +2455,9 @@ function renderSeance() {
   var ages = ["M6","M8","M10","M12","M14","M16-M18","Senior"];
   var logo = document.querySelector(".llogo img") ? document.querySelector(".llogo img").src : "";
 
+  // Calculer les heures auto
+  calcHeures(d.blocs || [], d.heureDebut || "14:00");
+
   var h = '<div style="display:flex;gap:14px;align-items:flex-start">';
   h += '<div style="flex:1;min-width:0">';
 
@@ -2428,6 +2471,9 @@ function renderSeance() {
   // Date
   h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Date</span>';
   h += '<input class="seance-input-sm" type="date" value="' + (d.date||"") + '" oninput="seanceDirty=true;seanceData.date=this.value"></div>';
+  // Heure de début
+  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Début</span>';
+  h += '<input class="seance-input-sm" type="time" value="' + (d.heureDebut||"14:00") + '" style="width:75px" oninput="seanceDirty=true;seanceData.heureDebut=this.value;renderSeance()"></div>';
   // Catégorie
   h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Catégorie</span>';
   h += '<select class="seance-input-sm" onchange="seanceDirty=true;seanceData.categorie=this.value">';
@@ -2475,12 +2521,12 @@ function renderSeance() {
   h += '<div class="seance-grid">';
 
   // ── COL 1 : TRAME ─────────────────────────────────────────
+  var totalMin = totalDureeBlocs(d.blocs || []);
   h += '<div class="seance-col trame-col">';
-  h += '<div class="seance-col-hd">⬆️ Trame de séance</div>';
-  h += '<div class="trame-timeline"></div>';
-  h += '<div class="trame-blocs">';
+  h += '<div class="seance-col-hd">⏱ Trame &mdash; <span style="color:var(--gold);font-weight:700">' + formatDuree(totalMin) + '</span></div>';
+  h += '<div class="trame-blocs" id="trame-blocs-list">';
   (d.blocs||[]).forEach(function(bloc, i) {
-    h += renderTrameBloc(bloc, i, d.blocs.length);
+    h += renderTrameBloc(bloc, i, d.blocs.length, totalMin);
   });
   h += '</div>';
   // Boutons ajout
@@ -2506,12 +2552,13 @@ function renderSeance() {
     h += '<div class="comp-row">';
     h += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px">';
     h += '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;color:var(--w);background:' + color + '">' + titre.substring(0,22) + '</span>';
-    // Lien auto depuis bibliothèque
-    if (bloc.ateliers && bloc.ateliers.length && bloc.ateliers[0].atelierIdx >= 0) {
-      var entry = ALL_ITEMS[bloc.ateliers[0].atelierIdx];
-      if (entry && entry.sub.comp && entry.sub.comp.length) {
-        var fillOnclick = 'fillComportements("' + bloc.id + '",' + bloc.ateliers[0].atelierIdx + ')';
-        h += '<span class="comp-auto-tag" onclick="' + fillOnclick + '" title="Remplir depuis la bibliotheque">&#128218; Auto</span>';
+    // Bouton auto depuis bibliothèque (premier atelier avec atelierIdx valide)
+    var firstAt = (bloc.ateliers||[]).find(function(a){ return a.atelierIdx >= 0; });
+    if (firstAt) {
+      var entry2 = ALL_ITEMS[firstAt.atelierIdx];
+      if (entry2) {
+        var autoOnclick = "showComportProposal('" + bloc.id + "'," + firstAt.atelierIdx + ")";
+        h += '<span class="comp-auto-tag" onclick="' + autoOnclick + '" title="Voir propositions de comportements">&#128218; Propositions</span>';
       }
     }
     h += '</div>';
@@ -2611,82 +2658,108 @@ function renderSeance() {
   ct.classList.remove("lv");
 }
 
-// ── Rendu d'un bloc dans la trame ───────────────────────────────
-function renderTrameBloc(bloc, i, total) {
+// ── Rendu d'un bloc dans la trame ───────────────────────────────────────────
+function renderTrameBloc(bloc, i, total, totalMin) {
   var color = getBlocColor(bloc.type);
   var typeLabel = (BLOC_TYPES.find(function(t){ return t.val===bloc.type; })||{label:bloc.type}).label;
-  var titre = bloc.titre && bloc.titre !== "-- Choisir --" ? bloc.titre : (bloc.titreCustom || "");
   var isExpanded = !bloc._collapsed;
   var bid = bloc.id;
+  var durMin = parseInt((bloc.duree||"").replace(/[^\d]/g,"")) || 15;
+  var pct = totalMin > 0 ? durMin / totalMin : 0.1;
+  var minH = Math.max(52, Math.round(pct * 480));
+  var heureAffich = bloc._heureCalc || "";
+  var isPause = bloc.type === "pause";
 
-  var h = '<div class="trame-bloc" id="sbloc-' + bid + '">';
-  h += '<div class="trame-bloc-dot"></div>';
+  var h = '<div class="trame-bloc' + (isPause ? " trame-bloc-pause" : "") + '" id="sbloc-' + bid + '" style="min-height:' + minH + 'px">';
+
+  // Barre laterale coloree avec heure + duree
+  h += '<div class="trame-bloc-bar" style="background:' + color + '">';
+  h += '<span class="trame-bloc-bar-heure">' + heureAffich + '</span>';
+  h += '<span class="trame-bloc-bar-dur">' + (bloc.duree || durMin + "min") + '</span>';
+  h += '</div>';
+
+  // Contenu principal
+  h += '<div class="trame-bloc-content">';
   h += '<div class="trame-bloc-hdr" onclick="toggleBlocEdit(' + bid + ')">';
-  h += '<span class="trame-bloc-heure">' + (bloc.heureDebut||"") + '</span>';
   h += '<span class="trame-bloc-type" style="background:' + color + '">' + typeLabel + '</span>';
-  h += '<span class="trame-bloc-titre">' + (titre||"") + '</span>';
-  h += '<span class="trame-bloc-dur">' + (bloc.duree||"") + '</span>';
+  var titreAffiche = (bloc.titre && bloc.titre !== "-- Choisir --") ? (bloc.titre === "Autre..." ? (bloc.titreCustom||"Autre") : bloc.titre) : (bloc.titreCustom||"");
+  if (titreAffiche) h += '<span class="trame-bloc-titre">' + titreAffiche + '</span>';
+  if (bloc.intensite) {
+    var intObj = INTENSITES.find(function(it){ return it.val === bloc.intensite; });
+    if (intObj) h += '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;border:1px solid ' + intObj.color + ';color:' + intObj.color + ';margin-left:auto;white-space:nowrap">' + intObj.label + '&nbsp;/&nbsp;' + intObj.sublabel + '</span>';
+  }
   h += '<div class="trame-bloc-actions" onclick="event.stopPropagation()">';
-  if (i > 0) h += '<button class="trame-bloc-btn" onclick="moveSBloc(' + bid + ',-1)">↑</button>';
-  if (i < total-1) h += '<button class="trame-bloc-btn" onclick="moveSBloc(' + bid + ',1)">↓</button>';
-  h += '<button class="trame-bloc-btn del" onclick="deleteSBloc(' + bid + ')">✕</button>';
+  if (i > 0) h += '<button class="trame-bloc-btn" onclick="moveSBloc(' + bid + ',-1)">&#8593;</button>';
+  if (i < total-1) h += '<button class="trame-bloc-btn" onclick="moveSBloc(' + bid + ',1)">&#8595;</button>';
+  h += '<button class="trame-bloc-btn del" onclick="deleteSBloc(' + bid + ')">&#10005;</button>';
   h += '</div></div>';
 
   if (isExpanded) {
     h += '<div class="trame-bloc-edit">';
 
-    // Type
+    // Type de bloc
     h += '<select class="trame-sel" onchange="onSBlocType(this,' + bid + ')">';
     BLOC_TYPES.forEach(function(bt){
       h += '<option value="' + bt.val + '"' + (bloc.type===bt.val?" selected":"") + '>' + bt.label + '</option>';
     });
     h += '</select>';
 
-    // Titre prédéfini
-    var titresList = (planData["__config__"] && planData["__config__"].seance && planData["__config__"].seance.titresBlocs)
-      ? planData["__config__"].seance.titresBlocs : TITRES_BLOCS_SEANCE;
-    h += '<select class="trame-sel" onchange="onBlocTitreSeance(this,' + bid + ')">';
-    titresList.forEach(function(t){
-      h += '<option value="' + t + '"' + (bloc.titre===t?" selected":"") + '>' + t + '</option>';
-    });
-    h += '</select>';
-
-    if (bloc.titre === "Autre (texte libre)") {
-      h += '<input class="trame-inp" placeholder="Titre libre..." value="' + (bloc.titreCustom||"") + '"'
-        + ' oninput="onSBlocField(' + bid + ',\'titreCustom\',this.value)">';
-    }
-
-    // Heure + durée
-    h += '<div class="trame-row">';
-    h += '<span class="trame-row-lbl">Heure</span>';
-    h += '<input class="trame-inp" style="width:65px" placeholder="14h00" value="' + (bloc.heureDebut||"") + '"'
-      + ' oninput="onSBlocField(' + bid + ',\'heureDebut\',this.value)">';
-    h += '<span class="trame-row-lbl" style="margin-left:6px">Durée</span>';
-    h += '<input class="trame-inp" style="width:55px" placeholder="15min" value="' + (bloc.duree||"") + '"'
-      + ' oninput="onSBlocField(' + bid + ',\'duree\',this.value)">';
-    h += '</div>';
-
-    // Intensité (sauf bulle)
-    if (bloc.type !== "bulle") {
-      h += '<div class="trame-row"><span class="trame-row-lbl">Intensité</span>';
-      h += '<div class="intensite-btns">';
-      INTENSITES.forEach(function(it) {
-        var on = bloc.intensite === it.val;
-        var onclick_int = 'onSBlocField(' + bid + ',\'intensite\',\'' + it.val + '\')';
-        h += '<button class="int-btn ' + it.val + (on?" on":"") + '" onclick="' + onclick_int + '">' + it.label + '</button>';
+    if (!isPause) {
+      // Menu titres prédéfinis
+      var titresList2 = (planData["__config__"] && planData["__config__"].seance && planData["__config__"].seance.titresBlocs)
+        ? planData["__config__"].seance.titresBlocs : TITRES_BLOCS_SEANCE;
+      h += '<select class="trame-sel" onchange="onBlocTitreSeance(this,' + bid + ')">';
+      titresList2.forEach(function(t){
+        h += '<option value="' + t + '"' + (bloc.titre===t?" selected":"") + '>' + t + '</option>';
       });
-      h += '</div></div>';
+      h += '</select>';
+      // Champ texte libre si "Autre..."
+      if (bloc.titre === "Autre...") {
+        h += '<input class="trame-inp" placeholder="Préciser..." value="' + (bloc.titreCustom||"").replace(/"/g,"&quot;") + '"'
+          + ' oninput="onSBlocField(' + bid + ",\'titreCustom\',this.value)" + '">';
+      }
 
-      // Ateliers liés à la bibliothèque
-      h += '<div style="font-size:8px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Ateliers</div>';
-      (bloc.ateliers||[]).forEach(function(at, ai) {
-        h += renderAtelierRow(bloc, at, ai);
-      });
-      h += '<button class="add-trame-btn" onclick="addAtelierRow(' + bid + ')">+ Atelier</button>';
+      // Duree (heure calculee auto)
+      h += '<div class="trame-row">';
+      h += '<span class="trame-row-lbl" style="color:var(--gold);font-weight:700">' + heureAffich + '</span>';
+      h += '<span class="trame-row-lbl" style="margin-left:6px">Dur&eacute;e</span>';
+      h += '<input class="trame-inp" style="width:65px" placeholder="15min" value="' + (bloc.duree||"") + '"'
+        + ' oninput="onSBlocField(' + bid + ",\'duree\',this.value);renderSeance()" + '">';
+      h += '</div>';
+
+      // Intensite sur 2 lignes (label + sublabel dans chaque bouton)
+      if (bloc.type !== "bulle") {
+        h += '<div style="margin-top:3px"><span class="trame-row-lbl">Intensit&eacute;</span>';
+        h += '<div class="intensite-btns" style="margin-top:2px">';
+        INTENSITES.forEach(function(it) {
+          var on = bloc.intensite === it.val;
+          var oc = "onSBlocField(" + bid + ",\'intensite\',\'" + it.val + "\');renderSeance()";
+          h += '<button class="int-btn ' + it.val + (on?" on":"") + '" onclick="' + oc + '" style="display:flex;flex-direction:column;align-items:center;line-height:1.1;padding:3px 7px;min-width:44px">'
+            + '<span style="font-size:9px;font-weight:800">' + it.label + '</span>'
+            + '<span style="font-size:7px;opacity:.8;font-weight:600">' + it.sublabel + '</span>'
+            + '</button>';
+        });
+        h += '</div></div>';
+
+        // Ateliers
+        h += '<div style="font-size:8px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">Ateliers</div>';
+        (bloc.ateliers||[]).forEach(function(at, ai) {
+          h += renderAtelierRow(bloc, at, ai);
+        });
+        h += '<button class="add-trame-btn" onclick="addAtelierRow(' + bid + ')">+ Atelier</button>';
+      }
+    } else {
+      // Pause : juste la duree
+      h += '<div class="trame-row">';
+      h += '<span class="trame-row-lbl">Dur&eacute;e pause</span>';
+      h += '<input class="trame-inp" style="width:65px" placeholder="5min" value="' + (bloc.duree||"5min") + '"'
+        + ' oninput="onSBlocField(' + bid + ",\'duree\',this.value);renderSeance()" + '">';
+      h += '</div>';
     }
     h += '</div>';
   }
 
+  h += '</div>';
   h += '</div>';
   return h;
 }
@@ -2698,37 +2771,55 @@ function toggleBlocEdit(id) {
 
 // ── Rendu d'une ligne atelier ────────────────────────────────────
 function renderAtelierRow(bloc, at, ai) {
-  var h = '<div style="display:flex;gap:4px;align-items:center;margin-bottom:3px;background:var(--w);border:1px solid var(--gray2);border-radius:5px;padding:4px 6px">';
-  // Rubrique
-  h += '<select style="font-size:10px;border:1px solid var(--gray2);border-radius:4px;padding:2px 4px;background:var(--gray1);color:var(--gray7);cursor:pointer;flex:1;min-width:0" onchange="onAtRubrique(this," + bloc.id + "," + at.id + ")">';
-  h += '<option value="">Rubrique</option>';
+  var bid = bloc.id, aid = at.id;
+  var h = '<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:5px;background:var(--g0);border:1px solid var(--g1);border-radius:6px;padding:5px 7px">';
+
+  // Ligne 1 : sélecteur sous-rubrique + bouton suppr
+  h += '<div style="display:flex;gap:4px;align-items:center">';
+  h += '<select style="font-size:10px;border:1px solid var(--gray2);border-radius:4px;padding:2px 5px;background:var(--w);color:var(--gray7);cursor:pointer;flex:1" onchange="onAtRubrique(this,' + bid + ',' + aid + ')">';
+  h += '<option value="">-- Rubrique --</option>';
   RUBRIQUES.forEach(function(rub) {
-    if (rub.soon) return;
-    h += '<option value="' + rub.id + '"' + (at.rubrique===rub.id?" selected":"") + '>' + rub.num + " " + rub.label.substring(0,20) + '</option>';
+    rub.subs.forEach(function(sub) {
+      if (sub.soon) return;
+      h += '<option value="' + sub.id + '"' + (at.rubrique===sub.id?" selected":"") + '>' + rub.num + ' ' + sub.label + '</option>';
+    });
   });
   h += '</select>';
-  // Atelier
-  h += '<select style="font-size:10px;border:1px solid var(--gray2);border-radius:4px;padding:2px 4px;background:var(--gray1);color:var(--gray7);cursor:pointer;flex:2;min-width:0" onchange="onAtAtelier(this," + bloc.id + "," + at.id + ")">';
-  h += '<option value="-1">Atelier</option>';
+  h += '<button onclick="deleteAtelierRow(' + bid + ',' + aid + ')" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center">✕</button>';
+  h += '</div>';
+
+  // Ligne 2 : sélecteur atelier (visible seulement si rubrique choisie)
   if (at.rubrique) {
-    var rub = RUBRIQUES.find(function(r){ return r.id === at.rubrique; });
-    if (rub) {
-      rub.subs.forEach(function(sub) {
-        if (sub.soon) return;
-        (sub.ss||[]).forEach(function(ss) {
-          (ss.items||[]).forEach(function(item) {
-            var gIdx = ALL_ITEMS.findIndex(function(x){ return x.item.id===item.id && x.sub.id===sub.id; });
-            h += '<option value="' + gIdx + '"' + (at.atelierIdx===gIdx?" selected":"") + '>' + item.t + '</option>';
-          });
+    var sub = null;
+    RUBRIQUES.forEach(function(rub){ rub.subs.forEach(function(s){ if(s.id===at.rubrique) sub=s; }); });
+    if (sub) {
+      var atelierItems = [];
+      (sub.ss||[]).forEach(function(ss) {
+        (ss.items||[]).forEach(function(item) {
+          var gIdx = ALL_ITEMS.findIndex(function(x){ return x.item.id===item.id && x.sub.id===sub.id; });
+          if (gIdx >= 0) atelierItems.push({gIdx:gIdx, label: (ss.items.length > 1 ? item.n + ". " : "") + item.t});
         });
       });
+      h += '<select style="font-size:10px;border:1px solid var(--gray2);border-radius:4px;padding:2px 5px;background:var(--w);color:var(--gray7);cursor:pointer;width:100%" onchange="onAtAtelier(this,' + bid + ',' + aid + ')">';
+      h += '<option value="-1">-- Choisir un atelier --</option>';
+      atelierItems.forEach(function(a){
+        h += '<option value="' + a.gIdx + '"' + (at.atelierIdx===a.gIdx?" selected":"") + '>' + a.label + '</option>';
+      });
+      if (!atelierItems.length) h += '<option disabled>Aucun atelier disponible</option>';
+      h += '</select>';
     }
   }
-  h += '</select>';
+
+  // Ligne 3 : si atelier sélectionné → lien Drive + comportements auto proposés
   if (at.atelierIdx >= 0 && ALL_ITEMS[at.atelierIdx]) {
-    h += '<a href="https://drive.google.com/file/d/' + ALL_ITEMS[at.atelierIdx].item.id + '/view" target="_blank" style="font-size:9px;color:var(--g5);text-decoration:none;padding:2px 4px;background:var(--g0);border-radius:3px;border:1px solid var(--g1);flex-shrink:0">📂</a>';
+    var entry = ALL_ITEMS[at.atelierIdx];
+    h += '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">';
+    h += '<a href="https://drive.google.com/file/d/' + entry.item.id + '/view" target="_blank" style="font-size:9px;color:var(--g6);text-decoration:none;padding:2px 6px;background:var(--w);border-radius:3px;border:1px solid var(--g1);flex-shrink:0">📂 Fiche Drive</a>';
+    // Bouton "voir comportements" si pas encore rempli
+    h += '<button onclick="showComportProposal(' + bid + ',' + at.atelierIdx + ')" style="font-size:9px;padding:2px 6px;background:var(--goldl);color:var(--goldd);border:1px solid var(--gold);border-radius:3px;cursor:pointer;flex-shrink:0">💡 Comportements</button>';
+    h += '</div>';
   }
-  h += '<button onclick="deleteAtelierRow(' + bloc.id + ',' + at.id + ')" style="width:16px;height:16px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:9px;flex-shrink:0">✕</button>';
+
   h += '</div>';
   return h;
 }
@@ -2789,22 +2880,82 @@ function newAtelierRow(){ return {id:Date.now()+Math.random(), rubrique:"", atel
 
 function onSBlocType(sel,id){ var b=getSBloc(id);if(!b)return;b.type=sel.value;seanceDirty=true;renderSeance(); }
 function onSBlocField(id,field,value){ var b=getSBloc(id);if(!b)return;b[field]=value;seanceDirty=true; }
-function onBlocTitreSeance(sel,id){ var b=getSBloc(id);if(!b)return;b.titre=sel.value;seanceDirty=true;if(sel.value==="Autre (texte libre)")renderSeance(); }
+function onBlocTitreSeance(sel,id){ var b=getSBloc(id);if(!b)return;b.titre=sel.value;if(sel.value!=="Autre...")b.titreCustom="";seanceDirty=true;renderSeance(); }
 function addSBloc(type){ seanceData.blocs.push(newBloc_(type));seanceDirty=true;renderSeance(); }
 function deleteSBloc(id){ if(!confirm("Supprimer ce bloc ?"))return;seanceData.blocs=seanceData.blocs.filter(function(b){return String(b.id)!==String(id);});seanceDirty=true;renderSeance(); }
 function moveSBloc(id,dir){ var blocs=seanceData.blocs;var idx=blocs.findIndex(function(b){return String(b.id)===String(id);});if(idx<0)return;var ni=idx+dir;if(ni<0||ni>=blocs.length)return;var tmp=blocs[idx];blocs[idx]=blocs[ni];blocs[ni]=tmp;seanceDirty=true;renderSeance(); }
 function addAtelierRow(blocId){ var b=getSBloc(blocId);if(!b)return;if(!b.ateliers)b.ateliers=[];b.ateliers.push(newAtelierRow());seanceDirty=true;renderSeance(); }
 function deleteAtelierRow(blocId,atId){ var b=getSBloc(blocId);if(!b)return;b.ateliers=b.ateliers.filter(function(a){return String(a.id)!==String(atId);});seanceDirty=true;renderSeance(); }
 function onAtRubrique(sel,blocId,atId){ var at=getAt(blocId,atId);if(!at)return;at.rubrique=sel.value;at.atelierIdx=-1;seanceDirty=true;renderSeance(); }
-function onAtAtelier(sel,blocId,atId){ var at=getAt(blocId,atId);if(!at)return;at.atelierIdx=parseInt(sel.value);seanceDirty=true;renderSeance(); }
+function onAtAtelier(sel,blocId,atId){
+  var at=getAt(blocId,atId);if(!at)return;
+  at.atelierIdx=parseInt(sel.value);
+  seanceDirty=true;
+  // Auto-fill comportements si bloc vide
+  if (at.atelierIdx >= 0) {
+    var b = getSBloc(blocId);
+    if (b && !b.comportements) {
+      autoFillComportements(blocId, at.atelierIdx);
+      return; // renderSeance appelé dans autoFillComportements
+    }
+  }
+  renderSeance();
+}
+
+// Retourne les comportements proposés pour un atelier (atelier d'abord, sinon sous-rubrique)
+function getComportProposal(gIdx) {
+  var entry = ALL_ITEMS[gIdx]; if(!entry) return [];
+  // Pas de comportements spécifiques à l'atelier lui-même dans la BDD → on utilise ceux de la sous-rubrique
+  return entry.sub.comp || [];
+}
+
+function autoFillComportements(blocId, gIdx) {
+  var b = getSBloc(blocId); if(!b) return;
+  var comps = getComportProposal(gIdx);
+  if (comps.length) b.comportements = comps.join("\n");
+  seanceDirty = true;
+  renderSeance();
+}
 
 function fillComportements(blocId, gIdx) {
   var b = getSBloc(blocId); if(!b) return;
-  var entry = ALL_ITEMS[gIdx]; if(!entry) return;
-  var comps = (entry.sub.comp||[]).join("\n");
-  b.comportements = comps;
+  var comps = getComportProposal(gIdx);
+  if (comps.length) b.comportements = comps.join("\n");
   seanceDirty = true;
   renderSeance();
+}
+
+// Affiche un panneau de proposition sans écraser le contenu existant
+function showComportProposal(blocId, gIdx) {
+  var comps = getComportProposal(gIdx);
+  if (!comps.length) { alert("Aucune proposition disponible pour cet atelier."); return; }
+  var b = getSBloc(blocId); if(!b) return;
+  // Créer un overlay de proposition
+  var existing = document.getElementById("comport-proposal-overlay");
+  if (existing) existing.remove();
+  var div = document.createElement("div");
+  div.id = "comport-proposal-overlay";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(4,32,15,.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
+  var inner = '<div style="background:var(--w);border-radius:16px;max-width:440px;width:100%;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)">';
+  inner += '<div style="background:var(--g8);color:var(--w);padding:14px 18px;display:flex;align-items:center;gap:8px">';
+  inner += '<div style="flex:1"><div style="font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800">💡 Comportements proposés</div>';
+  inner += '<div style="font-size:10px;opacity:.6;margin-top:2px">' + (ALL_ITEMS[gIdx] ? ALL_ITEMS[gIdx].sub.label : "") + '</div></div>';
+  inner += '<button onclick="document.getElementById("comport-proposal-overlay").remove()" style="width:24px;height:24px;background:rgba(255,255,255,.1);border:none;border-radius:50%;color:var(--w);cursor:pointer;font-size:13px">✕</button>';
+  inner += '</div>';
+  inner += '<div style="padding:14px 18px">';
+  comps.forEach(function(c) {
+    inner += '<div style="padding:5px 0;border-bottom:1px solid var(--gray1);font-size:12px;color:var(--gray7);display:flex;align-items:center;gap:7px">';
+    inner += '<span style="color:var(--gold);font-weight:700">›</span>' + c + '</div>';
+  });
+  inner += '</div>';
+  inner += '<div style="padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px">';
+  inner += '<button onclick="document.getElementById(\'comport-proposal-overlay\').remove()" style="flex:1;padding:8px;background:var(--gray1);color:var(--gray7);border:none;border-radius:7px;font-weight:700;cursor:pointer">Fermer</button>';
+  var fillOc = "fillComportements('" + blocId + "'," + gIdx + ");document.getElementById('comport-proposal-overlay').remove()";
+  inner += '<button onclick="' + fillOc + '" style="flex:1;padding:8px;background:var(--g7);color:var(--w);border:none;border-radius:7px;font-weight:700;cursor:pointer">Utiliser ces comportements</button>';
+  inner += '</div></div>';
+  div.innerHTML = inner;
+  div.onclick = function(e){ if(e.target===div) div.remove(); };
+  document.body.appendChild(div);
 }
 
 function addMat(m){ if(!m)return;if(!seanceData.materiel)seanceData.materiel=[];if(seanceData.materiel.indexOf(m)<0)seanceData.materiel.push(m);seanceDirty=true;renderSeance(); }
