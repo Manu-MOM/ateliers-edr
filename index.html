@@ -337,7 +337,7 @@ button,input{font-family:'Barlow',sans-serif}
 .seance-grid{display:grid;grid-template-columns:260px 1fr 200px 180px 140px;min-height:400px}
 .seance-col{border-right:1px solid var(--gray2);overflow:hidden}
 .seance-col:last-child{border-right:none}
-.seance-col-hd{background:var(--g9);color:var(--w);padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--gold)}
+.seance-col-hd{background:var(--g9);color:var(--w);padding:0 12px;height:36px;min-height:36px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--gold);white-space:nowrap}
 /* ═══ ONGLET JOUEURS — style SARxMOM ═══════════════════════════ */
 .jp-fbar{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:8px 10px;background:var(--w);border-radius:var(--r);border:1px solid var(--gray2)}
 .jp-search{padding:5px 9px;border:1px solid var(--gray2);border-radius:6px;font-size:12px;font-family:var(--fb),sans-serif;flex:1;min-width:120px;outline:none;color:var(--gray7)}
@@ -506,6 +506,21 @@ button,input{font-family:'Barlow',sans-serif}
 .mni.act .mni-dot{display:block}
 @media(max-width:768px){.sidebar{display:none}.mob-nav{display:block}.section-tabs{display:none}.tb-title small{display:none}.topbar{padding:0 11px;gap:8px}.tb-search{max-width:140px}.content{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}.stat-n{font-size:24px}.cards{grid-template-columns:1fr 1fr;gap:8px}.card-top{height:60px}.ct-num{font-size:36px}.card-body{padding:8px 10px}.card-title{font-size:12px}.modal{border-radius:14px;max-height:92vh}.phase-grid{grid-template-columns:1fr 1fr}.banner{padding:15px 17px}.banner-title{font-size:20px}.toolbar{padding:8px 12px 7px}.vbtns{display:none}.afbar{display:none}}
 @media(max-width:380px){.cards{grid-template-columns:1fr}.phase-grid{grid-template-columns:1fr}}
+
+/* ── Compos : vue terrain et export ── */
+.field-wrap{border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.slot{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:7px;border:1px solid var(--gray2);background:var(--w);margin-bottom:3px;transition:all .1s}
+.slot:hover{border-color:var(--g2);background:var(--g0)}
+.slot.filled{cursor:default}
+.slot .snum{width:22px;height:22px;border-radius:4px;background:var(--g7);color:#fff;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slot .snum.sub{background:var(--gray3);color:var(--gray5)}
+.slot .spos{font-size:9px;color:var(--gray5);min-width:80px;flex-shrink:0}
+.slot .sname{flex:1;font-size:11px;font-weight:600;color:var(--g8)}
+.slot .sname.empty{color:var(--gray4);font-style:italic}
+.slot .srm{width:18px;height:18px;border-radius:50%;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0}
+.slot .sav{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.slot .sav img{width:100%;height:100%;object-fit:cover}
+.ovr-lbl{font-size:7px;padding:1px 4px;border-radius:3px;background:#fff3cd;color:#856404;font-weight:700}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -1867,7 +1882,7 @@ function buildSbSaison() {
   });
   h += '</div><div class="sb-div"></div>';
   h += '<div class="sb-sec"><div class="sb-sec-lbl">Responsable EDR</div>';
-  h += '<div class="sb-item' + (curPlanView === "config" ? " act" : "") + '" onclick="openConfig()">' +
+  h += '<div class="sb-item' + (curPlanView === "config" ? " act" : "") + '" onclick="openParamsPanel()">' +
     '<div class="sb-icon">⚙️</div>Configuration des axes</div>';
   h += '</div>';
   sb.innerHTML = h;
@@ -2416,7 +2431,7 @@ function newSeance() {
     id: Date.now(), date: "", categorie: selAge_ || "",
     effectif: "", coachs: [], timekeeper: "", duree: 90, axe: "",
     heureDebut: "14:00",
-    blocs: [], joueurs: [], groupes: [[],[],[]]
+    blocs: [], joueurs: [], groupes: [[],[],[]], materiel: []
   };
 }
 
@@ -2589,37 +2604,61 @@ function renderSeance() {
   });
   h += '</div></div>';
 
-  // COL 4 : GROUPES
+  // COL 4 : GROUPES (par bloc)
+  if (!d.materiel) d.materiel = [];
+  // Construire la liste des joueurs disponibles (EDR + manuels)
+  var _grpEdrDB = getJoueursDB();
+  var _grpCat = d.categorie || (selAge_ && selAge_ !== "ALL" ? selAge_ : "");
+  var _grpAllJoueurs = _grpCat ? (_grpEdrDB[_grpCat]||[]).map(function(j){
+    return (j.prenom||"") + (j.nom ? " " + j.nom.charAt(0).toUpperCase() + "." : "");
+  }) : [];
+  (d.joueurs||[]).forEach(function(j){ if (_grpAllJoueurs.indexOf(j) < 0) _grpAllJoueurs.push(j); });
+
   h += '<div class="seance-col groupes-col">';
   h += '<div class="seance-col-hd">👥 Groupes</div>';
-  h += '<div style="padding:6px 8px;border-bottom:1px solid var(--gray2)">';
-  // Contrôle global des groupes en haut de la colonne
-  var grpCount = (d.groupes||[]).length || 3;
-  h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">';
-  h += '<span style="font-size:9px;font-weight:700;color:var(--gray5)">Groupes fixes :</span>';
-  h += '<button onclick="addGroupeSeance()" style="font-size:9px;padding:1px 7px;border-radius:8px;border:1px solid var(--g1);background:var(--g0);color:var(--g6);cursor:pointer">+</button>';
-  if (grpCount > 1) h += '<button onclick="removeGroupeSeance()" style="font-size:9px;padding:1px 7px;border-radius:8px;border:1px solid var(--gray2);background:transparent;color:var(--gray5);cursor:pointer">−</button>';
-  h += '</div>';
-  (d.groupes||[]).forEach(function(grp, gi) {
-    var gcol = GROUPE_COLORS[gi % GROUPE_COLORS.length];
-    h += '<div style="margin-bottom:5px">';
-    h += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">';
-    h += '<div style="width:10px;height:10px;border-radius:50%;background:' + gcol + ';flex-shrink:0"></div>';
-    h += '<span style="font-size:9px;font-weight:700;color:' + gcol + '">Groupe ' + (gi+1) + '</span>';
+  h += '<div class="comp-rows">';
+  if (!(d.blocs||[]).length) {
+    h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">—</div>';
+  }
+  (d.blocs||[]).forEach(function(bloc) {
+    if (bloc.type === "pause") return;
+    // Initialiser les groupes du bloc si absent
+    if (!bloc.groupes) bloc.groupes = [[],[],[]];
+    var nb = bloc.groupes.length;
+
+    h += '<div class="comp-row" style="padding:5px 6px">';
+    // Ligne de contrôle + / -
+    h += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">';
+    h += '<span style="font-size:8px;font-weight:700;color:var(--gray5)">Groupes :</span>';
+    h += '<button data-bid="' + bloc.id + '" onclick="addBlocGroupe(this.dataset.bid)" style="font-size:9px;width:18px;height:18px;border-radius:50%;border:1px solid var(--g1);background:var(--g0);color:var(--g6);cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>';
+    if (nb > 1) h += '<button data-bid="' + bloc.id + '" onclick="removeBlocGroupe(this.dataset.bid)" style="font-size:9px;width:18px;height:18px;border-radius:50%;border:1px solid var(--gray2);background:transparent;color:var(--gray5);cursor:pointer;display:flex;align-items:center;justify-content:center">−</button>';
     h += '</div>';
-    h += '<div style="display:flex;flex-wrap:wrap;gap:2px;min-height:20px;padding:3px;background:var(--gray1);border-radius:5px;border:1px solid var(--gray2)">';
-    grp.forEach(function(nom) {
-      h += '<span style="font-size:8px;padding:1px 5px;border-radius:8px;background:' + gcol + ';color:#fff;cursor:pointer" onclick="removeFromGroupeSeance(' + gi + ',\'' + nom + '\')" title="Retirer">' + nom + '</span>';
-    });
-    // Ajouter depuis la pool
-    var pool = (d.joueurs||[]).filter(function(j){ return !(d.groupes||[]).some(function(g){ return g.indexOf(j)>=0; }); });
-    if (pool.length) {
-      h += '<select style="font-size:8px;border:none;background:transparent;color:var(--gray5);cursor:pointer;max-width:90px" onchange="addToGroupeSeance(' + gi + ',this.value);this.selectedIndex=0">';
-      h += '<option value="">+ Joueur</option>';
+
+    bloc.groupes.forEach(function(grp, gi) {
+      var gcol = GROUPE_COLORS[gi % GROUPE_COLORS.length];
+      // Joueurs déjà assignés dans ce bloc
+      var assignes = [];
+      bloc.groupes.forEach(function(g){ g.forEach(function(n){ assignes.push(n); }); });
+      var pool = _grpAllJoueurs.filter(function(j){ return assignes.indexOf(j) < 0 && j.trim(); });
+
+      h += '<div style="margin-bottom:4px">';
+      h += '<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px">';
+      h += '<div style="width:8px;height:8px;border-radius:50%;background:' + gcol + ';flex-shrink:0"></div>';
+      h += '<span style="font-size:8px;font-weight:700;color:' + gcol + '">G' + (gi+1) + '</span>';
+      h += '</div>';
+      h += '<div style="display:flex;flex-wrap:wrap;gap:2px;min-height:16px;padding:3px;background:var(--gray1);border-radius:4px;border:1px solid var(--gray2)">';
+      grp.forEach(function(nom) {
+        h += '<span style="font-size:7px;padding:1px 5px;border-radius:8px;background:' + gcol + ';color:#fff;cursor:pointer;white-space:nowrap" data-bid="' + bloc.id + '" data-gi="' + gi + '" data-nom="' + nom.replace(/'/g,"&apos;") + '" onclick="removeBlocJoueur(this.dataset.bid,parseInt(this.dataset.gi),this.dataset.nom)" title="Retirer">' + nom + '</span>';
+      });
+      h += '</div>';
+      h += '<select style="font-size:8px;border:1px solid var(--gray2);border-radius:4px;background:var(--w);color:var(--gray7);cursor:pointer;width:100%;margin-top:2px;padding:2px 3px" data-bid="' + bloc.id + '" data-gi="' + gi + '" onchange="addBlocJoueur(this.dataset.bid,parseInt(this.dataset.gi),this.value);this.value=\'\'">';
+      h += '<option value="">＋ Joueur…</option>';
       pool.forEach(function(j){ h += '<option value="' + j + '">' + j + '</option>'; });
+      if (!pool.length) h += '<option disabled>— Tous assignés —</option>';
       h += '</select>';
-    }
-    h += '</div></div>';
+      h += '</div>';
+    });
+    h += '</div>';
   });
   h += '</div></div>';
 
@@ -2821,6 +2860,35 @@ function toggleCoach(c){ if(!seanceData)return;if(!Array.isArray(seanceData.coac
 
 function toggleMat(m){ if(!seanceData)return;if(!seanceData.materiel)seanceData.materiel=[];var idx=seanceData.materiel.indexOf(m);if(idx>=0)seanceData.materiel.splice(idx,1);else seanceData.materiel.push(m);seanceDirty=true; }
 
+function addBlocGroupe(bid) {
+  var b = getSBloc(bid);
+  if (!b) return;
+  if (!b.groupes) b.groupes = [[],[],[]];
+  if (b.groupes.length < 6) b.groupes.push([]);
+  seanceDirty = true; renderSeance();
+}
+function removeBlocGroupe(bid) {
+  var b = getSBloc(bid);
+  if (!b || !b.groupes || b.groupes.length <= 1) return;
+  b.groupes.pop();
+  seanceDirty = true; renderSeance();
+}
+function addBlocJoueur(bid, gi, nom) {
+  if (!nom) return;
+  var b = getSBloc(bid);
+  if (!b || !b.groupes || !b.groupes[gi]) return;
+  // Retirer de tout autre groupe du même bloc
+  b.groupes.forEach(function(g, i) { b.groupes[i] = g.filter(function(n){ return n !== nom; }); });
+  b.groupes[gi].push(nom);
+  seanceDirty = true; renderSeance();
+}
+function removeBlocJoueur(bid, gi, nom) {
+  var b = getSBloc(bid);
+  if (!b || !b.groupes || !b.groupes[gi]) return;
+  b.groupes[gi] = b.groupes[gi].filter(function(n){ return n !== nom; });
+  seanceDirty = true; renderSeance();
+}
+// Anciennes fonctions globales conservées pour compatibilité
 function addGroupeSeance(){ if(!seanceData)return;if(!seanceData.groupes)seanceData.groupes=[];if(seanceData.groupes.length<6)seanceData.groupes.push([]);seanceDirty=true;renderSeance(); }
 function removeGroupeSeance(){ if(!seanceData||!seanceData.groupes||seanceData.groupes.length<=1)return;seanceData.groupes.pop();seanceDirty=true;renderSeance(); }
 function addToGroupeSeance(gi,nom){ if(!nom||!seanceData)return;if(!seanceData.groupes)seanceData.groupes=[[],[],[]];seanceData.groupes.forEach(function(g,i){seanceData.groupes[i]=g.filter(function(n){return n!==nom;});});seanceData.groupes[gi].push(nom);seanceDirty=true;renderSeance(); }
@@ -2885,7 +2953,7 @@ function printSeance(){
   h+='.tl-seg{display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:rgba(255,255,255,.9);overflow:hidden;white-space:nowrap;min-width:4px}';
 
   // Grid 4 cols
-  h+='.grid{display:grid;grid-template-columns:auto 1fr 160px 140px;gap:0;border:1.5px solid #0a3a1e;border-radius:8px;overflow:hidden}';
+  h+='.grid{display:grid;grid-template-columns:auto 1fr 180px 130px 130px;gap:0;border:1.5px solid #0a3a1e;border-radius:8px;overflow:hidden}';
   h+='.col-hdr{background:#0a3a1e;color:#fff;padding:5px 8px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border-right:1px solid rgba(255,255,255,.15)}';
   h+='.col-hdr:last-child{border-right:none}';
   h+='.cell{padding:5px 7px;border-right:1px solid #e8e8e0;border-bottom:1px solid #e8e8e0;vertical-align:top;font-size:8.5px;line-height:1.4}';
@@ -2948,7 +3016,8 @@ function printSeance(){
   // Headers
   h+='<div class="col-hdr">&#9203; Trame</div>';
   h+='<div class="col-hdr">&#10003; Comportements attendus</div>';
-  h+='<div class="col-hdr">&#128208; Organisation spatiale</div>';
+  h+='<div class="col-hdr">&#128208; Org. spatio-temp.</div>';
+  h+='<div class="col-hdr">&#128101; Groupes</div>';
   h+='<div class="col-hdr">&#129520; Mat&eacute;riel</div>';
 
   // Rows
@@ -2986,13 +3055,24 @@ function printSeance(){
     else{h+='<span style="color:#bbb;font-style:italic">—</span>';}
     h+='</div>';
 
-    // Col 3 : Organisation
+    // Col 3 : Organisation spatio-temporelle
     h+='<div class="cell '+rowClass+'">';
     if(!isPause&&b.orga){h+=b.orga.replace(/\n/g,"<br>");}
     else{h+='<span style="color:#bbb;font-style:italic">—</span>';}
     h+='</div>';
 
-    // Col 4 : Matériel (global sur 1ère ligne seulement)
+    // Col 4 : Groupes (1ère ligne uniquement)
+    h+='<div class="cell '+rowClass+'">';
+    if(b===d.blocs[0]&&d.groupes&&d.groupes.length){
+      var gColors=['#1a6b3a','#d4a820','#1a3a6b','#6b1a1a','#4a1a6b'];
+      d.groupes.forEach(function(g,gi){
+        if(!g.length)return;
+        h+='<div style="margin-bottom:2px"><span style="font-size:7px;font-weight:800;color:'+gColors[gi%gColors.length]+'">G'+(gi+1)+'</span> <span style="font-size:7px">'+(g.slice(0,4).join(', '))+(g.length>4?' +'+(g.length-4):'')+'</span></div>';
+      });
+    }
+    h+='</div>';
+
+    // Col 5 : Matériel (global sur 1ère ligne seulement)
     h+='<div class="cell '+rowClass+'">';
     if(b===d.blocs[0]&&d.materiel&&d.materiel.length){
       d.materiel.forEach(function(m){h+='<span class="mat-chip">'+m+'</span>';});
@@ -3047,6 +3127,10 @@ var EDR_APTS = ["Tank","Driver","Runner","Botteur","Lanceur","Sauteur","Lifteur"
 var EDR_CLUBS_COLORS = {MOM:"#1a6b1a", SAR:"#1a3a6b", ASCS:"#374151", Autre:"#5a5a50"};
 
 function goSection_joueurs() {
+  document.getElementById("bc").innerHTML = "<b>Joueurs</b>";
+  document.getElementById("tc").style.display = "none";
+  document.getElementById("vbtns").style.display = "none";
+  document.getElementById("afbar").style.display = "none";
   var cat = selAge_ && selAge_ !== "ALL" ? selAge_ : "M14F15";
   // Reconstruire la sidebar pour l'onglet Joueurs
   var sb = document.getElementById("sidebar");
@@ -3083,7 +3167,7 @@ function buildJoueursSection(cat, db) {
   h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--g8);letter-spacing:.04em;flex:1" id="jp-title">Joueurs</div>';
   h += '<button onclick="openJPM(null,\'' + cat + '\')" style="padding:6px 14px;background:var(--g7);color:#fff;border:none;border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.04em">+ Nouveau</button>';
   h += '<button onclick="openImportFichier(\'' + cat + '\')" style="padding:6px 12px;background:#d4a820;color:#000;border:none;border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em">📂 Importer</button>';
-  h += '<button onclick="openConfig()" style="padding:6px 12px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">⚙️ Gérer</button>';
+  h += '<button onclick="openParamsPanel()" style="padding:6px 12px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">⚙️ Gérer</button>';
   h += '</div>';
 
   // Filtres
@@ -3872,6 +3956,23 @@ function renderParamsBody() {
 }
 
 // ── Section Bibliothèque ──
+function buildParamsPlan() {
+  var scfg = getSeanceConfig ? getSeanceConfig() : {};
+  var axes = (scfg.axes && scfg.axes.length) ? scfg.axes : (CFG_AXES || []);
+  var h = '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;color:var(--g8);margin-bottom:10px">Axes pédagogiques</div>';
+  h += '<div style="font-size:11px;color:var(--gray5);margin-bottom:8px">Les axes s&rsquo;affichent dans la planification de saison. Modifiez-les ici.</div>';
+  h += '<div id="plan-axes-list">';
+  axes.forEach(function(ax, i) {
+    h += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:5px">';
+    h += '<input class="params-inp" value="' + ax + '" oninput="if(!window.CFG_AXES)window.CFG_AXES=[];CFG_AXES[' + i + ']=this.value;cfgDirty=true" style="flex:1">';
+    h += '<button onclick="if(window.CFG_AXES)CFG_AXES.splice(' + i + ',1);cfgDirty=true;saveParamsPanel();openParamsPanel(1)" style="width:22px;height:22px;border-radius:4px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer">✕</button>';
+    h += '</div>';
+  });
+  h += '</div>';
+  h += '<button onclick="if(!window.CFG_AXES)window.CFG_AXES=[];CFG_AXES.push(\'Nouvel axe\');cfgDirty=true;saveParamsPanel();openParamsPanel(1)" style="margin-top:5px;padding:4px 10px;background:none;border:1px dashed var(--gray2);border-radius:5px;color:var(--gray5);font-size:11px;cursor:pointer;font-weight:600">+ Ajouter un axe</button>';
+  return h;
+}
+
 function buildParamsBib() {
   var h = '<div style="font-size:12px;color:var(--gray5);margin-bottom:12px">Personnalisez les comportements attendus et les données pédagogiques de la bibliothèque.</div>';
   h += '<div style="padding:12px;background:var(--g0);border-radius:8px;border:1px solid var(--g1);color:var(--g6);font-size:12px">';
@@ -4151,6 +4252,10 @@ function goSection_compos() {
   _cInit();
   _composCurCat = (selAge_ && selAge_ !== "ALL") ? selAge_ : "M14F15";
   _composView = "calendrier";
+  document.getElementById("bc").innerHTML = "<b>Compositions</b>";
+  document.getElementById("tc").style.display = "none";
+  document.getElementById("vbtns").style.display = "none";
+  document.getElementById("afbar").style.display = "none";
   buildSbCompos();
   renderCompos();
 }
@@ -4675,53 +4780,11 @@ function cSetScore(val, side) {
 }
 
 // ── Gestion des slots ─────────────────────────────────────────────
-function _cSetSlot(idx, jid) {
-  if (!_cCurEV) return;
-  if (_cCurMode === "base") {
-    _cGetBase(_cCurEV, _cCurTID)[idx] = jid;
-  } else if (_cIsInd(_cCurEV, _cCurTID, _cCurMID)) {
-    _cGetInd(_cCurEV, _cCurTID, _cCurMID)[idx] = jid;
-  } else {
-    var base = _cGetBase(_cCurEV, _cCurTID);
-    var ovr = _cGetOvr(_cCurEV, _cCurTID, _cCurMID);
-    if (base[idx] === jid) delete ovr[idx]; else ovr[idx] = jid;
-  }
-}
-function _cClearSlot(idx) {
-  if (!_cCurEV) return;
-  if (_cCurMode === "base") {
-    _cGetBase(_cCurEV, _cCurTID)[idx] = null;
-  } else if (_cIsInd(_cCurEV, _cCurTID, _cCurMID)) {
-    _cGetInd(_cCurEV, _cCurTID, _cCurMID)[idx] = null;
-  } else {
-    var base = _cGetBase(_cCurEV, _cCurTID);
-    var ovr = _cGetOvr(_cCurEV, _cCurTID, _cCurMID);
-    if (base[idx] === null) delete ovr[idx]; else ovr[idx] = null;
-  }
-}
-function _cGetEditable() {
-  if (!_cCurEV) return [];
-  if (_cCurMode === "base") return _cGetBase(_cCurEV, _cCurTID);
-  if (_cIsInd(_cCurEV, _cCurTID, _cCurMID)) return _cGetInd(_cCurEV, _cCurTID, _cCurMID);
-  return _cGetResolved(_cCurEV, _cCurTID, _cCurMID);
-}
-function _cIsOverridden(idx) {
-  if (!_cCurEV || _cCurMode !== "match" || _cIsInd(_cCurEV, _cCurTID, _cCurMID)) return false;
-  return idx in _cGetOvr(_cCurEV, _cCurTID, _cCurMID);
-}
 
-// ── Helper joueurs ────────────────────────────────────────────────
-function _cGetJoueurs() {
-  var d = getComposData(_composCurCat);
-  var joueurs = d.allJoueurs || [];
-  // Ajouter un _cid stable si pas d'id
-  joueurs.forEach(function(j, i){
-    if (!j.id && !j._cid) j._cid = "j"+i;
-  });
-  return joueurs;
-}
 
-// ── TERRAIN SVG ───────────────────────────────────────────────────
+
+
+
 function cDrawField() {
   var svg = document.getElementById("c-field-svg");
   if (!svg || !_cCurEV) return;
