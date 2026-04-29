@@ -2175,21 +2175,21 @@ function printPlan() {
   h += '<style>';
   h += '@page{size:A4 landscape;margin:10mm 12mm}';
   h += '*{box-sizing:border-box;margin:0;padding:0}';
-  h += 'body{font-family:Arial,sans-serif;background:#fff;color:#1a1a14;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+  h += 'body{font-family:Arial,Helvetica,sans-serif;background:#0d1f0e;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
 
-  // En-tête style rugby
-  h += '.header{background:#0a3a1e;color:#fff;display:flex;align-items:center;gap:14px;padding:10px 16px;margin-bottom:12px;border-radius:8px}';
+  // En-tête style rugby sombre
+  h += '.header{background:linear-gradient(135deg,#0a3a1e 60%,#155a30);border-radius:10px;color:#fff;display:flex;align-items:center;gap:14px;padding:11px 16px;margin-bottom:10px}';
   h += '.header-logo{width:52px;height:52px;flex-shrink:0}';
-  h += '.header-logo img{width:52px;height:52px;object-fit:contain}';
+  h += '.header-logo img{width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(212,168,32,.4))}';
   h += '.header-text{flex:1}';
   h += '.header-title{font-family:"Arial Black",Arial;font-size:20px;font-weight:900;letter-spacing:.02em;line-height:1}';
-  h += '.header-sub{font-size:11px;opacity:.75;margin-top:4px}';
-  h += '.header-badge{background:#d4a820;color:#0a3a1e;font-size:11px;font-weight:900;padding:5px 14px;border-radius:20px;white-space:nowrap;align-self:center}';
+  h += '.header-sub{font-size:10px;color:rgba(255,255,255,.65);margin-top:4px}';
+  h += '.header-badge{background:#d4a820;color:#0a1a0a;font-family:"Arial Black",Arial;font-size:10px;font-weight:900;padding:5px 14px;border-radius:20px;white-space:nowrap;align-self:center}';
 
   // Frise
-  h += '.frise-label{font-size:8px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}';
-  h += '.frise{display:flex;gap:0;border-radius:10px;overflow:hidden;height:80px;margin-bottom:14px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.12)}';
-  h += '.frise-bloc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;position:relative;border-right:2px solid rgba(255,255,255,.25)}';
+  h += '.frise-label{font-size:7.5px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}';
+  h += '.frise{display:flex;gap:1px;border-radius:10px;overflow:hidden;height:80px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.4)}';
+  h += '.frise-bloc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;position:relative;border-right:1px solid rgba(255,255,255,.1)}';
   h += '.frise-bloc:last-child{border-right:none}';
   h += '.frise-num{font-size:7px;font-weight:800;opacity:.7;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}';
   h += '.frise-titre{font-size:9px;font-weight:800;line-height:1.2;text-align:center;margin-bottom:4px}';
@@ -2197,22 +2197,20 @@ function printPlan() {
   h += '.frise-inter{position:absolute;bottom:4px;font-size:7px;font-style:italic;opacity:.75}';
 
   // Grille détail
-  h += '.blocs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}';
-  h += '.bloc{border-radius:8px;overflow:hidden;border:1px solid #e0e0d8;break-inside:avoid}';
+  h += '.blocs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}';
+  h += '.bloc{border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.08);break-inside:avoid}';
   h += '.bloc-hdr{padding:8px 11px;display:flex;align-items:center;gap:8px}';
   h += '.bloc-hdr-num{font-size:9px;font-weight:800;color:#d4a820;min-width:50px;line-height:1.2}';
   h += '.bloc-hdr-titre{font-size:11px;font-weight:800;color:#fff;flex:1;line-height:1.2}';
-  h += '.bloc-hdr-dates{font-size:8px;color:rgba(255,255,255,.7);line-height:1.4;text-align:right}';
-  h += '.bloc-body{padding:8px 10px;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:6px}';
-  h += '.axe-block{padding:5px 7px;border-radius:5px;border-left:3px solid}';
-  h += '.axe-lbl{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}';
-  h += '.axe-val{font-size:9px;line-height:1.4}';
-  h += '.axe-check{font-size:9px;line-height:1.6}';
-  h += '.bloc-comments{padding:5px 10px 7px;border-top:1px solid #f0f0ea;background:#fafaf6}';
-  h += '.bloc-comments .axe-lbl{color:#666}';
-  h += '.bloc-comments .axe-val{color:#444;font-size:9px}';
+  h += '.bloc-hdr-dates{font-size:8px;color:rgba(255,255,255,.65);line-height:1.4;text-align:right}';
+  h += '.bloc-body{padding:7px 10px;background:rgba(255,255,255,.04);display:grid;grid-template-columns:1fr 1fr;gap:5px}';
+  h += '.axe-block{padding:5px 7px;border-radius:5px;border-left:2.5px solid}';
+  h += '.axe-lbl{font-size:6.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}';
+  h += '.axe-val{font-size:8.5px;line-height:1.4}';
+  h += '.axe-check{font-size:8.5px;line-height:1.6}';
+  h += '.bloc-comments{padding:5px 10px 7px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.2)}';
   h += '.inter-badge{font-size:7px;background:rgba(255,255,255,.2);color:#fff;padding:1px 6px;border-radius:3px;white-space:nowrap}';
-  h += '.footer{margin-top:10px;padding-top:5px;border-top:2px solid #0a3a1e;display:flex;justify-content:space-between;font-size:7px;color:#888}';  h += '.footer b{color:#0a3a1e}';
+  h += '.footer{margin-top:8px;padding-top:5px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;font-size:7px;color:rgba(255,255,255,.3)}';
   h += '</style></head><body>';
 
   // ── EN-TETE ──────────────────────────────────────────────────
@@ -2273,37 +2271,37 @@ function printPlan() {
       var it = AXE_INDIV_ITEMS.find(function(x){ return x.id === id; });
       return it ? it.label : id;
     });
-    h += '<div class="axe-block" style="background:#edfada;border-color:#28944f">';
-    h += '<div class="axe-lbl" style="color:#166334">&#129485; Individuel</div>';
+    h += '<div class="axe-block" style="background:rgba(40,148,79,.12);border-color:#28944f">';
+    h += '<div class="axe-lbl" style="color:#6fda9f">&#129485; Individuel</div>';
     if (indivChecked.length) {
-      h += '<div class="axe-check">' + indivChecked.map(function(l){ return '&#10003; ' + l; }).join('<br>') + '</div>';
+      h += '<div class="axe-check" style="color:rgba(255,255,255,.8)">' + indivChecked.map(function(l){ return '&#10003; ' + l; }).join('<br>') + '</div>';
     } else {
-      h += '<div class="axe-val" style="color:#aaa;font-style:italic">Non renseign&eacute;</div>';
+      h += '<div class="axe-val" style="color:rgba(255,255,255,.25);font-style:italic">Non renseign&eacute;</div>';
     }
     h += '</div>';
 
     // Axe collectif
     var axeC = bloc.axeCollectif && bloc.axeCollectif !== "-- Choisir --" ? bloc.axeCollectif : "";
     if (axeC === "Autre (texte libre)") axeC = bloc.axeCollectifCustom || "";
-    h += '<div class="axe-block" style="background:#ddeaff;border-color:#1a4a8a">';
-    h += '<div class="axe-lbl" style="color:#1a3a7a">&#129504; Collectif</div>';
-    h += '<div class="axe-val" style="color:' + (axeC ? '#333' : '#aaa') + ';font-style:' + (axeC ? 'normal' : 'italic') + '">' + (axeC || "Non renseign&eacute;") + '</div>';
+    h += '<div class="axe-block" style="background:rgba(26,74,138,.15);border-color:#4a7ad4">';
+    h += '<div class="axe-lbl" style="color:#7aaae8">&#129504; Collectif</div>';
+    h += '<div class="axe-val" style="color:' + (axeC ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.25)') + ';font-style:' + (axeC ? 'normal' : 'italic') + '">' + (axeC || "Non renseign&eacute;") + '</div>';
     h += '</div>';
 
     // Axe physique
     var axeP = bloc.axePhysique && bloc.axePhysique !== "-- Choisir --" ? bloc.axePhysique : "";
     if (axeP === "Autre (texte libre)") axeP = bloc.axePhysiqueCustom || "";
-    h += '<div class="axe-block" style="background:#fdf3d0;border-color:#b06010">';
-    h += '<div class="axe-lbl" style="color:#7c4200">&#128170; Physique</div>';
-    h += '<div class="axe-val" style="color:' + (axeP ? '#333' : '#aaa') + ';font-style:' + (axeP ? 'normal' : 'italic') + '">' + (axeP || "Non renseign&eacute;") + '</div>';
+    h += '<div class="axe-block" style="background:rgba(176,96,16,.15);border-color:#d4782a">';
+    h += '<div class="axe-lbl" style="color:#e8a060">&#128170; Physique</div>';
+    h += '<div class="axe-val" style="color:' + (axeP ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.25)') + ';font-style:' + (axeP ? 'normal' : 'italic') + '">' + (axeP || "Non renseign&eacute;") + '</div>';
     h += '</div>';
 
     // Axe jeu au poste
     var axeJ = bloc.axePoste && bloc.axePoste !== "-- Choisir --" ? bloc.axePoste : "";
     if (axeJ === "Autre (texte libre)") axeJ = bloc.axePosteCustom || "";
-    h += '<div class="axe-block" style="background:#f0e8ff;border-color:#4a1a7a">';
-    h += '<div class="axe-lbl" style="color:#3a1060">&#127967; Jeu au poste</div>';
-    h += '<div class="axe-val" style="color:' + (axeJ ? '#333' : '#aaa') + ';font-style:' + (axeJ ? 'normal' : 'italic') + '">' + (axeJ || "Non renseign&eacute;") + '</div>';
+    h += '<div class="axe-block" style="background:rgba(74,26,122,.15);border-color:#9a4ad4">';
+    h += '<div class="axe-lbl" style="color:#c07ae8">&#127967; Jeu au poste</div>';
+    h += '<div class="axe-val" style="color:' + (axeJ ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.25)') + ';font-style:' + (axeJ ? 'normal' : 'italic') + '">' + (axeJ || "Non renseign&eacute;") + '</div>';
     h += '</div>';
 
     h += '</div>'; // fin grid 2x2
@@ -2311,8 +2309,8 @@ function printPlan() {
     // Commentaires
     if (bloc.commentaires) {
       h += '<div class="bloc-comments">';
-      h += '<div class="axe-lbl">&#128172; Commentaires</div>';
-      h += '<div class="axe-val">' + bloc.commentaires + '</div>';
+      h += '<div class="axe-lbl" style="color:rgba(255,255,255,.4)">&#128172; Commentaires</div>';
+      h += '<div class="axe-val" style="color:rgba(255,255,255,.7)">' + bloc.commentaires + '</div>';
       h += '</div>';
     }
     h += '</div>'; // fin bloc
@@ -3017,173 +3015,212 @@ function printSeance(){
   var logoEl=document.getElementById("logo-img-topbar");
   var logo=logoEl?logoEl.src:"";
   var d=seanceData;
-  var dateStr=d.date?new Date(d.date).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}):"";
-  var blocsReels=d.blocs.filter(function(b){return b.type!=="pause";});
+  var dateStr=d.date?new Date(d.date+"T00:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}):"";
   var totalMin=totalDureeBlocs(d.blocs);
+  var selCoachs=Array.isArray(d.coachs)?d.coachs:(d.coachs?d.coachs.split(",").map(function(s){return s.trim();}):[]);
 
-  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fiche séance MOM</title><style>';
-  h+='@page{size:A4 landscape;margin:10mm 12mm}';
+  // ── CSS ─────────────────────────────────────────────────────────
+  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Séance MOM</title><style>';
+  h+='@page{size:A4 landscape;margin:8mm 10mm}';
   h+='*{box-sizing:border-box;margin:0;padding:0}';
-  h+='body{font-family:Arial,sans-serif;font-size:9px;background:#fff;color:#1a1a14;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+  h+='body{font-family:Arial,Helvetica,sans-serif;font-size:8.5px;background:#0d1f0e;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
 
-  // Header
-  h+='.hdr{background:#0a3a1e;color:#fff;display:flex;align-items:center;gap:14px;padding:9px 14px;margin-bottom:10px;border-radius:8px}';
-  h+='.hdr img{height:48px;width:48px;object-fit:contain;flex-shrink:0}';
-  h+='.hdr-main{flex:1}';
-  h+='.hdr-title{font-family:"Arial Black",Arial;font-size:18px;font-weight:900;letter-spacing:.02em;line-height:1}';
-  h+='.hdr-sub{font-size:10px;opacity:.75;margin-top:3px}';
-  h+='.hdr-meta{display:grid;grid-template-columns:repeat(4,auto);gap:6px 18px;align-items:center}';
-  h+='.meta-item{display:flex;flex-direction:column;align-items:center}';
-  h+='.meta-lbl{font-size:7px;opacity:.6;text-transform:uppercase;letter-spacing:.08em}';
-  h+='.meta-val{font-size:12px;font-weight:800;color:#d4a820;line-height:1.2}';
-  h+='.badge{background:#d4a820;color:#0a3a1e;font-size:10px;font-weight:900;padding:4px 12px;border-radius:20px;white-space:nowrap;align-self:center}';
+  // Header bloc principal
+  h+='.hdr{background:linear-gradient(135deg,#0a3a1e 60%,#155a30);border-radius:10px;padding:11px 16px;margin-bottom:7px;display:flex;align-items:center;gap:14px}';
+  h+='.hdr img{height:52px;width:52px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(212,168,32,.4))}';
+  h+='.hdr-title{font-family:"Arial Black",Arial;font-size:20px;font-weight:900;letter-spacing:.02em;line-height:1;color:#fff}';
+  h+='.hdr-sub{font-size:9.5px;color:rgba(255,255,255,.65);margin-top:3px}';
+  h+='.meta-grid{display:flex;gap:16px;margin-left:auto;align-items:center}';
+  h+='.meta-item{text-align:center}';
+  h+='.meta-lbl{font-size:6.5px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.5);display:block}';
+  h+='.meta-val{font-size:13px;font-weight:900;color:#d4a820;display:block;line-height:1.1}';
+  h+='.badge{background:#d4a820;color:#0a1a0a;font-family:"Arial Black",Arial;font-size:9px;font-weight:900;padding:5px 14px;border-radius:20px;white-space:nowrap}';
+  h+='.coaches{font-size:8px;color:rgba(255,255,255,.7);margin-left:8px}';
 
-  // Axe bar
-  h+='.axe-bar{background:#f5f0e0;border-left:4px solid #d4a820;padding:5px 10px;font-size:9px;margin-bottom:10px;border-radius:0 5px 5px 0}';
-  h+='.axe-bar b{color:#7c4200;font-size:8px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px}';
+  // Axe
+  h+='.axe{background:rgba(212,168,32,.12);border-left:3px solid #d4a820;padding:5px 10px;border-radius:0 6px 6px 0;margin-bottom:7px;font-size:9px;color:#f5e8a0}';
+  h+='.axe b{font-size:7.5px;text-transform:uppercase;letter-spacing:.08em;color:#d4a820;margin-right:6px}';
 
-  // Timeline bar at top
-  h+='.timeline-bar{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-bottom:10px;gap:1px}';
-  h+='.tl-seg{display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:rgba(255,255,255,.9);overflow:hidden;white-space:nowrap;min-width:4px}';
+  // Timeline horizontale
+  h+='.tl{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:1px;margin-bottom:7px}';
+  h+='.tl-seg{display:flex;align-items:center;justify-content:center;font-size:5.5px;font-weight:800;color:rgba(255,255,255,.9);overflow:hidden;white-space:nowrap;min-width:3px}';
 
-  // Grid 4 cols
-  h+='.grid{display:grid;grid-template-columns:auto 1fr 180px 130px 130px;gap:0;border:1.5px solid #0a3a1e;border-radius:8px;overflow:hidden}';
-  h+='.col-hdr{background:#0a3a1e;color:#fff;padding:5px 8px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border-right:1px solid rgba(255,255,255,.15)}';
-  h+='.col-hdr:last-child{border-right:none}';
-  h+='.cell{padding:5px 7px;border-right:1px solid #e8e8e0;border-bottom:1px solid #e8e8e0;vertical-align:top;font-size:8.5px;line-height:1.4}';
+  // Grille principale
+  h+='.grid{display:grid;grid-template-columns:190px 1fr 160px 130px 100px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}';
+  h+='.col-hd{background:rgba(255,255,255,.08);padding:5px 8px;font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.55);border-right:1px solid rgba(255,255,255,.06)}';
+  h+='.col-hd:last-child{border-right:none}';
+  h+='.cell{padding:6px 8px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top;line-height:1.4;color:rgba(255,255,255,.88)}';
   h+='.cell:last-child{border-right:none}';
-  h+='.cell-trame{display:flex;gap:5px;align-items:flex-start;min-width:160px}';
-  h+='.trame-bar{width:8px;border-radius:4px;flex-shrink:0;align-self:stretch;min-height:44px;position:relative}';
-  h+='.trame-info{flex:1}';
-  h+='.trame-heure{font-size:7px;color:#888;font-weight:700}';
-  h+='.trame-type{font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;color:#fff;display:inline-block;margin:1px 0}';
-  h+='.trame-titre{font-size:9px;font-weight:700;color:#1a1a14;line-height:1.3}';
-  h+='.trame-dur{font-size:7px;color:#d4a820;font-weight:700}';
-  h+='.intens{font-size:7px;border-radius:3px;padding:1px 4px;border:1px solid;display:inline-block;margin-top:2px;font-weight:700}';
-  h+='.pause-row{background:#e8f4ff}';
-  h+='.mat-chip{display:inline-block;background:#e8f4e8;border:1px solid #28944f;color:#166334;font-size:7px;padding:1px 5px;border-radius:8px;margin:1px}';
+  h+='.cell:last-child{border-right:none}';
+
+  // Trame cell
+  h+='.trame-cell{display:flex;gap:7px}';
+  h+='.trame-bar{width:6px;border-radius:3px;flex-shrink:0;min-height:40px}';
+  h+='.trame-heure{font-size:7px;color:rgba(255,255,255,.4);font-weight:700;margin-bottom:2px}';
+  h+='.trame-badge{font-size:7.5px;font-weight:900;padding:1px 6px;border-radius:3px;color:#fff;display:inline-block;margin-bottom:2px}';
+  h+='.trame-titre{font-size:9px;font-weight:700;color:#fff;line-height:1.2}';
+  h+='.trame-dur{font-size:7.5px;color:#d4a820;font-weight:700;margin-top:2px}';
+  h+='.trame-atelier{font-size:7px;color:rgba(255,255,255,.45);margin-top:2px;padding-left:4px;border-left:1.5px solid rgba(255,255,255,.2)}';
+  h+='.intens{font-size:6.5px;border-radius:3px;padding:1px 5px;border:1px solid;display:inline-block;margin-top:3px;font-weight:700}';
+
+  // Vignettes
+  h+='.vignette-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}';
+  h+='.vignette{width:66px;border-radius:5px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}';
+  h+='.vignette img{width:100%;display:block;max-height:50px;object-fit:cover;opacity:.9}';
+  h+='.vignette-lbl{font-size:5.5px;color:rgba(255,255,255,.4);padding:1px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(0,0,0,.3)}';
+
+  // Groupes & matériel
+  h+='.grp{margin-bottom:3px;display:flex;flex-wrap:wrap;gap:2px;align-items:flex-start}';
+  h+='.grp-lbl{font-size:7px;font-weight:900;min-width:16px;color:#d4a820}';
+  h+='.grp-name{font-size:7px;background:rgba(255,255,255,.07);border-radius:3px;padding:0px 4px;color:rgba(255,255,255,.75)}';
+  h+='.mat-chip{display:inline-block;border-radius:6px;border:1px solid rgba(212,168,32,.4);color:#d4a820;font-size:6.5px;padding:1px 5px;margin:1px;font-weight:600}';
 
   // Footer
-  h+='.footer{margin-top:8px;display:flex;justify-content:space-between;font-size:7px;color:#aaa;padding-top:5px;border-top:1px solid #e8e8e0}';
-  h+='.footer b{color:#0a3a1e}';
+  h+='.footer{margin-top:6px;display:flex;justify-content:space-between;font-size:7px;color:rgba(255,255,255,.3);padding-top:5px;border-top:1px solid rgba(255,255,255,.08)}';
+  h+='.footer b{color:rgba(255,255,255,.55)}';
 
   h+='</style></head><body>';
 
   // ── HEADER ──────────────────────────────────────────────────────
   h+='<div class="hdr">';
   if(logo)h+='<img src="'+logo+'">';
-  h+='<div class="hdr-main">';
-  h+='<div class="hdr-title">Fiche d\'entra&icirc;nement</div>';
-  h+='<div class="hdr-sub">EDR &mdash; Mutzig Ovalie Molsheim</div>';
+  h+='<div><div class="hdr-title">Fiche d\'entra&icirc;nement</div>';
+  h+='<div class="hdr-sub">Espace &Eacute;ducateurs du MOM &mdash; Mutzig Ovalie Molsheim</div>';
+  if(selCoachs.length){h+='<div class="coaches">&#128119; '+selCoachs.join(' &nbsp;·&nbsp; ')+'</div>';}
   h+='</div>';
-  h+='<div class="hdr-meta">';
-  if(dateStr){h+='<div class="meta-item"><div class="meta-lbl">Date</div><div class="meta-val" style="font-size:9px;color:#fff">'+dateStr+'</div></div>';}
-  h+='<div class="meta-item"><div class="meta-lbl">D&eacute;but</div><div class="meta-val">'+(d.heureDebut||"14:00")+'</div></div>';
-  h+='<div class="meta-item"><div class="meta-lbl">Dur&eacute;e</div><div class="meta-val">'+formatDuree(totalMin)+'</div></div>';
-  if(d.categorie){h+='<div class="meta-item"><div class="meta-lbl">Cat&eacute;gorie</div><div class="meta-val">'+d.categorie+'</div></div>';}
-  if(d.effectif){h+='<div class="meta-item"><div class="meta-lbl">Effectif</div><div class="meta-val">'+d.effectif+'</div></div>';}
-  h+='</div>';
+  h+='<div class="meta-grid">';
+  if(dateStr)h+='<div class="meta-item"><span class="meta-lbl">Date</span><span class="meta-val" style="font-size:8.5px;color:rgba(255,255,255,.9)">'+dateStr+'</span></div>';
+  h+='<div class="meta-item"><span class="meta-lbl">D&eacute;but</span><span class="meta-val">'+(d.heureDebut||"14h00")+'</span></div>';
+  h+='<div class="meta-item"><span class="meta-lbl">Dur&eacute;e</span><span class="meta-val">'+formatDuree(totalMin)+'</span></div>';
+  if(d.categorie)h+='<div class="meta-item"><span class="meta-lbl">Cat&eacute;gorie</span><span class="meta-val">'+d.categorie+'</span></div>';
+  if(d.effectif)h+='<div class="meta-item"><span class="meta-lbl">Effectif</span><span class="meta-val">'+d.effectif+'</span></div>';
   h+='<div class="badge">EDR MOM</div>';
-  h+='</div>';
+  h+='</div></div>';
 
   // ── AXE ─────────────────────────────────────────────────────────
-  if(d.axe)h+='<div class="axe-bar"><b>Axe de travail&nbsp;:</b>'+d.axe+'</div>';
+  if(d.axe)h+='<div class="axe"><b>&#127919; Axe de travail&nbsp;:</b>'+d.axe+'</div>';
 
-  // Pas de timeline horizontale : elle sera intégrée verticalement dans la grille
-
-  // ── GRILLE ──────────────────────────────────────────────────────
-  // Timeline verticale à gauche du PDF
-  h+='<div style="display:flex;gap:8px;align-items:flex-start">';
+  // ── TIMELINE HORIZONTALE ────────────────────────────────────────
   if(totalMin>0){
-    h+='<div style="display:flex;flex-direction:column;width:18px;flex-shrink:0;margin-top:25px">';
+    h+='<div class="tl">';
     d.blocs.forEach(function(b){
-      var pct=Math.max(5,(parseInt((b.duree||"").replace(/[^\d]/g,""))||15)/totalMin*100);
+      var dur=parseInt((b.duree||"").replace(/[^\d]/g,""))||15;
+      var pct=dur/totalMin*100;
       var col=getBlocColor(b.type);
-      h+='<div style="background:'+col+';border-radius:4px;flex:none;width:100%;margin-bottom:1px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:30px;height:'+pct+'px">';
-      h+='<span style="font-size:5px;font-weight:800;color:rgba(255,255,255,.9);writing-mode:vertical-lr;text-orientation:mixed;transform:rotate(180deg);white-space:nowrap;overflow:hidden;max-height:'+pct+'px">'+b._heureCalc+'</span>';
-      h+='</div>';
+      h+='<div class="tl-seg" style="background:'+col+';flex:'+pct.toFixed(1)+'">'+b._heureCalc+'</div>';
     });
     h+='</div>';
   }
+
+  // ── GRILLE ──────────────────────────────────────────────────────
+  h+='<div style="display:flex;gap:7px;align-items:flex-start">';
+
+  // Timeline verticale
+  if(totalMin>0){
+    h+='<div style="display:flex;flex-direction:column;width:14px;flex-shrink:0;margin-top:24px;border-radius:7px;overflow:hidden;gap:1px">';
+    d.blocs.forEach(function(b){
+      var dur=parseInt((b.duree||"").replace(/[^\d]/g,""))||15;
+      var pct=Math.max(24,dur/totalMin*700);
+      h+='<div style="background:'+getBlocColor(b.type)+';height:'+pct+'px;width:100%"></div>';
+    });
+    h+='</div>';
+  }
+
   h+='<div style="flex:1">';
   h+='<div class="grid">';
-  // Headers
-  h+='<div class="col-hdr">&#9203; Trame</div>';
-  h+='<div class="col-hdr">&#10003; Comportements attendus</div>';
-  h+='<div class="col-hdr">&#128208; Org. spatio-temp.</div>';
-  h+='<div class="col-hdr">&#128101; Groupes</div>';
-  h+='<div class="col-hdr">&#129520; Mat&eacute;riel</div>';
 
-  // Rows
+  // En-têtes
+  h+='<div class="col-hd">&#9203; Trame</div>';
+  h+='<div class="col-hd">&#10003; Comportements attendus</div>';
+  h+='<div class="col-hd">&#128208; Org. spatio-temporelle</div>';
+  h+='<div class="col-hd">&#128101; Groupes</div>';
+  h+='<div class="col-hd">&#129520; Mat&eacute;riel</div>';
+
+  // Lignes
   d.blocs.forEach(function(b){
     var col=getBlocColor(b.type);
     var typeLabel=(BLOC_TYPES.find(function(t){return t.val===b.type;})||{label:b.type}).label;
     var titre=(b.titre&&b.titre!=="-- Choisir --"&&b.titre!=="Autre...")?b.titre:(b.titreCustom||"");
-    var isPause=b.type==="pause";
-    var rowClass=isPause?"pause-row":"";
     var intensObj=b.intensite?INTENSITES.find(function(it){return it.val===b.intensite;}):null;
 
-    // Col 1 : Trame
-    h+='<div class="cell cell-trame '+rowClass+'">';
+    // ── COL 1 : TRAME ──
+    h+='<div class="cell"><div class="trame-cell">';
     h+='<div class="trame-bar" style="background:'+col+'"></div>';
-    h+='<div class="trame-info">';
+    h+='<div style="flex:1">';
     h+='<div class="trame-heure">'+b._heureCalc+'</div>';
-    h+='<span class="trame-type" style="background:'+col+'">'+typeLabel+'</span>';
+    h+='<span class="trame-badge" style="background:'+col+'">'+typeLabel+'</span>';
     if(titre)h+='<div class="trame-titre">'+titre+'</div>';
     h+='<div class="trame-dur">'+b.duree+'</div>';
-    if(intensObj)h+='<div class="intens" style="color:'+intensObj.color+';border-color:'+intensObj.color+'">'+intensObj.label+' / '+intensObj.sublabel+'</div>';
-    // Ateliers
-    if(!isPause&&b.ateliers&&b.ateliers.length){
+    if(intensObj)h+='<div class="intens" style="color:'+intensObj.color+';border-color:'+intensObj.color+'">'+intensObj.label+' &mdash; '+intensObj.sublabel+'</div>';
+    if(b.ateliers&&b.ateliers.length){
       b.ateliers.forEach(function(at){
-        if(at.atelierIdx>=0&&ALL_ITEMS[at.atelierIdx]){
-          h+='<div style="font-size:7px;color:#555;margin-top:2px;padding-left:3px;border-left:2px solid '+col+'">&#128193; '+ALL_ITEMS[at.atelierIdx].item.t+'</div>';
-        }
+        if(at.atelierIdx>=0&&ALL_ITEMS[at.atelierIdx])
+          h+='<div class="trame-atelier">&#128193; '+ALL_ITEMS[at.atelierIdx].item.t+'</div>';
       });
     }
-    h+='</div></div>';
+    h+='</div></div></div>';
 
-    // Col 2 : Comportements
-    h+='<div class="cell '+rowClass+'">';
-    if(isPause){h+='<span style="color:#aaa;font-style:italic">Pause</span>';}
-    else if(b.comportements){h+=b.comportements.replace(/\n/g,"<br>");}
-    else{h+='<span style="color:#bbb;font-style:italic">—</span>';}
+    // ── COL 2 : COMPORTEMENTS ──
+    h+='<div class="cell">';
+    if(b.comportements)h+=b.comportements.replace(/\n/g,"<br>");
+    else h+='<span style="color:rgba(255,255,255,.2);font-style:italic">&mdash;</span>';
     h+='</div>';
 
-    // Col 3 : Organisation spatio-temporelle
-    h+='<div class="cell '+rowClass+'">';
-    if(!isPause&&b.orga){h+=b.orga.replace(/\n/g,"<br>");}
-    else{h+='<span style="color:#bbb;font-style:italic">—</span>';}
-    h+='</div>';
-
-    // Col 4 : Groupes (1ère ligne uniquement)
-    h+='<div class="cell '+rowClass+'">';
-    if(b===d.blocs[0]&&d.groupes&&d.groupes.length){
-      var gColors=['#1a6b3a','#d4a820','#1a3a6b','#6b1a1a','#4a1a6b'];
-      d.groupes.forEach(function(g,gi){
-        if(!g.length)return;
-        h+='<div style="margin-bottom:2px"><span style="font-size:7px;font-weight:800;color:'+gColors[gi%gColors.length]+'">G'+(gi+1)+'</span> <span style="font-size:7px">'+(g.slice(0,4).join(', '))+(g.length>4?' +'+(g.length-4):'')+'</span></div>';
+    // ── COL 3 : ORGANISATION + VIGNETTES ──
+    h+='<div class="cell">';
+    // Vignettes Drive des ateliers sélectionnés
+    var vigAteliers=(b.ateliers||[]).filter(function(at){return at.atelierIdx>=0&&ALL_ITEMS[at.atelierIdx]&&ALL_ITEMS[at.atelierIdx].item.id;});
+    if(vigAteliers.length){
+      h+='<div class="vignette-wrap">';
+      vigAteliers.slice(0,3).forEach(function(at){
+        var entry=ALL_ITEMS[at.atelierIdx];
+        h+='<div class="vignette">';
+        h+='<img src="https://drive.google.com/thumbnail?id='+entry.item.id+'&sz=w200">';
+        h+='<div class="vignette-lbl">'+entry.item.t.substring(0,16)+'</div>';
+        h+='</div>';
       });
+      h+='</div>';
     }
+    if(b.orga)h+=b.orga.replace(/\n/g,"<br>");
+    else if(!vigAteliers.length)h+='<span style="color:rgba(255,255,255,.2);font-style:italic">&mdash;</span>';
     h+='</div>';
 
-    // Col 5 : Matériel (global sur 1ère ligne seulement)
-    h+='<div class="cell '+rowClass+'">';
-    if(b===d.blocs[0]&&d.materiel&&d.materiel.length){
-      d.materiel.forEach(function(m){h+='<span class="mat-chip">'+m+'</span>';});
-    }
+    // ── COL 4 : GROUPES par bloc ──
+    h+='<div class="cell">';
+    var bGroupes=b.groupes||[];
+    var gColors=['#d4a820','#28944f','#1a3a6b','#c53a22','#4a1a6b'];
+    var hasGroups=false;
+    bGroupes.forEach(function(g,gi){
+      if(!g||!g.length)return;
+      hasGroups=true;
+      var names=Array.isArray(g)?g:(g.joueurs||[]);
+      if(!names.length)return;
+      h+='<div class="grp"><span class="grp-lbl" style="color:'+gColors[gi%gColors.length]+'">G'+(gi+1)+'</span>';
+      names.forEach(function(n){h+='<span class="grp-name">'+n+'</span>';});
+      h+='</div>';
+    });
+    if(!hasGroups)h+='<span style="color:rgba(255,255,255,.2);font-style:italic">&mdash;</span>';
+    h+='</div>';
+
+    // ── COL 5 : MATÉRIEL par bloc ──
+    h+='<div class="cell">';
+    var bMat=b.materiel||[];
+    if(bMat.length){bMat.forEach(function(m){h+='<span class="mat-chip">'+m+'</span>';});}
+    else h+='<span style="color:rgba(255,255,255,.2);font-style:italic">&mdash;</span>';
     h+='</div>';
   });
-  h+='</div>'; h+='</div>'; h+='</div>'; // fin grille + timeline wrapper
+
+  h+='</div></div></div>'; // fin grid + inner + flex
 
   // ── FOOTER ──────────────────────────────────────────────────────
   h+='<div class="footer">';
-  h+='<div><b>MOM Rugby EDR</b> &mdash; '+(d.categorie||"")+(dateStr?' &mdash; '+dateStr:'')+'</div>';
+  h+='<div><b>MOM Rugby</b> &mdash; Espace &Eacute;ducateurs '+(d.categorie||"")+(dateStr?" &mdash; "+dateStr:"")+'</div>';
   h+='<div>G&eacute;n&eacute;r&eacute; le '+new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})+'</div>';
   h+='</div>';
 
   h+='</body></html>';
-  var win=window.open("","_blank","width=1200,height=780");
-  if(win){win.document.write(h);win.document.close();setTimeout(function(){win.print();},500);}
+  var win=window.open("","_blank","width=1240,height=800");
+  if(win){win.document.write(h);win.document.close();setTimeout(function(){win.print();},600);}
 }
 
 // Comportements auto
