@@ -334,7 +334,7 @@ button,input{font-family:'Barlow',sans-serif}
 .seance-axe-input{flex:1;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--w);outline:none}
 .seance-axe-input::placeholder{color:rgba(255,255,255,.35);font-weight:400}
 /* Grille 4 colonnes */
-.seance-grid{display:grid;grid-template-columns:260px 1fr 200px 160px;min-height:400px}
+.seance-grid{display:grid;grid-template-columns:260px 1fr 200px 180px 140px;min-height:400px}
 .seance-col{border-right:1px solid var(--gray2);overflow:hidden}
 .seance-col:last-child{border-right:none}
 .seance-col-hd{background:var(--g9);color:var(--w);padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--gold)}
@@ -2531,7 +2531,7 @@ function renderSeance() {
 
   // COL 3 : ORGANISATION SPATIALE
   h += '<div class="seance-col orga-col">';
-  h += '<div class="seance-col-hd">📐 Organisation spatiale</div>';
+  h += '<div class="seance-col-hd">📐 Organisation spatio-temporelle</div>';
   h += '<div class="comp-rows">';
   if (!(d.blocs||[]).length) {
     h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">—</div>';
@@ -2539,12 +2539,46 @@ function renderSeance() {
   (d.blocs||[]).forEach(function(bloc) {
     if (bloc.type === "pause") return;
     h += '<div class="comp-row">';
-    h += '<textarea class="comp-textarea" placeholder="Terrain, plots, groupes..." oninput="onSBlocField(' + bloc.id + ',\'orga\',this.value)">' + (bloc.orga||"") + '</textarea>';
+    h += '<textarea class="comp-textarea" placeholder="Terrain, zones, timing..." oninput="onSBlocField(' + bloc.id + ',\'orga\',this.value)">' + (bloc.orga||"") + '</textarea>';
     h += '</div>';
   });
   h += '</div></div>';
 
-  // COL 4 : MATÉRIEL
+  // COL 4 : GROUPES
+  h += '<div class="seance-col groupes-col">';
+  h += '<div class="seance-col-hd">👥 Groupes</div>';
+  h += '<div style="padding:6px 8px;border-bottom:1px solid var(--gray2)">';
+  // Contrôle global des groupes en haut de la colonne
+  var grpCount = (d.groupes||[]).length || 3;
+  h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">';
+  h += '<span style="font-size:9px;font-weight:700;color:var(--gray5)">Groupes fixes :</span>';
+  h += '<button onclick="addGroupeSeance()" style="font-size:9px;padding:1px 7px;border-radius:8px;border:1px solid var(--g1);background:var(--g0);color:var(--g6);cursor:pointer">+</button>';
+  if (grpCount > 1) h += '<button onclick="removeGroupeSeance()" style="font-size:9px;padding:1px 7px;border-radius:8px;border:1px solid var(--gray2);background:transparent;color:var(--gray5);cursor:pointer">−</button>';
+  h += '</div>';
+  (d.groupes||[]).forEach(function(grp, gi) {
+    var gcol = GROUPE_COLORS[gi % GROUPE_COLORS.length];
+    h += '<div style="margin-bottom:5px">';
+    h += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">';
+    h += '<div style="width:10px;height:10px;border-radius:50%;background:' + gcol + ';flex-shrink:0"></div>';
+    h += '<span style="font-size:9px;font-weight:700;color:' + gcol + '">Groupe ' + (gi+1) + '</span>';
+    h += '</div>';
+    h += '<div style="display:flex;flex-wrap:wrap;gap:2px;min-height:20px;padding:3px;background:var(--gray1);border-radius:5px;border:1px solid var(--gray2)">';
+    grp.forEach(function(nom) {
+      h += '<span style="font-size:8px;padding:1px 5px;border-radius:8px;background:' + gcol + ';color:#fff;cursor:pointer" onclick="removeFromGroupeSeance(' + gi + ',\'' + nom + '\')" title="Retirer">' + nom + '</span>';
+    });
+    // Ajouter depuis la pool
+    var pool = (d.joueurs||[]).filter(function(j){ return !(d.groupes||[]).some(function(g){ return g.indexOf(j)>=0; }); });
+    if (pool.length) {
+      h += '<select style="font-size:8px;border:none;background:transparent;color:var(--gray5);cursor:pointer;max-width:90px" onchange="addToGroupeSeance(' + gi + ',this.value);this.selectedIndex=0">';
+      h += '<option value="">+ Joueur</option>';
+      pool.forEach(function(j){ h += '<option value="' + j + '">' + j + '</option>'; });
+      h += '</select>';
+    }
+    h += '</div></div>';
+  });
+  h += '</div></div>';
+
+  // COL 5 : MATÉRIEL
   h += '<div class="seance-col mat-col">';
   h += '<div class="seance-col-hd">🧰 Matériel</div>';
   h += '<div style="padding:8px">';
@@ -2742,6 +2776,11 @@ function toggleCoach(c){ if(!seanceData)return;if(!Array.isArray(seanceData.coac
 
 function toggleMat(m){ if(!seanceData)return;if(!seanceData.materiel)seanceData.materiel=[];var idx=seanceData.materiel.indexOf(m);if(idx>=0)seanceData.materiel.splice(idx,1);else seanceData.materiel.push(m);seanceDirty=true; }
 
+function addGroupeSeance(){ if(!seanceData)return;if(!seanceData.groupes)seanceData.groupes=[];if(seanceData.groupes.length<6)seanceData.groupes.push([]);seanceDirty=true;renderSeance(); }
+function removeGroupeSeance(){ if(!seanceData||!seanceData.groupes||seanceData.groupes.length<=1)return;seanceData.groupes.pop();seanceDirty=true;renderSeance(); }
+function addToGroupeSeance(gi,nom){ if(!nom||!seanceData)return;if(!seanceData.groupes)seanceData.groupes=[[],[],[]];seanceData.groupes.forEach(function(g,i){seanceData.groupes[i]=g.filter(function(n){return n!==nom;});});seanceData.groupes[gi].push(nom);seanceDirty=true;renderSeance(); }
+function removeFromGroupeSeance(gi,nom){ if(!seanceData||!seanceData.groupes||!seanceData.groupes[gi])return;seanceData.groupes[gi]=seanceData.groupes[gi].filter(function(n){return n!==nom;});seanceDirty=true;renderSeance(); }
+
 function addJoueur(){ var inp=document.getElementById("joueur-inp");if(!inp||!inp.value.trim())return;var nom=inp.value.trim();if(seanceData.joueurs.indexOf(nom)<0){seanceData.joueurs.push(nom);seanceDirty=true;renderSeance();}inp.value=""; }
 function removeJoueur(nom){ seanceData.joueurs=seanceData.joueurs.filter(function(j){return j!==nom;});seanceDirty=true;renderSeance(); }
 
@@ -2807,7 +2846,7 @@ function printSeance(){
   h+='.cell{padding:5px 7px;border-right:1px solid #e8e8e0;border-bottom:1px solid #e8e8e0;vertical-align:top;font-size:8.5px;line-height:1.4}';
   h+='.cell:last-child{border-right:none}';
   h+='.cell-trame{display:flex;gap:5px;align-items:flex-start;min-width:160px}';
-  h+='.trame-bar{width:6px;border-radius:3px;flex-shrink:0;align-self:stretch;min-height:36px}';
+  h+='.trame-bar{width:8px;border-radius:4px;flex-shrink:0;align-self:stretch;min-height:44px;position:relative}';
   h+='.trame-info{flex:1}';
   h+='.trame-heure{font-size:7px;color:#888;font-weight:700}';
   h+='.trame-type{font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;color:#fff;display:inline-block;margin:1px 0}';
@@ -2843,18 +2882,23 @@ function printSeance(){
   // ── AXE ─────────────────────────────────────────────────────────
   if(d.axe)h+='<div class="axe-bar"><b>Axe de travail&nbsp;:</b>'+d.axe+'</div>';
 
-  // ── TIMELINE BAR ────────────────────────────────────────────────
+  // Pas de timeline horizontale : elle sera intégrée verticalement dans la grille
+
+  // ── GRILLE ──────────────────────────────────────────────────────
+  // Timeline verticale à gauche du PDF
+  h+='<div style="display:flex;gap:8px;align-items:flex-start">';
   if(totalMin>0){
-    h+='<div class="timeline-bar">';
+    h+='<div style="display:flex;flex-direction:column;width:18px;flex-shrink:0;margin-top:25px">';
     d.blocs.forEach(function(b){
-      var pct=Math.max(1,(parseInt((b.duree||"").replace(/[^\d]/g,""))||15)/totalMin*100);
+      var pct=Math.max(5,(parseInt((b.duree||"").replace(/[^\d]/g,""))||15)/totalMin*100);
       var col=getBlocColor(b.type);
-      h+='<div class="tl-seg" style="background:'+col+';width:'+pct+'%;flex:none">'+b._heureCalc+'</div>';
+      h+='<div style="background:'+col+';border-radius:4px;flex:none;width:100%;margin-bottom:1px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:30px;height:'+pct+'px">';
+      h+='<span style="font-size:5px;font-weight:800;color:rgba(255,255,255,.9);writing-mode:vertical-lr;text-orientation:mixed;transform:rotate(180deg);white-space:nowrap;overflow:hidden;max-height:'+pct+'px">'+b._heureCalc+'</span>';
+      h+='</div>';
     });
     h+='</div>';
   }
-
-  // ── GRILLE ──────────────────────────────────────────────────────
+  h+='<div style="flex:1">';
   h+='<div class="grid">';
   // Headers
   h+='<div class="col-hdr">&#9203; Trame</div>';
@@ -2910,7 +2954,7 @@ function printSeance(){
     }
     h+='</div>';
   });
-  h+='</div>'; // fin grille
+  h+='</div>'; h+='</div>'; h+='</div>'; // fin grille + timeline wrapper
 
   // ── FOOTER ──────────────────────────────────────────────────────
   h+='<div class="footer">';
@@ -3279,24 +3323,156 @@ function rowToJoueur(row, colMap) {
 }
 
 function openImportFichier(cat) {
-  // Créer un input file invisible et le déclencher
-  var input = document.createElement("input");
-  input.type = "file";
-  input.accept = ".xlsx,.xls,.csv";
-  input.style.display = "none";
-  input.onchange = function(e) {
-    var file = e.target.files[0];
-    if (!file) return;
-    var ext = file.name.split(".").pop().toLowerCase();
-    if (ext === "csv") {
-      importCSV(file, cat);
-    } else {
-      importXLSX(file, cat);
-    }
+  // Overlay avec choix : fichier local ou Google Sheets
+  var existing = document.getElementById("import-choice-overlay");
+  if (existing) existing.remove();
+  var div = document.createElement("div");
+  div.id = "import-choice-overlay";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(4,32,15,.65);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+
+  var box = document.createElement("div");
+  box.style.cssText = "background:#fff;border-radius:16px;width:100%;max-width:440px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)";
+
+  var hdr = document.createElement("div");
+  hdr.style.cssText = "background:var(--g8);color:#fff;padding:14px 18px;font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800";
+  hdr.textContent = "📥 Importer des joueurs — " + cat;
+
+  var body = document.createElement("div");
+  body.style.cssText = "padding:18px;display:flex;flex-direction:column;gap:10px";
+
+  // Option 1 : fichier local
+  var btn1 = document.createElement("button");
+  btn1.style.cssText = "padding:12px 16px;background:var(--g0);border:2px solid var(--g1);border-radius:10px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px";
+  btn1.innerHTML = '<div style="font-size:24px">📄</div><div><div style="font-weight:700;font-size:13px;color:var(--g8)">Fichier Excel / CSV</div><div style="font-size:11px;color:var(--gray5)">.xlsx, .xls, .csv</div></div>';
+  btn1.onclick = function() {
+    div.remove();
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".xlsx,.xls,.csv";
+    input.style.display = "none";
+    input.onchange = function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var ext = file.name.split(".").pop().toLowerCase();
+      if (ext === "csv") importCSV(file, cat);
+      else importXLSX(file, cat);
+    };
+    document.body.appendChild(input);
+    input.click();
+    setTimeout(function(){ input.remove(); }, 5000);
   };
-  document.body.appendChild(input);
-  input.click();
-  setTimeout(function(){ input.remove(); }, 5000);
+
+  // Option 2 : Google Sheets via URL
+  var btn2 = document.createElement("button");
+  btn2.style.cssText = "padding:12px 16px;background:var(--g0);border:2px solid var(--g1);border-radius:10px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px";
+  btn2.innerHTML = '<div style="font-size:24px">📊</div><div><div style="font-weight:700;font-size:13px;color:var(--g8)">Google Sheets</div><div style="font-size:11px;color:var(--gray5)">Via lien de partage</div></div>';
+  btn2.onclick = function() {
+    div.remove();
+    importGoogleSheets(cat);
+  };
+
+  var cancelBtn = document.createElement("button");
+  cancelBtn.style.cssText = "padding:8px;background:var(--gray1);color:var(--gray5);border:none;border-radius:7px;font-weight:700;cursor:pointer;width:100%";
+  cancelBtn.textContent = "Annuler";
+  cancelBtn.onclick = function(){ div.remove(); };
+
+  body.appendChild(btn1);
+  body.appendChild(btn2);
+  body.appendChild(cancelBtn);
+  box.appendChild(hdr);
+  box.appendChild(body);
+  div.appendChild(box);
+  div.onclick = function(e){ if(e.target===div) div.remove(); };
+  document.body.appendChild(div);
+}
+
+function importGoogleSheets(cat) {
+  var div = document.createElement("div");
+  div.id = "sheets-import-overlay";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(4,32,15,.65);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+
+  var box = document.createElement("div");
+  box.style.cssText = "background:#fff;border-radius:16px;width:100%;max-width:500px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)";
+
+  var hdr = document.createElement("div");
+  hdr.style.cssText = "background:var(--g8);color:#fff;padding:14px 18px;font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800";
+  hdr.textContent = "📊 Importer depuis Google Sheets — " + cat;
+
+  var body = document.createElement("div");
+  body.style.cssText = "padding:18px;display:flex;flex-direction:column;gap:10px";
+
+  var info = document.createElement("div");
+  info.style.cssText = "font-size:11px;color:var(--gray5);line-height:1.6;background:var(--g0);padding:10px;border-radius:8px;border:1px solid var(--g1)";
+  info.innerHTML = '💡 <b>Comment obtenir le lien CSV de votre Google Sheet :</b><br>'
+    + '1. Ouvrez votre Google Sheet<br>'
+    + '2. Fichier → Partager → Publier sur le web<br>'
+    + '3. Choisir <b>Format CSV</b> → Publier<br>'
+    + '4. Copiez le lien généré et collez-le ci-dessous';
+
+  var lbl = document.createElement("label");
+  lbl.style.cssText = "display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray5);letter-spacing:.06em;margin-bottom:4px";
+  lbl.textContent = "Lien de publication CSV";
+
+  var inp = document.createElement("input");
+  inp.type = "text";
+  inp.placeholder = "https://docs.google.com/spreadsheets/d/.../pub?output=csv";
+  inp.style.cssText = "width:100%;padding:8px 10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;outline:none";
+
+  var err = document.createElement("div");
+  err.style.cssText = "font-size:11px;color:#dc2626;font-weight:700;display:none";
+
+  var ftr = document.createElement("div");
+  ftr.style.cssText = "display:flex;gap:8px;margin-top:6px";
+
+  var cancelBtn = document.createElement("button");
+  cancelBtn.style.cssText = "flex:1;padding:9px;background:var(--gray1);color:var(--gray5);border:none;border-radius:7px;font-weight:700;cursor:pointer";
+  cancelBtn.textContent = "Annuler";
+  cancelBtn.onclick = function(){ div.remove(); };
+
+  var importBtn = document.createElement("button");
+  importBtn.style.cssText = "flex:2;padding:9px;background:var(--g7);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:.04em";
+  importBtn.textContent = "✅ Importer";
+  importBtn.onclick = function() {
+    var url = inp.value.trim();
+    if (!url) { err.textContent = "Veuillez entrer un lien."; err.style.display = "block"; return; }
+    // Normaliser l'URL pour forcer output=csv
+    if (url.includes("spreadsheets") && !url.includes("output=csv")) {
+      url = url.replace(/output=[^&]+/, "output=csv");
+      if (!url.includes("output=")) url += (url.includes("?") ? "&" : "?") + "output=csv";
+    }
+    importBtn.textContent = "⏳ Chargement...";
+    importBtn.disabled = true;
+    fetch(url)
+      .then(function(r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(function(text) {
+        var results = Papa.parse(text, {header:false, skipEmptyLines:true});
+        div.remove();
+        processImportRows(results.data, cat);
+      })
+      .catch(function(e) {
+        importBtn.textContent = "✅ Importer";
+        importBtn.disabled = false;
+        err.textContent = "Erreur : " + e.message + ". Vérifiez que le lien est public (publié sur le web).";
+        err.style.display = "block";
+      });
+  };
+
+  ftr.appendChild(cancelBtn);
+  ftr.appendChild(importBtn);
+  body.appendChild(info);
+  body.appendChild(lbl);
+  body.appendChild(inp);
+  body.appendChild(err);
+  body.appendChild(ftr);
+  box.appendChild(hdr);
+  box.appendChild(body);
+  div.appendChild(box);
+  div.onclick = function(e){ if(e.target===div) div.remove(); };
+  document.body.appendChild(div);
+  setTimeout(function(){ inp.focus(); }, 100);
 }
 
 function importCSV(file, cat) {
