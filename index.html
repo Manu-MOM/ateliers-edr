@@ -5857,8 +5857,8 @@ function buildComposJoueurs() {
       h += '</div>';
     }
     if (jstat.matchs > 0) {
-      h += '<div style="margin-top:4px"><button onclick="event.stopPropagation();cShowJoueurMatchs(\''+jid+'\')" ';
-      h += 'style="font-size:9px;color:var(--g6);background:none;border:1px solid var(--g2);border-radius:5px;padding:1px 7px;cursor:pointer">📋 Voir les matchs ('+jstat.matchs+')</button></div>';
+      h += '<div style="margin-top:4px"><button data-jid="' + jid + '" onclick="event.stopPropagation();cShowJoueurMatchs(this.dataset.jid)" ';
+      h += 'style="font-size:9px;color:var(--g6);background:none;border:1px solid var(--g2);border-radius:5px;padding:1px 7px;cursor:pointer">📋 Voir les matchs (' + jstat.matchs + ')</button></div>';
     }
     if (j.jdd==="oui") h += '<div style="margin-top:3px"><span style="background:#d1fae5;color:#065f46;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700">JDD ✓</span></div>';
     h += '</div>'; // jp-card
