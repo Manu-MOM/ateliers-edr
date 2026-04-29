@@ -2389,6 +2389,15 @@ var seanceData = null;
 var seanceDirty = false;
 
 // ── Section séance ──────────────────────────────────────────────
+function formatDuree(min) {
+  min = parseInt(min) || 0;
+  if (min < 60) return min + "min";
+  var h = Math.floor(min/60), m = min%60;
+  return h + "h" + (m ? (m<10?"0":"")+m : "00");
+}
+
+var GROUPE_COLORS = ["#1a6b3a","#d4a820","#1a3a6b","#6b1a1a","#4a1a6b"];
+
 function goSection_seance() {
   document.getElementById("bc").innerHTML = "<b>Ma Séance</b>";
   document.getElementById("tc").style.display = "none";
