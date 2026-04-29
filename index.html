@@ -2403,17 +2403,19 @@ function goSection_seance() {
   document.getElementById("tc").style.display = "none";
   document.getElementById("vbtns").style.display = "none";
   document.getElementById("afbar").style.display = "none";
-  buildSbSeance();
   if (!seanceData) seanceData = newSeance();
+  buildSbSeance();
   renderSeance();
 }
 
 function buildSbSeance() {
+  if (!seanceData) seanceData = newSeance();
   var sb = document.getElementById("sidebar");
   var cat = (seanceData && seanceData.categorie) ? seanceData.categorie : ((selAge_ && selAge_ !== "ALL") ? selAge_ : "");
   // Auto-remplir la catégorie de la séance si pas encore définie
   if (!seanceData.categorie && selAge_ && selAge_ !== "ALL") {
     seanceData.categorie = selAge_;
+    cat = selAge_;
   }
   var h = '<div class="sb-sec"><div class="sb-sec-lbl">Ma Séance</div>';
   h += '<div class="sb-item act"><div class="sb-icon">📋</div>Canevas de séance</div>';
