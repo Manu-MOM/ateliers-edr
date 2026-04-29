@@ -334,7 +334,7 @@ button,input{font-family:'Barlow',sans-serif}
 .seance-axe-input{flex:1;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--w);outline:none}
 .seance-axe-input::placeholder{color:rgba(255,255,255,.35);font-weight:400}
 /* Grille 4 colonnes */
-.seance-grid{display:grid;grid-template-columns:260px 1fr 200px 160px;min-height:400px}
+.seance-grid{display:grid;grid-template-columns:260px 1fr 160px 200px;min-height:400px}
 .seance-col{border-right:1px solid var(--gray2);overflow:hidden}
 .seance-col:last-child{border-right:none}
 .seance-col-hd{background:var(--g9);color:var(--w);padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--gold)}
@@ -2529,6 +2529,33 @@ function renderSeance() {
   });
   h += '</div></div>';
 
+  // COL 3 : MATÉRIEL
+  h += '<div class="seance-col mat-col">';
+  h += '<div class="seance-col-hd">🧰 Matériel</div>';
+  h += '<div style="padding:8px">';
+  h += '<div style="font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Général</div>';
+  h += '<div style="display:flex;flex-wrap:wrap;gap:3px">';
+  MATERIEL_LIST.forEach(function(m) {
+    var on = (d.materiel||[]).indexOf(m) >= 0;
+    h += '<button style="font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid ' + (on?"var(--g6)":"var(--gray2)") + ';background:' + (on?"var(--g0)":"transparent") + ';color:' + (on?"var(--g7)":"var(--gray5)") + ';cursor:pointer;font-weight:' + (on?"700":"400") + '" data-mat="' + m + '" onclick="toggleMat(this.dataset.mat);renderSeance()">' + m + '</button>';
+  });
+  h += '</div></div></div>';
+
+  // COL 4 : ORGANISATION SPATIALE
+  h += '<div class="seance-col orga-col">';
+  h += '<div class="seance-col-hd">📐 Organisation spatiale</div>';
+  h += '<div class="comp-rows">';
+  if (!(d.blocs||[]).length) {
+    h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">—</div>';
+  }
+  (d.blocs||[]).forEach(function(bloc) {
+    if (bloc.type === "pause") return;
+    h += '<div class="comp-row">';
+    h += '<textarea class="comp-textarea" placeholder="Terrain, plots, groupes..." oninput="onSBlocField(' + bloc.id + ',\'orga\',this.value)">' + (bloc.orga||"") + '</textarea>';
+    h += '</div>';
+  });
+  h += '</div></div>';
+
   h += '</div>'; // fin grille
   h += '</div>'; // fin seance-page
   h += '</div>'; // fin col principale
@@ -2713,6 +2740,8 @@ function onAtAtelier(sel,blocId,atId){
 function stepDuree(delta){ if(!seanceData)return;seanceData.duree=Math.max(15,Math.min(180,(parseInt(seanceData.duree)||90)+delta));seanceDirty=true;var el=document.getElementById("duree-display");if(el)el.textContent=formatDuree(seanceData.duree); }
 function toggleCoach(c){ if(!seanceData)return;if(!Array.isArray(seanceData.coachs))seanceData.coachs=[];var idx=seanceData.coachs.indexOf(c);if(idx>=0)seanceData.coachs.splice(idx,1);else seanceData.coachs.push(c);seanceDirty=true;renderSeance(); }
 
+function toggleMat(m){ if(!seanceData)return;if(!seanceData.materiel)seanceData.materiel=[];var idx=seanceData.materiel.indexOf(m);if(idx>=0)seanceData.materiel.splice(idx,1);else seanceData.materiel.push(m);seanceDirty=true; }
+
 function addJoueur(){ var inp=document.getElementById("joueur-inp");if(!inp||!inp.value.trim())return;var nom=inp.value.trim();if(seanceData.joueurs.indexOf(nom)<0){seanceData.joueurs.push(nom);seanceDirty=true;renderSeance();}inp.value=""; }
 function removeJoueur(nom){ seanceData.joueurs=seanceData.joueurs.filter(function(j){return j!==nom;});seanceDirty=true;renderSeance(); }
 
@@ -2799,14 +2828,25 @@ var EDR_CLUBS_COLORS = {MOM:"#1a6b1a", SAR:"#1a3a6b", ASCS:"#374151", Autre:"#5a
 
 function goSection_joueurs() {
   var cat = selAge_ && selAge_ !== "ALL" ? selAge_ : "M14F15";
+  // Reconstruire la sidebar pour l'onglet Joueurs
+  var sb = document.getElementById("sidebar");
+  if (sb) {
+    var h = '<div class="sb-sec"><div class="sb-sec-lbl">Joueurs</div>';
+    h += '<div class="sb-item act"><div class="sb-icon">👥</div>Base joueurs</div>';
+    h += '</div><div class="sb-div"></div>';
+    h += '<div class="sb-sec"><div class="sb-sec-lbl">Actions</div>';
+    h += '<div class="sb-item" onclick="openJPM(null,\'' + cat + '\')"><div class="sb-icon">➕</div>Nouveau joueur</div>';
+    h += '<div class="sb-item" onclick="openImportFichier(\'' + cat + '\')"><div class="sb-icon">📂</div>Importer fichier</div>';
+    h += '<div class="sb-item" onclick="openParamsPanel(3)"><div class="sb-icon">⚙️</div>Paramètres joueurs</div>';
+    h += '</div>';
+    sb.innerHTML = h;
+  }
   var db = getJoueursDB();
   var content = document.getElementById("content");
   if (!content) return;
   content.classList.remove("lv");
   content.innerHTML = buildJoueursSection(cat, db);
-  // Déclencher le rendu de la grille après injection du HTML
   setTimeout(renderJoueursGrid, 0);
-  // Binder le click outside modal
   var modal = document.getElementById("jpm-modal");
   if (modal) modal.onclick = function(e){ if(e.target===modal) closeJPM(); };
 }
