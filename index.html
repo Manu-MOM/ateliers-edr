@@ -2175,7 +2175,7 @@ function printPlan() {
   h += '<style>';
   h += '@page{size:A4 landscape;margin:10mm 12mm}';
   h += '*{box-sizing:border-box;margin:0;padding:0}';
-  h += 'body{font-family:Arial,Helvetica,sans-serif;background:#0d1f0e;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+  h += 'body{font-family:Arial,Helvetica,sans-serif;font-size:10px;background:#fff;color:#1a1a14;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
 
   // En-tête style rugby sombre
   h += '.header{background:linear-gradient(135deg,#0a3a1e 60%,#155a30);border-radius:10px;color:#fff;display:flex;align-items:center;gap:14px;padding:11px 16px;margin-bottom:10px}';
@@ -2187,7 +2187,7 @@ function printPlan() {
   h += '.header-badge{background:#d4a820;color:#0a1a0a;font-family:"Arial Black",Arial;font-size:10px;font-weight:900;padding:5px 14px;border-radius:20px;white-space:nowrap;align-self:center}';
 
   // Frise
-  h += '.frise-label{font-size:7.5px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}';
+  h += '.frise-label{font-size:7.5px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}';
   h += '.frise{display:flex;gap:1px;border-radius:10px;overflow:hidden;height:80px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.4)}';
   h += '.frise-bloc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;position:relative;border-right:1px solid rgba(255,255,255,.1)}';
   h += '.frise-bloc:last-child{border-right:none}';
@@ -2198,19 +2198,19 @@ function printPlan() {
 
   // Grille détail
   h += '.blocs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}';
-  h += '.bloc{border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.08);break-inside:avoid}';
+  h += '.bloc{border-radius:8px;overflow:hidden;border:1px solid #e0e0d8;break-inside:avoid}';
   h += '.bloc-hdr{padding:8px 11px;display:flex;align-items:center;gap:8px}';
   h += '.bloc-hdr-num{font-size:9px;font-weight:800;color:#d4a820;min-width:50px;line-height:1.2}';
   h += '.bloc-hdr-titre{font-size:11px;font-weight:800;color:#fff;flex:1;line-height:1.2}';
   h += '.bloc-hdr-dates{font-size:8px;color:rgba(255,255,255,.65);line-height:1.4;text-align:right}';
-  h += '.bloc-body{padding:7px 10px;background:rgba(255,255,255,.04);display:grid;grid-template-columns:1fr 1fr;gap:5px}';
+  h += '.bloc-body{padding:7px 10px;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:5px}';
   h += '.axe-block{padding:5px 7px;border-radius:5px;border-left:2.5px solid}';
-  h += '.axe-lbl{font-size:6.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}';
-  h += '.axe-val{font-size:8.5px;line-height:1.4}';
-  h += '.axe-check{font-size:8.5px;line-height:1.6}';
-  h += '.bloc-comments{padding:5px 10px 7px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.2)}';
+  h += '.axe-lbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}';
+  h += '.axe-val{font-size:10px;line-height:1.4}';
+  h += '.axe-check{font-size:10px;line-height:1.6}';
+  h += '.bloc-comments{padding:5px 10px 7px;border-top:1px solid #f0f0ea;background:#fafaf6}';
   h += '.inter-badge{font-size:7px;background:rgba(255,255,255,.2);color:#fff;padding:1px 6px;border-radius:3px;white-space:nowrap}';
-  h += '.footer{margin-top:8px;padding-top:5px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;font-size:7px;color:rgba(255,255,255,.3)}';
+  h += '.footer{margin-top:8px;padding-top:5px;border-top:2px solid #0a3a1e;display:flex;justify-content:space-between;font-size:7px;color:#888}';
   h += '</style></head><body>';
 
   // ── EN-TETE ──────────────────────────────────────────────────
@@ -2271,8 +2271,8 @@ function printPlan() {
       var it = AXE_INDIV_ITEMS.find(function(x){ return x.id === id; });
       return it ? it.label : id;
     });
-    h += '<div class="axe-block" style="background:rgba(40,148,79,.12);border-color:#28944f">';
-    h += '<div class="axe-lbl" style="color:#6fda9f">&#129485; Individuel</div>';
+    h += '<div class="axe-block" style="background:#edfada;border-color:#28944f">';
+    h += '<div class="axe-lbl" style="color:#166334">&#129485; Individuel</div>';
     if (indivChecked.length) {
       h += '<div class="axe-check" style="color:rgba(255,255,255,.8)">' + indivChecked.map(function(l){ return '&#10003; ' + l; }).join('<br>') + '</div>';
     } else {
@@ -2283,25 +2283,25 @@ function printPlan() {
     // Axe collectif
     var axeC = bloc.axeCollectif && bloc.axeCollectif !== "-- Choisir --" ? bloc.axeCollectif : "";
     if (axeC === "Autre (texte libre)") axeC = bloc.axeCollectifCustom || "";
-    h += '<div class="axe-block" style="background:rgba(26,74,138,.15);border-color:#4a7ad4">';
-    h += '<div class="axe-lbl" style="color:#7aaae8">&#129504; Collectif</div>';
-    h += '<div class="axe-val" style="color:' + (axeC ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.25)') + ';font-style:' + (axeC ? 'normal' : 'italic') + '">' + (axeC || "Non renseign&eacute;") + '</div>';
+    h += '<div class="axe-block" style="background:#ddeaff;border-color:#1a4a8a">';
+    h += '<div class="axe-lbl" style="color:#1a3a7a">&#129504; Collectif</div>';
+    h += '<div class="axe-val" style="color:' + (axeC ? '#333' : '#aaa') + ';font-style:' + (axeC ? 'normal' : 'italic') + '">' + (axeC || "Non renseign&eacute;") + '</div>';
     h += '</div>';
 
     // Axe physique
     var axeP = bloc.axePhysique && bloc.axePhysique !== "-- Choisir --" ? bloc.axePhysique : "";
     if (axeP === "Autre (texte libre)") axeP = bloc.axePhysiqueCustom || "";
-    h += '<div class="axe-block" style="background:rgba(176,96,16,.15);border-color:#d4782a">';
-    h += '<div class="axe-lbl" style="color:#e8a060">&#128170; Physique</div>';
-    h += '<div class="axe-val" style="color:' + (axeP ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.25)') + ';font-style:' + (axeP ? 'normal' : 'italic') + '">' + (axeP || "Non renseign&eacute;") + '</div>';
+    h += '<div class="axe-block" style="background:#fdf3d0;border-color:#b06010">';
+    h += '<div class="axe-lbl" style="color:#7c4200">&#128170; Physique</div>';
+    h += '<div class="axe-val" style="color:' + (axeP ? '#333' : '#aaa') + ';font-style:' + (axeP ? 'normal' : 'italic') + '">' + (axeP || "Non renseign&eacute;") + '</div>';
     h += '</div>';
 
     // Axe jeu au poste
     var axeJ = bloc.axePoste && bloc.axePoste !== "-- Choisir --" ? bloc.axePoste : "";
     if (axeJ === "Autre (texte libre)") axeJ = bloc.axePosteCustom || "";
-    h += '<div class="axe-block" style="background:rgba(74,26,122,.15);border-color:#9a4ad4">';
-    h += '<div class="axe-lbl" style="color:#c07ae8">&#127967; Jeu au poste</div>';
-    h += '<div class="axe-val" style="color:' + (axeJ ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.25)') + ';font-style:' + (axeJ ? 'normal' : 'italic') + '">' + (axeJ || "Non renseign&eacute;") + '</div>';
+    h += '<div class="axe-block" style="background:#f0e8ff;border-color:#4a1a7a">';
+    h += '<div class="axe-lbl" style="color:#3a1060">&#127967; Jeu au poste</div>';
+    h += '<div class="axe-val" style="color:' + (axeJ ? '#333' : '#aaa') + ';font-style:' + (axeJ ? 'normal' : 'italic') + '">' + (axeJ || "Non renseign&eacute;") + '</div>';
     h += '</div>';
 
     h += '</div>'; // fin grid 2x2
@@ -2309,7 +2309,7 @@ function printPlan() {
     // Commentaires
     if (bloc.commentaires) {
       h += '<div class="bloc-comments">';
-      h += '<div class="axe-lbl" style="color:rgba(255,255,255,.4)">&#128172; Commentaires</div>';
+      h += '<div class="axe-lbl" style="color:#666">&#128172; Commentaires</div>';
       h += '<div class="axe-val" style="color:rgba(255,255,255,.7)">' + bloc.commentaires + '</div>';
       h += '</div>';
     }
@@ -2629,9 +2629,9 @@ function renderSeance() {
       _vignettes.forEach(function(at) {
         var entry = ALL_ITEMS[at.atelierIdx];
         var fid = entry.item.id;
-        h += '<div style="position:relative;flex:1;min-width:80px;max-width:140px">';
+        h += '<div style="position:relative;flex:1;min-width:100px;max-width:180px">';
         h += '<img src="https://drive.google.com/thumbnail?id=' + fid + '&sz=w300" '
-          + 'style="width:100%;border-radius:6px;border:1px solid var(--gray2);display:block;cursor:pointer" '
+          + 'style="width:100%;border-radius:6px;border:1px solid var(--gray2);display:block;cursor:pointer;max-height:100px;object-fit:cover" '
           + 'title="' + entry.item.t + '" '
           + 'onclick="window.open(\'https://drive.google.com/file/d/' + fid + '/view\',\'_blank\')" '
           + 'onerror="this.parentElement.style.display=\'none\'"/>';
@@ -3023,7 +3023,7 @@ function printSeance(){
   var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Séance MOM</title><style>';
   h+='@page{size:A4 landscape;margin:8mm 10mm}';
   h+='*{box-sizing:border-box;margin:0;padding:0}';
-  h+='body{font-family:Arial,Helvetica,sans-serif;font-size:8.5px;background:#0d1f0e;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+  h+='body{font-family:Arial,Helvetica,sans-serif;font-size:10px;background:#fff;color:#1a1a14;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
 
   // Header bloc principal
   h+='.hdr{background:linear-gradient(135deg,#0a3a1e 60%,#155a30);border-radius:10px;padding:11px 16px;margin-bottom:7px;display:flex;align-items:center;gap:14px}';
@@ -3038,46 +3038,46 @@ function printSeance(){
   h+='.coaches{font-size:8px;color:rgba(255,255,255,.7);margin-left:8px}';
 
   // Axe
-  h+='.axe{background:rgba(212,168,32,.12);border-left:3px solid #d4a820;padding:5px 10px;border-radius:0 6px 6px 0;margin-bottom:7px;font-size:9px;color:#f5e8a0}';
-  h+='.axe b{font-size:7.5px;text-transform:uppercase;letter-spacing:.08em;color:#d4a820;margin-right:6px}';
+  h+='.axe{background:#fffbeb;border-left:3px solid #d4a820;padding:5px 10px;border-radius:0 6px 6px 0;margin-bottom:7px;font-size:9px;color:#5a3a00}';
+  h+='.axe b{font-size:7.5px;text-transform:uppercase;letter-spacing:.08em;color:#b06000;margin-right:6px}';
 
   // Timeline horizontale
   h+='.tl{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:1px;margin-bottom:7px}';
   h+='.tl-seg{display:flex;align-items:center;justify-content:center;font-size:5.5px;font-weight:800;color:rgba(255,255,255,.9);overflow:hidden;white-space:nowrap;min-width:3px}';
 
   // Grille principale
-  h+='.grid{display:grid;grid-template-columns:190px 1fr 160px 130px 100px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}';
-  h+='.col-hd{background:rgba(255,255,255,.08);padding:5px 8px;font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.55);border-right:1px solid rgba(255,255,255,.06)}';
+  h+='.grid{display:grid;grid-template-columns:22% 18% 30% 17% 13%;width:100%;border-radius:10px;overflow:hidden;border:1.5px solid #0a3a1e}';
+  h+='.col-hd{background:#0a3a1e;color:#fff;padding:6px 8px;font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border-right:1px solid rgba(255,255,255,.15)}';
   h+='.col-hd:last-child{border-right:none}';
-  h+='.cell{padding:6px 8px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top;line-height:1.4;color:rgba(255,255,255,.88)}';
+  h+='.cell{padding:7px 9px;border-right:1px solid #e8e8e0;border-bottom:1px solid #e8e8e0;vertical-align:top;line-height:1.5;color:#1a1a14;background:#fff}';
   h+='.cell:last-child{border-right:none}';
   h+='.cell:last-child{border-right:none}';
 
   // Trame cell
   h+='.trame-cell{display:flex;gap:7px}';
   h+='.trame-bar{width:6px;border-radius:3px;flex-shrink:0;min-height:40px}';
-  h+='.trame-heure{font-size:7px;color:rgba(255,255,255,.4);font-weight:700;margin-bottom:2px}';
-  h+='.trame-badge{font-size:7.5px;font-weight:900;padding:1px 6px;border-radius:3px;color:#fff;display:inline-block;margin-bottom:2px}';
-  h+='.trame-titre{font-size:9px;font-weight:700;color:#fff;line-height:1.2}';
-  h+='.trame-dur{font-size:7.5px;color:#d4a820;font-weight:700;margin-top:2px}';
-  h+='.trame-atelier{font-size:7px;color:rgba(255,255,255,.45);margin-top:2px;padding-left:4px;border-left:1.5px solid rgba(255,255,255,.2)}';
-  h+='.intens{font-size:6.5px;border-radius:3px;padding:1px 5px;border:1px solid;display:inline-block;margin-top:3px;font-weight:700}';
+  h+='.trame-heure{font-size:8px;color:#888;font-weight:700;margin-bottom:2px}';
+  h+='.trame-badge{font-size:8.5px;font-weight:900;padding:2px 7px;border-radius:3px;color:#fff;display:inline-block;margin-bottom:2px}';
+  h+='.trame-titre{font-size:10px;font-weight:700;color:#1a1a14;line-height:1.2}';
+  h+='.trame-dur{font-size:9px;color:#d4a820;font-weight:700;margin-top:2px}';
+  h+='.trame-atelier{font-size:8px;color:#666;margin-top:2px;padding-left:4px;border-left:1.5px solid #ccc}';
+  h+='.intens{font-size:8px;border-radius:3px;padding:2px 6px;border:1px solid;display:inline-block;margin-top:3px;font-weight:700}';
 
   // Vignettes
-  h+='.vignette-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}';
-  h+='.vignette{width:66px;border-radius:5px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}';
-  h+='.vignette img{width:100%;display:block;max-height:50px;object-fit:cover;opacity:.9}';
-  h+='.vignette-lbl{font-size:5.5px;color:rgba(255,255,255,.4);padding:1px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(0,0,0,.3)}';
+  h+='.vignette-wrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}';
+  h+='.vignette{width:calc(50% - 4px);min-width:70px;max-width:110px;border-radius:6px;overflow:hidden;border:1px solid #e0e0d8;flex-shrink:0}';
+  h+='.vignette img{width:100%;display:block;max-height:70px;object-fit:cover;opacity:.95}';
+  h+='.vignette-lbl{font-size:5.5px;color:#666;padding:1px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#f0f0ea}';
 
   // Groupes & matériel
   h+='.grp{margin-bottom:3px;display:flex;flex-wrap:wrap;gap:2px;align-items:flex-start}';
-  h+='.grp-lbl{font-size:7px;font-weight:900;min-width:16px;color:#d4a820}';
-  h+='.grp-name{font-size:7px;background:rgba(255,255,255,.07);border-radius:3px;padding:0px 4px;color:rgba(255,255,255,.75)}';
-  h+='.mat-chip{display:inline-block;border-radius:6px;border:1px solid rgba(212,168,32,.4);color:#d4a820;font-size:6.5px;padding:1px 5px;margin:1px;font-weight:600}';
+  h+='.grp-lbl{font-size:8.5px;font-weight:900;min-width:18px;color:#d4a820}';
+  h+='.grp-name{font-size:8.5px;background:#f0f0ea;border-radius:3px;padding:1px 5px;color:#333}';
+  h+='.mat-chip{display:inline-block;border-radius:6px;border:1px solid #c8880a;color:#7a4800;background:#fff8e0;font-size:8px;padding:2px 6px;margin:1px;font-weight:600}';
 
   // Footer
-  h+='.footer{margin-top:6px;display:flex;justify-content:space-between;font-size:7px;color:rgba(255,255,255,.3);padding-top:5px;border-top:1px solid rgba(255,255,255,.08)}';
-  h+='.footer b{color:rgba(255,255,255,.55)}';
+  h+='.footer{margin-top:6px;display:flex;justify-content:space-between;font-size:7px;color:#aaa;padding-top:5px;border-top:1px solid #e8e8e0}';
+  h+='.footer b{color:#0a3a1e}';
 
   h+='</style></head><body>';
 
@@ -3163,7 +3163,7 @@ function printSeance(){
     // ── COL 2 : COMPORTEMENTS ──
     h+='<div class="cell">';
     if(b.comportements)h+=b.comportements.replace(/\n/g,"<br>");
-    else h+='<span style="color:rgba(255,255,255,.2);font-style:italic">&mdash;</span>';
+    else h+='<span style="color:#ccc;font-style:italic">&mdash;</span>';
     h+='</div>';
 
     // ── COL 3 : ORGANISATION + VIGNETTES ──
@@ -3182,7 +3182,7 @@ function printSeance(){
       h+='</div>';
     }
     if(b.orga)h+=b.orga.replace(/\n/g,"<br>");
-    else if(!vigAteliers.length)h+='<span style="color:rgba(255,255,255,.2);font-style:italic">&mdash;</span>';
+    else if(!vigAteliers.length)h+='<span style="color:#ccc;font-style:italic">&mdash;</span>';
     h+='</div>';
 
     // ── COL 4 : GROUPES par bloc ──
@@ -3199,14 +3199,14 @@ function printSeance(){
       names.forEach(function(n){h+='<span class="grp-name">'+n+'</span>';});
       h+='</div>';
     });
-    if(!hasGroups)h+='<span style="color:rgba(255,255,255,.2);font-style:italic">&mdash;</span>';
+    if(!hasGroups)h+='<span style="color:#ccc;font-style:italic">&mdash;</span>';
     h+='</div>';
 
     // ── COL 5 : MATÉRIEL par bloc ──
     h+='<div class="cell">';
     var bMat=b.materiel||[];
     if(bMat.length){bMat.forEach(function(m){h+='<span class="mat-chip">'+m+'</span>';});}
-    else h+='<span style="color:rgba(255,255,255,.2);font-style:italic">&mdash;</span>';
+    else h+='<span style="color:#ccc;font-style:italic">&mdash;</span>';
     h+='</div>';
   });
 
