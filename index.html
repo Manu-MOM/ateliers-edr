@@ -552,7 +552,7 @@ button,input{font-family:'Barlow',sans-serif}
     </div>
     <div class="ldiv"></div>
     <label class="llabel">2. Code d'acces educateur</label>
-    <input class="linput" id="ci" type="password" maxlength="8" placeholder="Entrez votre code" autocomplete="off">
+    <input class="linput" id="ci" type="password" maxlength="20" placeholder="Entrez votre code" autocomplete="off">
     <button class="lbtn" id="lbtn" onclick="tryLogin()" disabled>Acceder</button>
     <div class="lerr" id="lerr">Code incorrect</div>
     <div class="lhint">Espace reserve aux educateurs du MOM</div>
@@ -906,7 +906,22 @@ ALL_ITEMS.forEach(function(x) {
 });
 
 // ═══ STATE ═══════════════════════════════════════════════════════
-var CODE = "MOM2025";
+// ── Mots de passe par catégorie ─────────────────────────────────
+var CAT_PASSWORDS = {
+  "ALL":    "MOM2025",    // Admin / Tous niveaux
+  "M6":     "Ovaline6",
+  "M8":     "Talonneur8",
+  "M10":    "Melee10",
+  "M12":    "Plaquage12",
+  "M14F15": "Continuite14",
+  "M16":    "Territoire16",
+  "M18":    "Formation18",
+  "SENF":   "EllipseF25",
+  "SENM":   "Essai67"
+};
+// Mot de passe admin (accès params)
+var PARAMS_ADMIN_CODE = "MOM2025";
+var CODE = "MOM2025"; // compat legacy
 var selAge_ = null;
 var filterAge_ = null;
 var curSection = "bib";
@@ -920,12 +935,25 @@ function selAge(btn) {
   btn.classList.add("sel");
   selAge_ = btn.dataset.age;
   document.getElementById("lbtn").disabled = false;
+  // Mettre à jour le hint
+  var lbl = document.getElementById("lcode-label");
+  var hint = document.getElementById("lcode-hint");
+  if (lbl) {
+    var catName = btn.textContent.trim().split("\n")[0];
+    lbl.textContent = "2. Code d'accès " + catName;
+  }
+  if (hint) hint.style.display = "block";
+  document.getElementById("ci").value = "";
+  document.getElementById("ci").focus();
 }
 
 function tryLogin() {
-  var v = document.getElementById("ci").value.toUpperCase();
-  if (!selAge_) { document.getElementById("lerr").style.display = "block"; return; }
-  if (v === CODE) {
+  var v = document.getElementById("ci").value;
+  if (!selAge_) { document.getElementById("lerr").textContent = "Veuillez choisir une catégorie."; document.getElementById("lerr").style.display = "block"; return; }
+  var expected = CAT_PASSWORDS[selAge_] || CAT_PASSWORDS["ALL"];
+  // Admin peut accéder à tout
+  var isAdmin = (v === CAT_PASSWORDS["ALL"]);
+  if (v === expected || isAdmin) {
     document.getElementById("login").style.display = "none";
     document.getElementById("app").style.display = "flex";
     var lbl = selAge_ === "ALL" ? "Tous niveaux" : selAge_;
@@ -3302,6 +3330,7 @@ var EDR_APTS = ["Tank","Driver","Runner","Botteur","Lanceur","Sauteur","Lifteur"
 var EDR_CLUBS_COLORS = {MOM:"#1a6b1a", SAR:"#1a3a6b", ASCS:"#374151", Autre:"#5a5a50"};
 
 function goSection_joueurs() {
+  if (selAge_ && selAge_ !== "ALL" && curJoueursCat !== selAge_) curJoueursCat = selAge_;
   document.getElementById("bc").innerHTML = "<b>Joueurs</b>";
   document.getElementById("tc").style.display = "none";
   document.getElementById("vbtns").style.display = "none";
@@ -3331,7 +3360,8 @@ function goSection_joueurs() {
 }
 
 function buildJoueursSection(cat, db) {
-  var cats = ["M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
+  // Filtrer les catégories visibles selon le login
+  var cats = (selAge_ && selAge_ !== "ALL") ? [selAge_] : ["M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
   var all = [];
   cats.forEach(function(c){ (db[c]||[]).forEach(function(j,i){ all.push({j:j, cat:c, idx:i}); }); });
   var total = all.length;
@@ -4732,7 +4762,7 @@ function _cGetJoueurs(){ var d=getComposData(_composCurCat); var joueurs=d.allJo
 // ── Navigation ────────────────────────────────────────────────────
 function goSection_compos() {
   _cInit();
-  _composCurCat = (selAge_ && selAge_ !== "ALL") ? selAge_ : "M14F15";
+  _composCurCat = (selAge_ && selAge_ !== "ALL") ? selAge_ : (_composCurCat || "M14F15");
   _composView = "calendrier";
   document.getElementById("bc").innerHTML = "<b>Compositions</b>";
   document.getElementById("tc").style.display = "none";
@@ -4757,7 +4787,8 @@ function buildSbCompos() {
   h += '</div><div class="sb-div"></div>';
   h += '<div class="sb-sec"><div class="sb-sec-lbl">Catégorie</div>';
   h += '<div style="padding:4px 8px"><select style="width:100%;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;background:var(--w);color:var(--gray7);cursor:pointer" onchange="switchComposCat(this.value)">';
-  AGES.forEach(function(a){ h += '<option value="'+a+'"'+(a===_composCurCat?" selected":"")+'>'+a+'</option>'; });
+  var _visibleAges = (selAge_ === "ALL") ? AGES : (AGES.indexOf(selAge_) >= 0 ? [selAge_] : AGES);
+  _visibleAges.forEach(function(a){ h += '<option value="'+a+'"'+(a===_composCurCat?" selected":"")+'>'+a+'</option>'; });
   h += '</select></div>';
   h += '<div style="padding:0 8px 8px"><select style="width:100%;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;background:var(--w);color:var(--gray7);cursor:pointer" onchange="_composFmtFilter=this.value;renderCompos()">';
   h += '<option value="">Tous formats</option>';
@@ -6036,6 +6067,34 @@ function cExportMatchSheet(evId) {
 
 
 // ── Export / Import JSON ──────────────────────────────────────────
+// ── Mots de passe par catégorie (params) ────────────────────────
+function buildParamsPwd() {
+  var h = '<div style="padding:0 0 12px">';
+  h += '<div style="font-size:11px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">🔑 Mots de passe par catégorie</div>';
+  h += '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:8px 12px;font-size:10px;color:#92400e;margin-bottom:10px">Ces mots de passe protègent l\'accès à chaque catégorie. Partagez-les uniquement avec les éducateurs concernés.</div>';
+  var cats = [["ALL","Admin / Tous niveaux"],["M6","M6"],["M8","M8"],["M10","M10"],["M12","M12"],["M14F15","M14/F15"],["M16","M16"],["M18","M18"],["SENF","Senior F"],["SENM","Senior M"]];
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  cats.forEach(function(c) {
+    h += '<div style="display:flex;flex-direction:column;gap:3px">';
+    h += '<label style="font-size:10px;font-weight:700;color:var(--g7)">'+c[1]+'</label>';
+    h += '<input type="text" value="'+(CAT_PASSWORDS[c[0]]||"")+'" data-cat="'+c[0]+'" ';
+    h += 'onchange="CAT_PASSWORDS[this.dataset.cat]=this.value" ';
+    h += 'style="padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:11px;font-family:monospace">';
+    h += '</div>';
+  });
+  h += '</div>';
+  h += '<button onclick="saveCatPasswords()" style="margin-top:12px;width:100%;padding:8px;background:var(--g7);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer">💾 Enregistrer</button>';
+  h += '</div>';
+  return h;
+}
+function saveCatPasswords() {
+  try { localStorage.setItem("mom_cat_passwords", JSON.stringify(CAT_PASSWORDS)); showToast("Mots de passe sauvegardés ✓"); } catch(e) {}
+}
+// Restaurer les mots de passe sauvegardés au démarrage
+(function() {
+  try { var p = JSON.parse(localStorage.getItem("mom_cat_passwords")||"null"); if(p) Object.keys(p).forEach(function(k){ CAT_PASSWORDS[k]=p[k]; }); } catch(e) {}
+})();
+
 function cExportJSON() {
   _cInit();
   var blob = new Blob([JSON.stringify(_CS, null, 2)], {type:"application/json"});
