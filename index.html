@@ -2410,7 +2410,11 @@ function goSection_seance() {
 
 function buildSbSeance() {
   var sb = document.getElementById("sidebar");
-  var cat = seanceData && seanceData.categorie ? seanceData.categorie : (selAge_ && selAge_ !== "ALL" ? selAge_ : "");
+  var cat = (seanceData && seanceData.categorie) ? seanceData.categorie : ((selAge_ && selAge_ !== "ALL") ? selAge_ : "");
+  // Auto-remplir la catégorie de la séance si pas encore définie
+  if (!seanceData.categorie && selAge_ && selAge_ !== "ALL") {
+    seanceData.categorie = selAge_;
+  }
   var h = '<div class="sb-sec"><div class="sb-sec-lbl">Ma Séance</div>';
   h += '<div class="sb-item act"><div class="sb-icon">📋</div>Canevas de séance</div>';
   h += '</div><div class="sb-div"></div>';
@@ -2427,7 +2431,12 @@ function buildSbSeance() {
       + '<div class="sb-icon">👥</div>Charger ' + cat
       + '<span class="sb-cnt">' + nb + '</span></div>';
   } else {
-    h += '<div class="sb-item" style="opacity:.5;cursor:default"><div class="sb-icon">👥</div>Choisir une catégorie</div>';
+    // Proposer un sélecteur rapide de catégorie
+    h += '<div style="padding:4px 8px">';
+    h += '<select style="width:100%;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;background:var(--w);color:var(--gray7);cursor:pointer" onchange="if(this.value){seanceData.categorie=this.value;buildSbSeance();}">';
+    h += '<option value="">-- Choisir une catégorie --</option>';
+    AGES.forEach(function(a){ h += '<option value="' + a + '">' + a + '</option>'; });
+    h += '</select></div>';
   }
   h += '<div class="sb-item" onclick="openParamsPanel(3)"><div class="sb-icon">⚙️</div>Gérer la base joueurs</div>';
   h += '</div>';
@@ -2536,7 +2545,7 @@ function renderTrameBloc(bloc, i, total, totalMin) {
   var bid = bloc.id;
   var durMin = parseInt((bloc.duree||"").replace(/[^\d]/g,"")) || 15;
   var pct = totalMin > 0 ? durMin / totalMin : 0.1;
-  var minH = Math.max(52, Math.round(pct * 480));
+  var minH = Math.max(52, Math.min(200, Math.round(pct * 480)));
   var heureAffich = bloc._heureCalc || "";
   var isPause = bloc.type === "pause";
 
@@ -2569,12 +2578,14 @@ function renderTrameBloc(bloc, i, total, totalMin) {
     h += '</select>';
 
     if (!isPause) {
+      // Menu titres prédéfinis
       var titresList2 = (planData && planData["__config__"] && planData["__config__"].seance && planData["__config__"].seance.titresBlocs) ? planData["__config__"].seance.titresBlocs : TITRES_BLOCS_SEANCE;
       h += '<select class="trame-sel" onchange="onBlocTitreSeance(this,' + bid + ')">';
       titresList2.forEach(function(t){ h += '<option value="' + t + '"' + (bloc.titre===t?" selected":"") + '>' + t + '</option>'; });
       h += '</select>';
-      if (bloc.titre === "Autre...") {
-        h += '<input class="trame-inp" placeholder="Préciser..." value="' + (bloc.titreCustom||"").replace(/"/g,"&quot;") + '" data-bid="' + bid + '" oninput="onSBlocField(this.dataset.bid,\'titreCustom\',this.value)">';
+      // Champ texte si Autre... ou si titre personnalisé déjà saisi
+      if (bloc.titre === "Autre..." || (!bloc.titre) || bloc.titre === "-- Choisir --") {
+        h += '<input class="trame-inp" placeholder="Titre / précision (optionnel)" value="' + (bloc.titreCustom||"").replace(/"/g,"&quot;") + '" data-bid="' + bid + '" oninput="onSBlocField(this.dataset.bid,\'titreCustom\',this.value)">';
       }
       h += '<div class="trame-row">';
       h += '<span class="trame-row-lbl" style="color:var(--gold);font-weight:700">' + heureAffich + '</span>';
