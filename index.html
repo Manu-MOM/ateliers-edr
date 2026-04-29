@@ -2239,28 +2239,6 @@ function printPlan() {
   h += '</div>';
 
 
-  h += '
-<!-- Panneau Paramètres global -->
-<div id="params-panel-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;align-items:flex-start;justify-content:flex-end;padding:54px 8px 8px 8px">
-  <div id="params-panel" style="background:#fff;width:100%;max-width:520px;height:calc(100vh - 62px);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.28)">
-    <!-- Header -->
-    <div style="background:var(--g8);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0">
-      <div style="flex:1;font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:800;letter-spacing:.04em">⚙️ Paramètres</div>
-      <button onclick="closeParamsPanel()" style="width:28px;height:28px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:#fff;cursor:pointer;font-size:15px">&#10005;</button>
-    </div>
-    <!-- Onglets sections -->
-    <div id="params-tabs" style="display:flex;border-bottom:2px solid var(--gray2);flex-shrink:0;overflow-x:auto;background:var(--gray1)"></div>
-    <!-- Contenu -->
-    <div id="params-body" style="flex:1;overflow-y:auto;padding:16px 18px"></div>
-    <!-- Footer -->
-    <div style="padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px;flex-shrink:0;background:var(--gray1)">
-      <button onclick="saveParamsPanel()" style="flex:2;padding:9px;background:var(--g7);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:.04em">💾 Sauvegarder</button>
-      <button onclick="closeParamsPanel()" style="flex:1;padding:9px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:7px;font-weight:700;cursor:pointer">Fermer</button>
-      <span id="params-save-ok" style="display:none;align-items:center;font-size:12px;color:var(--g6);font-weight:700">✅ Sauvegardé !</span>
-    </div>
-  </div>
-</div>
-</body></html>';
 
   var win = window.open("", "_blank", "width=1100,height=750");
   win.document.write(h);
@@ -2698,8 +2676,7 @@ function processImportRows(rows, cat) {
   }
 
   if (!joueurs.length) {
-    alert("Aucun joueur détecté dans le fichier.
-Vérifiez que la première ligne contient bien les en-têtes (Prénom, Nom, Poste...)");
+    alert("Aucun joueur détecté dans le fichier.\nVérifiez que la première ligne contient bien les en-têtes (Prénom, Nom, Poste...)");
     return;
   }
 
@@ -2740,7 +2717,7 @@ function showImportPreview(joueurs, colMap, headers, cat) {
   // Header
   var hdr = document.createElement("div");
   hdr.style.cssText = "background:var(--g8);color:#fff;padding:14px 18px;flex-shrink:0";
-  hdr.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800;margin-bottom:4px">📂 Prévisualisation de l'import — ' + cat + '</div>'
+  hdr.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800;margin-bottom:4px">📂 Prévisualisation de l&rsquo;import — ' + cat + '</div>'
     + '<div style="font-size:11px;opacity:.7">' + joueurs.length + ' joueur' + (joueurs.length>1?"s":"") + ' détecté' + (joueurs.length>1?"s":"")
     + (nb_dup ? ' · <span style="color:#fbbf24;font-weight:700">' + nb_dup + ' doublon' + (nb_dup>1?"s":"") + '</span>' : '') + '</div>';
 
@@ -3041,15 +3018,15 @@ function buildParamsJoueurs() {
   // Grille des catégories
   h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:14px">';
   cats.forEach(function(c, i) {
-    h += '<div style="background:var(--g0);border:1px solid var(--g1);border-radius:8px;padding:10px;text-align:center;cursor:pointer" onclick="closeParamsPanel();setTimeout(function(){goSection('joueurs');setTimeout(function(){var el=document.getElementById('jp-fcat');if(el){el.value='' + c + '';renderJoueursGrid();}},100);},200)">';
+    h += '<div style="background:var(--g0);border:1px solid var(--g1);border-radius:8px;padding:10px;text-align:center;cursor:pointer" data-cat="' + c + '" onclick="(function(el){closeParamsPanel();var cat=el.dataset.cat;setTimeout(function(){goSection(\'joueurs\');setTimeout(function(){var f=document.getElementById(\'jp-fcat\');if(f){f.value=cat;renderJoueursGrid();}},100);},200);})(this)">';
     h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;color:var(--g8)">' + c + '</div>';
     h += '<div style="font-size:11px;color:var(--gray5)">' + totals[i] + ' joueur' + (totals[i]>1?"s":"") + '</div>';
     h += '</div>';
   });
   h += '</div>';
   h += '<div style="background:var(--g0);border-radius:8px;border:1px solid var(--g1);padding:12px;font-size:12px;color:var(--g6)">';
-  h += '💡 Cliquer sur une catégorie pour ouvrir l'onglet Joueurs filtré.<br>';
-  h += 'Pour importer depuis un fichier Excel/CSV, rendez-vous dans l'onglet <b>👥 Joueurs</b> → bouton <b>📂 Importer</b>.';
+  h += '💡 Cliquer sur une catégorie pour ouvrir l&rsquo;onglet Joueurs filtré.<br>';
+  h += 'Pour importer depuis un fichier Excel/CSV, rendez-vous dans l&rsquo;onglet <b>👥 Joueurs</b> → bouton <b>📂 Importer</b>.';
   h += '</div>';
   return h;
 }
@@ -3062,7 +3039,7 @@ function buildParamsGeneral() {
   h += '<button onclick="checkCfgCode()" style="padding:6px 14px;background:var(--g7);color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px">Vérifier</button></div>';
   h += '<div id="params-cfg-code-result" style="font-size:11px;margin-top:5px"></div></div>';
   h += '<div style="background:var(--g0);border-radius:8px;border:1px solid var(--g1);padding:12px;font-size:12px;color:var(--g6)">';
-  h += '🔒 L'accès EDR permet de modifier le code d'accès, les axes pédagogiques et de sauvegarder la configuration sur Google Drive.';
+  h += '🔒 L&rsquo;acc&egrave;s EDR permet de modifier le code d&rsquo;acc&egrave;s, les axes p&eacute;dagogiques et de sauvegarder la configuration sur Google Drive.';
   h += '</div>';
   return h;
 }
@@ -3088,11 +3065,11 @@ function renderParamsListSection(key, title, items, fixed) {
     var isFixed = fixed.indexOf(item) >= 0;
     h += '<div style="display:flex;align-items:center;gap:6px;padding:5px 10px;border-bottom:1px solid var(--gray1)">';
     h += '<input style="flex:1;font-size:12px;border:none;background:transparent;color:var(--gray7);outline:none;padding:2px 0" value="' + item.replace(/"/g,"&quot;") + '"' + (isFixed ? ' readonly style="flex:1;font-size:12px;border:none;background:transparent;color:var(--gray5);outline:none;padding:2px 0"' : ' oninput="cfgDirty=true"') + '>';
-    if (!isFixed) h += '<button onclick="this.closest('div').remove();cfgDirty=true" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0">✕</button>';
+    if (!isFixed) h += '<button onclick="this.parentElement.remove();cfgDirty=true" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0">&#10005;</button>';
     h += '</div>';
   });
   h += '</div>';
-  h += '<button onclick="addParamsListItem('' + key + '')" style="margin-top:5px;padding:4px 10px;background:none;border:1px dashed var(--gray2);border-radius:5px;color:var(--gray5);font-size:11px;cursor:pointer;font-weight:600">+ Ajouter</button>';
+  h += '<button onclick="addParamsListItem(\' + key + \')" style="margin-top:5px;padding:4px 10px;background:none;border:1px dashed var(--gray2);border-radius:5px;color:var(--gray5);font-size:11px;cursor:pointer;font-weight:600">+ Ajouter</button>';
   h += '</div>';
   return h;
 }
@@ -3103,7 +3080,7 @@ function addParamsListItem(key) {
   var div = document.createElement("div");
   div.style.cssText = "display:flex;align-items:center;gap:6px;padding:5px 10px;border-bottom:1px solid var(--gray1)";
   div.innerHTML = '<input style="flex:1;font-size:12px;border:none;background:transparent;color:var(--gray7);outline:none;padding:2px 0" placeholder="Nouvelle valeur..." oninput="cfgDirty=true">'
-    + '<button onclick="this.closest('div').remove();cfgDirty=true" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0">✕</button>';
+    + '<button onclick="this.parentElement.remove();cfgDirty=true" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0">✕</button>';
   list.appendChild(div);
   div.querySelector("input").focus();
 }
@@ -3154,5 +3131,84 @@ function saveParamsPanel() {
 
 
 </script>
+
+<!-- Modal édition joueur EDR -->
+<div class="jpm-bg" id="jpm-modal">
+  <div class="jpm-box">
+    <div class="jpm-hdr">
+      <div class="jpm-title" id="jpm-title">Joueur</div>
+      <button onclick="closeJPM()" style="width:26px;height:26px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:#fff;cursor:pointer;font-size:14px">&#10005;</button>
+    </div>
+    <div class="jpm-body">
+      <input type="hidden" id="jpm-cat">
+      <input type="hidden" id="jpm-idx" value="-1">
+      <div>
+        <span class="jpm-lbl">Photo</span>
+        <div class="jp-photo-area" onclick="document.getElementById('jpm-photo-input').click()">
+          <img id="jpm-photo-preview" class="jp-photo-preview" style="display:none">
+          <div id="jpm-photo-ph"><div style="font-size:24px">&#128247;</div><div style="font-size:11px;color:var(--gray5);margin-top:3px">Cliquer pour ajouter une photo</div></div>
+        </div>
+        <input type="file" id="jpm-photo-input" accept="image/*" style="display:none" onchange="jpmLoadPhoto(this)">
+        <input type="hidden" id="jpm-photo-data">
+      </div>
+      <div class="jpm-row">
+        <div><label class="jpm-lbl">Pr&eacute;nom</label><input class="jpm-inp" id="jpm-prenom" placeholder="Pr&eacute;nom"></div>
+        <div><label class="jpm-lbl">NOM</label><input class="jpm-inp" id="jpm-nom" placeholder="NOM" style="text-transform:uppercase"></div>
+      </div>
+      <div class="jpm-row">
+        <div><label class="jpm-lbl">Club</label>
+          <select class="jpm-sel" id="jpm-club"><option value="MOM">MOM</option><option value="SAR">SAR</option><option value="ASCS">ASCS</option><option value="Autre">Autre</option></select>
+        </div>
+        <div><label class="jpm-lbl">Poste(s)</label><input class="jpm-inp" id="jpm-postes" placeholder="ex: Pilier G, Talonneur"></div>
+      </div>
+      <div class="jpm-row">
+        <div><label class="jpm-lbl">Taille (m)</label><input class="jpm-inp" id="jpm-taille" type="number" step="0.01" min="1" max="2.5" placeholder="1.70"></div>
+        <div><label class="jpm-lbl">Poids (kg)</label><input class="jpm-inp" id="jpm-poids" type="number" step="0.1" placeholder="70"></div>
+      </div>
+      <div class="jpm-row">
+        <div><label class="jpm-lbl">Passeport JDD</label>
+          <select class="jpm-sel" id="jpm-jdd"><option value="">&#8212;</option><option value="oui">&#10003; Valid&eacute;</option><option value="en cours">En cours</option><option value="non">&#10007; Non</option></select>
+        </div>
+        <div><label class="jpm-lbl">Arbitrage</label>
+          <select class="jpm-sel" id="jpm-arb"><option value="">&#8212;</option><option value="oui">&#10003; Valid&eacute;</option><option value="en cours">En cours</option><option value="non">&#10007; Non</option></select>
+        </div>
+      </div>
+      <div><span class="jpm-lbl">Aptitudes</span><div class="jpm-apts" id="jpm-apts"></div></div>
+      <div>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;font-weight:600;color:var(--gray7)">
+          <input type="checkbox" id="jpm-inj" onchange="jpmToggleInj()"> &#127973; Joueur bless&eacute; / indisponible
+        </label>
+        <div id="jpm-inj-fields" style="display:none;margin-top:8px">
+          <div class="jpm-row">
+            <div><label class="jpm-lbl">Nature</label><input class="jpm-inp" id="jpm-inj-nat" placeholder="ex: Cheville"></div>
+            <div><label class="jpm-lbl">Retour estim&eacute;</label><input class="jpm-inp" id="jpm-inj-to" type="date"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="jpm-foot">
+      <button onclick="deleteJoueurEDR()" id="jpm-del-btn" style="padding:7px 14px;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;margin-right:auto;display:none">&#128465; Supprimer</button>
+      <button onclick="closeJPM()" style="padding:7px 16px;border:1px solid var(--gray2);border-radius:6px;background:none;cursor:pointer;font-size:12px;color:var(--gray5)">Annuler</button>
+      <button onclick="saveJoueurEDR()" style="padding:7px 18px;border:none;border-radius:6px;background:var(--g7);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.04em">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Panneau Paramètres global -->
+<div id="params-panel-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;align-items:flex-start;justify-content:flex-end;padding:54px 8px 8px 8px">
+  <div id="params-panel" style="background:#fff;width:100%;max-width:520px;height:calc(100vh - 62px);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.28)">
+    <div style="background:var(--g8);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <div style="flex:1;font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:800;letter-spacing:.04em">&#9881;&#65039; Param&egrave;tres</div>
+      <button onclick="closeParamsPanel()" style="width:28px;height:28px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:#fff;cursor:pointer;font-size:15px">&#10005;</button>
+    </div>
+    <div id="params-tabs" style="display:flex;border-bottom:2px solid var(--gray2);flex-shrink:0;overflow-x:auto;background:var(--gray1)"></div>
+    <div id="params-body" style="flex:1;overflow-y:auto;padding:16px 18px"></div>
+    <div style="padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px;flex-shrink:0;background:var(--gray1)">
+      <button onclick="saveParamsPanel()" style="flex:2;padding:9px;background:var(--g7);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:.04em">&#128190; Sauvegarder</button>
+      <button onclick="closeParamsPanel()" style="flex:1;padding:9px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:7px;font-weight:700;cursor:pointer">Fermer</button>
+      <span id="params-save-ok" style="display:none;align-items:center;font-size:12px;color:var(--g6);font-weight:700">&#10003; Sauvegard&eacute; !</span>
+    </div>
+  </div>
+</div>
 </body>
 </html>
