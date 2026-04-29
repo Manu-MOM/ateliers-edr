@@ -2545,7 +2545,7 @@ function renderSeance() {
   h += '<button onclick="stepDuree(15)" style="width:20px;height:20px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:var(--w);cursor:pointer;font-size:12px">+</button></div>';
   h += '</div></div>'; // fin meta + bandeau
 
-  h += '<div class="seance-axe-bar"><span class="seance-axe-lbl">⚽ Axe de travail général</span>';
+  h += '<div class="seance-axe-bar"><span class="seance-axe-lbl">🏉 Axe de travail général</span>';
   h += '<input class="seance-axe-input" value="' + (d.axe||"") + '" placeholder="Ex: Continuité debout autour du PB / Duels..." oninput="seanceDirty=true;seanceData.axe=this.value"></div>';
 
   // ── GRILLE ROW-BASED (chaque bloc = 1 ligne) ────────────────────
@@ -4276,7 +4276,12 @@ function renderCompos() {
   var ct = document.getElementById("content");
   if (!ct) return;
   ct.classList.remove("lv");
-  if (_cEditorOpen && _cCurEV) { ct.innerHTML = _cBuildEditor(); return; }
+  if (_cEditorOpen && _cCurEV) {
+    ct.innerHTML = _cBuildEditor();
+    if (_cCurView === "terrain") setTimeout(cDrawField, 50);
+    if (_cCurView === "export")  setTimeout(cDrawExport, 50);
+    return;
+  }
   if (_composView === "calendrier") ct.innerHTML = _cBuildCalendrier();
   else if (_composView === "joueurs") ct.innerHTML = buildComposJoueurs();
 }
@@ -4303,7 +4308,7 @@ function _cBuildCalendrier() {
   h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">';
   h += _cStatCard((_cGetJoueurs()||[]).length, "Joueurs", "👥");
   h += _cStatCard(events.length, "Événements", "📅");
-  h += _cStatCard(totalTot?Math.round(totalDone/totalTot*100)+"%":"—", "Compos", "⚽");
+  h += _cStatCard(totalTot?Math.round(totalDone/totalTot*100)+"%":"—", "Compos", "🏉");
   h += _cStatCard(nbInj, "Blessés", "🏥");
   h += '</div>';
 
@@ -4340,7 +4345,7 @@ function _cBuildCalendrier() {
       out += '</div>';
       // Actions
       out += '<div style="display:flex;gap:0;border-left:1px solid var(--gray2)">';
-      out += '<button onclick="cOpenEditor(\''+ev.id+'\',\''+(ev.teams[0]||'t1')+'\',\''+(ms[0]?ms[0].id:'')+'\',\'base\')" style="padding:0 14px;border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--g6)" title="Composer">⚽</button>';
+      out += '<button onclick="cOpenEditor(\''+ev.id+'\',\''+(ev.teams[0]||'t1')+'\',\''+(ms[0]?ms[0].id:'')+'\',\'base\')" style="padding:0 14px;border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--g6)" title="Composer">🏉</button>';
       out += '<button onclick="cExportMatchSheet(\''+ev.id+'\')" style="padding:0 12px;border:none;border-left:1px solid var(--gray2);background:transparent;cursor:pointer;font-size:14px;color:var(--gray5)" title="Feuille de match PDF">📄</button>';
       out += '<button onclick="cEditEvent(\''+ev.id+'\')" style="padding:0 12px;border:none;border-left:1px solid var(--gray2);background:transparent;cursor:pointer;font-size:14px;color:var(--gray5)" title="Modifier">✏️</button>';
       out += '<button onclick="cDeleteEvent(\''+ev.id+'\')" style="padding:0 12px;border:none;border-left:1px solid var(--gray2);background:transparent;cursor:pointer;font-size:12px;color:#dc2626" title="Supprimer">✕</button>';
@@ -4656,7 +4661,7 @@ function _cBuildEditor() {
     h += _cBuildInjAlert(resolved, joueurs);
     h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
     // Titulaires
-    h += '<div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--g8);margin-bottom:6px">⚽ Titulaires</div>';
+    h += '<div><div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--g8);margin-bottom:6px">🏉 Titulaires</div>';
     h += '<div id="c-slots-s">';
     for (var i=0; i<ss; i++) {
       var pid = resolved[i]||null;
@@ -4685,10 +4690,10 @@ function _cBuildEditor() {
     h += '<div id="c-terrain-wrap" style="max-width:520px;margin:0 auto">';
     h += '<svg id="c-field-svg" viewBox="0 0 520 700" style="width:100%;display:block"></svg>';
     h += '</div>';
-    h += '<script>setTimeout(function(){cDrawField();},50);<\/script>';
+
   } else if (_cCurView === "export") {
     h += '<div id="c-export-wrap" style="max-width:480px;margin:0 auto"></div>';
-    h += '<script>setTimeout(function(){cDrawExport();},50);<\/script>';
+
   }
 
   h += '</div>';
