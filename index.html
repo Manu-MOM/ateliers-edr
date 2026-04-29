@@ -4087,8 +4087,64 @@ function getComposMatch(cat, matchId) {
 }
 
 var _composCurCat = null;
-var _composCurMatch = null; // id du match sélectionné
-var _composView = "calendrier"; // "calendrier" | "compo" | "joueurs"
+var _composCurMatch = null;
+var _composView = "calendrier";
+
+// ── État global Compos (localStorage) ────────────────────────────
+var _CS = null;
+var _CS_KEY = "mom_edr_compos_v2";
+var _cCurEV    = null;
+var _cCurTID   = null;
+var _cCurMID   = null;
+var _cCurMode  = "base";
+var _cCurView  = "liste";
+var _cCurSlot  = null;
+var _cEditorOpen = false;
+
+function _cLoad() {
+  try { var s = localStorage.getItem(_CS_KEY); if (s) return JSON.parse(s); } catch(e) {}
+  return {
+    events: [], settings: {name:"MOM Rugby EDR", season:"2025/2026", c1:"#0a3a1e", c2:"#d4a820"},
+    teams: [{id:"t1",label:"MOM 1"},{id:"t2",label:"MOM 2"},{id:"t3",label:"MOM X"}],
+    coaches: [{id:"c1",role:"Entraîneur principal",name:"Vivien RULFO"},{id:"c2",role:"Manager",name:"Emmanuel JUNG"},{id:"c3",role:"Entraîneur adjoint",name:"Loïc HELM"}]
+  };
+}
+function _cSave() { try { localStorage.setItem(_CS_KEY, JSON.stringify(_CS)); } catch(e) {} }
+function _cInit() { if (!_CS) _CS = _cLoad(); }
+
+// Constantes postes
+var COMPOS_P15 = ["Pilier gauche","Talonneur","Pilier droit","2ème ligne","2ème ligne","Flanker fermé","Flanker ouvert","Numéro 8","Demi de mêlée","Demi d'ouverture","Ailier gauche","Centre","Centre","Ailier droit","Arrière"];
+var COMPOS_P7  = ["Pilier gauche","Talonneur","Pilier droit","Troisième ligne","Demi de mêlée","Demi d'ouverture","Ailier"];
+var COMPOS_SUBS = 8;
+var COMPOS_SUBS7 = 3;
+var FXY15 = [{x:130,y:198},{x:260,y:185},{x:390,y:198},{x:193,y:258},{x:327,y:258},{x:145,y:330},{x:375,y:330},{x:260,y:350},{x:260,y:425},{x:340,y:465},{x:95,y:518},{x:208,y:508},{x:312,y:508},{x:425,y:518},{x:260,y:572}];
+var FXY7   = [{x:175,y:220},{x:260,y:200},{x:345,y:220},{x:260,y:310},{x:260,y:420},{x:190,y:510},{x:330,y:510}];
+var COMPOS_EVENT_TYPES = {
+  "championnat-1":{label:"Champ. Phase 1",short:"Champ.P1",color:"#7c3aed"},
+  "championnat-2":{label:"Champ. Phase 2",short:"Champ.P2",color:"#4f46e5"},
+  "vie":{label:"Challenge Vié",short:"Vié",color:"#db2777"},
+  "federal":{label:"Challenge Fédéral",short:"Féd.",color:"#0369a1"},
+  "tournoi":{label:"Tournoi",short:"Tournoi",color:"#d97706"},
+  "amical":{label:"Amical",short:"Amical",color:"#059669"},
+  "seven":{label:"Seven",short:"Seven",color:"#7c2d12"}
+};
+
+function _cIsSeven(ev){ return ev && ev.type==="seven"; }
+function _cPostes(ev){ return _cIsSeven(ev)?COMPOS_P7:COMPOS_P15; }
+function _cLineupSize(ev){ return _cIsSeven(ev)?7+COMPOS_SUBS7:15+COMPOS_SUBS; }
+function _cSubsStart(ev){ return _cIsSeven(ev)?7:15; }
+function _cGetBase(ev,tid){ var k="BASE_"+tid; if(!ev.lineups[k])ev.lineups[k]=new Array(_cLineupSize(ev)).fill(null); return ev.lineups[k]; }
+function _cGetOvr(ev,tid,mid){ var k="OVR_"+tid+"_"+mid; if(!ev.lineups[k])ev.lineups[k]={}; return ev.lineups[k]; }
+function _cIsInd(ev,tid,mid){ return !!ev.lineups["IND_"+tid+"_"+mid]; }
+function _cGetInd(ev,tid,mid){ var k="IND_"+tid+"_"+mid; if(!ev.lineups[k])ev.lineups[k]=new Array(_cLineupSize(ev)).fill(null); return ev.lineups[k]; }
+function _cGetResolved(ev,tid,mid){ if(_cIsInd(ev,tid,mid))return _cGetInd(ev,tid,mid); var base=_cGetBase(ev,tid),ovr=_cGetOvr(ev,tid,mid),r=base.slice(); Object.keys(ovr).forEach(function(i){r[parseInt(i)]=ovr[i];}); return r; }
+function _cGetMatches(ev){ if(!ev)return []; var types1=["championnat-1","championnat-2","amical","seven","vie","federal"]; if(types1.indexOf(ev.type)>=0){var r=[]; if(ev.adv1)r.push({id:"mADV1",adv:ev.adv1}); if(ev.adv2)r.push({id:"mADV2",adv:ev.adv2}); return r;} var r=[]; (ev.phases||[]).forEach(function(ph){(ph.matches||[]).forEach(function(m){r.push(Object.assign({},m,{phaseId:ph.id,phaseName:ph.name}));});}); return r; }
+function _cCountCompos(ev){ var done=0,total=0,ms=_cGetMatches(ev); (ev.teams||[]).forEach(function(tid){ms.forEach(function(m){total++;if(_cGetResolved(ev,tid,m.id).some(function(v){return v!==null;}))done++;});}); return {done:done,total:total}; }
+function _cSetSlot(idx,jid){ if(!_cCurEV)return; if(_cCurMode==="base"){_cGetBase(_cCurEV,_cCurTID)[idx]=jid;} else if(_cIsInd(_cCurEV,_cCurTID,_cCurMID)){_cGetInd(_cCurEV,_cCurTID,_cCurMID)[idx]=jid;} else{var base=_cGetBase(_cCurEV,_cCurTID),ovr=_cGetOvr(_cCurEV,_cCurTID,_cCurMID); if(base[idx]===jid)delete ovr[idx]; else ovr[idx]=jid;} }
+function _cClearSlot(idx){ if(!_cCurEV)return; if(_cCurMode==="base"){_cGetBase(_cCurEV,_cCurTID)[idx]=null;} else if(_cIsInd(_cCurEV,_cCurTID,_cCurMID)){_cGetInd(_cCurEV,_cCurTID,_cCurMID)[idx]=null;} else{var base=_cGetBase(_cCurEV,_cCurTID),ovr=_cGetOvr(_cCurEV,_cCurTID,_cCurMID); if(base[idx]===null)delete ovr[idx]; else ovr[idx]=null;} }
+function _cGetEditable(){ if(!_cCurEV)return []; if(_cCurMode==="base")return _cGetBase(_cCurEV,_cCurTID); if(_cIsInd(_cCurEV,_cCurTID,_cCurMID))return _cGetInd(_cCurEV,_cCurTID,_cCurMID); return _cGetResolved(_cCurEV,_cCurTID,_cCurMID); }
+function _cIsOverridden(idx){ if(!_cCurEV||_cCurMode!=="match"||_cIsInd(_cCurEV,_cCurTID,_cCurMID))return false; return idx in _cGetOvr(_cCurEV,_cCurTID,_cCurMID); }
+function _cGetJoueurs(){ var d=getComposData(_composCurCat); var joueurs=d.allJoueurs||[]; joueurs.forEach(function(j,i){if(!j.id&&!j._cid)j._cid="j"+i;}); return joueurs; }
 
 // ── Navigation ────────────────────────────────────────────────────
 function goSection_compos() {
