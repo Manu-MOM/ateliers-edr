@@ -527,6 +527,8 @@ button,input{font-family:'Barlow',sans-serif}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div id="login">
@@ -3354,6 +3356,7 @@ function openJPM(idx, cat) {
   document.getElementById("jpm-nom").value = j ? (j.nom||"") : "";
   document.getElementById("jpm-club").value = j ? (j.club||"MOM") : "MOM";
   document.getElementById("jpm-postes").value = j ? (j.postes||"") : "";
+  jpmRefreshPostesDisplay();
   document.getElementById("jpm-taille").value = j ? (j.taille||"") : "";
   document.getElementById("jpm-poids").value = j ? (j.poids||"") : "";
   document.getElementById("jpm-jdd").value = j ? (j.jdd||"") : "";
@@ -3389,6 +3392,72 @@ function closeJPM() {
 function jpmToggleInj() {
   var inj = document.getElementById("jpm-inj").checked;
   document.getElementById("jpm-inj-fields").style.display = inj ? "block" : "none";
+}
+
+function jpmTogglePostes() {
+  var panel = document.getElementById("jpm-postes-panel");
+  var checksDiv = document.getElementById("jpm-postes-checks");
+  if (!panel || !checksDiv) return;
+  var isOpen = panel.style.display !== "none";
+  if (isOpen) { panel.style.display = "none"; return; }
+  // Valeurs actuelles
+  var current = (document.getElementById("jpm-postes").value||"").split(",").map(function(s){return s.trim();}).filter(Boolean);
+  // Construire les cases
+  checksDiv.innerHTML = "";
+  POSTES_RUGBY.filter(Boolean).forEach(function(p) {
+    var label = document.createElement("label");
+    label.style.cssText = "display:flex;align-items:center;gap:8px;padding:5px 10px;cursor:pointer;font-size:12px;user-select:none";
+    label.onmouseover = function(){ this.style.background="var(--g50)"; };
+    label.onmouseout  = function(){ this.style.background="transparent"; };
+    var cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.value = p;
+    cb.checked = current.indexOf(p) >= 0;
+    cb.style.cssText = "width:14px;height:14px;accent-color:var(--c1);flex-shrink:0;cursor:pointer";
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(" " + p));
+    checksDiv.appendChild(label);
+  });
+  panel.style.display = "block";
+  // Fermer au clic extérieur
+  setTimeout(function(){
+    document.addEventListener("click", function _close(e) {
+      if (!panel.contains(e.target) && e.target.id !== "jpm-postes-display") {
+        panel.style.display = "none";
+        document.removeEventListener("click", _close);
+      }
+    });
+  }, 50);
+}
+
+function jpmValiderPostes() {
+  var panel = document.getElementById("jpm-postes-panel");
+  var selected = [];
+  (document.querySelectorAll("#jpm-postes-checks input:checked")||[]).forEach(function(cb){ selected.push(cb.value); });
+  document.getElementById("jpm-postes").value = selected.join(", ");
+  jpmRefreshPostesDisplay();
+  if (panel) panel.style.display = "none";
+}
+
+function jpmRefreshPostesDisplay() {
+  var display = document.getElementById("jpm-postes-display");
+  var ph = document.getElementById("jpm-postes-placeholder");
+  var val = document.getElementById("jpm-postes").value || "";
+  var postes = val.split(",").map(function(s){return s.trim();}).filter(Boolean);
+  if (!display) return;
+  // Vider sauf le placeholder
+  Array.from(display.children).forEach(function(c){ if(c !== ph) c.remove(); });
+  if (!postes.length) {
+    ph.style.display = "";
+  } else {
+    ph.style.display = "none";
+    postes.forEach(function(p) {
+      var chip = document.createElement("span");
+      chip.style.cssText = "font-size:10px;padding:2px 8px;border-radius:10px;background:var(--c1);color:#fff;font-weight:600";
+      chip.textContent = p;
+      display.insertBefore(chip, ph);
+    });
+  }
 }
 
 function jpmLoadPhoto(input) {
@@ -5118,8 +5187,89 @@ function cDrawExport() {
     + '<div style="padding:6px 14px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between">'
     + '<span style="font-size:8px;color:rgba(255,255,255,.25);letter-spacing:.05em;text-transform:uppercase">MOM Rugby · Saison '+(((_CS.settings||{}).season)||"2025/2026")+'</span>'
     + '<span style="font-size:8px;color:rgba(255,255,255,.25)">'+new Date().toLocaleDateString("fr-FR")+'</span></div>'
-    + '<button onclick="cCopyCompo()" style="margin:8px 14px 12px;width:calc(100% - 28px);display:block;padding:8px;background:'+c2+';border:none;border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;color:'+c1+';font-weight:700;cursor:pointer;letter-spacing:.05em" id="c-copy-btn">📋 Copier la composition</button>'
+    + '<div style="padding:8px 14px 14px;display:flex;flex-direction:column;gap:6px">'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">'
+    + '<button onclick="cExportImage(\'png\')" style="padding:8px 6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:18px">🖼️</span>PNG</button>'
+    + '<button onclick="cExportImage(\'jpeg\')" style="padding:8px 6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:18px">📷</span>JPEG</button>'
+    + '<button onclick="cExportImage(\'pdf\')" style="padding:8px 6px;background:'+c2+';border:none;border-radius:8px;color:'+c1+';font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:18px">📄</span>PDF</button>'
+    + '</div>'
+    + '<button onclick="cCopyCompo()" style="padding:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.7);font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em" id="c-copy-btn">📋 Copier le texte</button>'
+    + '</div>'
     + '</div>';
+}
+
+// ── Export image/PDF de la vue Réseaux ───────────────────────────
+function cExportImage(format) {
+  var el = document.getElementById("c-export-wrap");
+  if (!el || !el.firstElementChild) { alert("Générez d'abord la composition en vue Réseaux."); return; }
+  var target = el.firstElementChild; // la div de la compo
+
+  // Feedback visuel
+  var btn = event && event.target;
+  var originalText = btn ? btn.innerHTML : "";
+  if (btn) btn.innerHTML = '<span style="font-size:14px">⏳</span>';
+
+  // Options html2canvas
+  var opts = {
+    backgroundColor: null,
+    scale: 2,          // haute résolution
+    useCORS: true,
+    allowTaint: true,
+    logging: false,
+    removeContainer: true
+  };
+
+  html2canvas(target, opts).then(function(canvas) {
+    var ev = _cCurEV;
+    var team = (_CS.teams||[]).find(function(t){return t.id===_cCurTID;})||{label:"MOM"};
+    var safeName = (ev ? ev.name : "compo").replace(/[^a-zA-Z0-9\-_]/g,"_");
+    var filename = "MOM_" + team.label.replace(/\s/g,"") + "_" + safeName;
+
+    if (format === "png") {
+      var link = document.createElement("a");
+      link.download = filename + ".png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+    } else if (format === "jpeg") {
+      var link = document.createElement("a");
+      link.download = filename + ".jpg";
+      link.href = canvas.toDataURL("image/jpeg", 0.92);
+      link.click();
+
+    } else if (format === "pdf") {
+      var imgData = canvas.toDataURL("image/png");
+      var w = canvas.width, h = canvas.height;
+      // Choisir orientation portrait ou paysage selon les proportions
+      var isPortrait = h >= w;
+      var jsPDFlib = window.jspdf ? window.jspdf.jsPDF : (window.jsPDF || (window.jspdf && window.jspdf.jsPDF));
+      if (!jsPDFlib) { alert("jsPDF non chargé. Réessayez."); return; }
+      var pdf = new jsPDFlib({ orientation: isPortrait ? "portrait" : "landscape", unit: "mm" });
+      var pageW = pdf.internal.pageSize.getWidth();
+      var pageH = pdf.internal.pageSize.getHeight();
+      var margin = 8;
+      var maxW = pageW - margin * 2;
+      var maxH = pageH - margin * 2;
+      // Calculer dimensions en mm (96 dpi → 25.4mm/inch)
+      var dpi = 96 * 2; // scale=2
+      var imgWmm = w / dpi * 25.4;
+      var imgHmm = h / dpi * 25.4;
+      // Scaler pour tenir dans la page
+      var ratio = Math.min(maxW / imgWmm, maxH / imgHmm, 1);
+      var finalW = imgWmm * ratio;
+      var finalH = imgHmm * ratio;
+      var x = (pageW - finalW) / 2;
+      var y = (pageH - finalH) / 2;
+      pdf.addImage(imgData, "PNG", x, y, finalW, finalH, "", "FAST");
+      pdf.save(filename + ".pdf");
+    }
+
+    if (btn) btn.innerHTML = originalText;
+  }).catch(function(err) {
+    console.error("Export error:", err);
+    alert("Erreur lors de la capture. Réessayez.");
+    if (btn) btn.innerHTML = originalText;
+  });
 }
 
 // ── Copier en texte ───────────────────────────────────────────────
@@ -5491,7 +5641,22 @@ function cImportJSON(e) {
         <div><label class="jpm-lbl">Club</label>
           <select class="jpm-sel" id="jpm-club"><option value="MOM">MOM</option><option value="SAR">SAR</option><option value="ASCS">ASCS</option><option value="Autre">Autre</option></select>
         </div>
-        <div><label class="jpm-lbl">Poste(s)</label><input class="jpm-inp" id="jpm-postes" placeholder="ex: Pilier G, Talonneur"></div>
+        <div>
+        <label class="jpm-lbl">Poste(s)</label>
+        <div style="position:relative">
+          <div id="jpm-postes-display" onclick="jpmTogglePostes()" style="min-height:32px;border:1px solid var(--gray2);border-radius:6px;padding:5px 9px;cursor:pointer;background:var(--g50);display:flex;flex-wrap:wrap;gap:4px;align-items:center">
+            <span id="jpm-postes-placeholder" style="color:#aaa;font-size:12px">Cliquer pour sélectionner…</span>
+          </div>
+          <input type="hidden" id="jpm-postes">
+          <div id="jpm-postes-panel" style="display:none;position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;border:1.5px solid var(--g2);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:999;padding:3px 0">
+            <div style="max-height:200px;overflow-y:auto" id="jpm-postes-checks"></div>
+            <div style="padding:5px 8px;border-top:1px solid var(--gray2);display:flex;gap:5px">
+              <button type="button" onclick="jpmValiderPostes()" style="flex:2;padding:5px;background:var(--c1);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">✅ Valider</button>
+              <button type="button" onclick="document.getElementById('jpm-postes-panel').style.display='none'" style="flex:1;padding:5px;background:var(--g100);color:var(--g600);border:none;border-radius:6px;font-size:11px;cursor:pointer">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
       <div class="jpm-row">
         <div><label class="jpm-lbl">Taille (m)</label><input class="jpm-inp" id="jpm-taille" type="number" step="0.01" min="1" max="2.5" placeholder="1.70"></div>
