@@ -2774,13 +2774,19 @@ function renderTrameBloc(bloc, i, total, totalMin) {
   var heureAffich = bloc._heureCalc || "";
   var isPause = bloc.type === "pause";
 
-  var h = '<div class="trame-bloc' + (isPause ? " trame-bloc-pause" : "") + '" id="sbloc-' + bid + '" style="min-height:' + minH + 'px">';
+  var h = '<div class="trame-bloc' + (isPause ? " trame-bloc-pause" : "") + '" id="sbloc-' + bid + '"'
+    + ' draggable="true"'
+    + ' ondragstart="sBlocDragStart(event,' + bid + ')"'
+    + ' ondragover="sBlocDragOver(event,' + bid + ')"'
+    + ' ondrop="sBlocDrop(event,' + bid + ')"'
+    + ' ondragleave="sBlocDragLeave(event,' + bid + ')"'
+    + ' style="min-height:' + minH + 'px">';
   h += '<div class="trame-bloc-bar" style="background:' + color + '">';
   h += '<span class="trame-bloc-bar-heure">' + heureAffich + '</span>';
   h += '<span class="trame-bloc-bar-dur">' + (bloc.duree || durMin + "min") + '</span>';
   h += '</div>';
   h += '<div class="trame-bloc-content">';
-  h += '<div class="trame-bloc-hdr" draggable="true" ' + 'ondragstart="sBlocDragStart(event,' + bid + ')" ' + 'ondragover="sBlocDragOver(event,' + bid + ')" ' + 'ondrop="sBlocDrop(event,' + bid + ')" ' + 'ondragleave="sBlocDragLeave(event)" ' + 'onclick="toggleBlocEdit(' + bid + ')">';
+  h += '<div class="trame-bloc-hdr" onclick="toggleBlocEdit(' + bid + ')" style="cursor:grab">';
   h += '<span class="trame-bloc-type" style="background:' + color + '">' + typeLabel + '</span>';
   var titreAffiche2 = (bloc.titre && bloc.titre !== "-- Choisir --") ? (bloc.titre === "Autre..." ? (bloc.titreCustom||"") : bloc.titre) : (bloc.titreCustom||"");
   if (titreAffiche2) h += '<span class="trame-bloc-titre">' + titreAffiche2 + '</span>';
@@ -6063,31 +6069,62 @@ function cImportJSON(e) {
 
 // ── 1. DRAG & DROP BLOCS SÉANCE ───────────────────────────────────
 var _sDragBid = null;
+
 function sBlocDragStart(ev, bid) {
-  _sDragBid = bid; ev.dataTransfer.effectAllowed = "move";
-  setTimeout(function(){ var el=document.getElementById("sbloc-"+bid); if(el)el.style.opacity=".4"; }, 0);
+  _sDragBid = bid;
+  ev.dataTransfer.effectAllowed = "move";
+  ev.dataTransfer.setData("text/plain", String(bid));
+  // Opacité après que le ghost est capturé
+  setTimeout(function() {
+    var el = document.getElementById("sbloc-" + bid);
+    if (el) { el.style.opacity = ".35"; el.style.transform = "scale(.98)"; }
+  }, 0);
 }
+
 function sBlocDragOver(ev, bid) {
-  ev.preventDefault(); ev.dataTransfer.dropEffect = "move";
-  if(bid===_sDragBid) return;
-  var el=document.getElementById("sbloc-"+bid);
-  if(el) el.style.outline="2px solid var(--g7)";
+  ev.preventDefault();
+  ev.stopPropagation();
+  ev.dataTransfer.dropEffect = "move";
+  if (bid === _sDragBid) return;
+  // Retirer le highlight de tous les blocs
+  document.querySelectorAll(".trame-bloc").forEach(function(b) { b.style.borderTop = ""; });
+  var el = document.getElementById("sbloc-" + bid);
+  if (el) el.style.borderTop = "3px solid var(--g7)";
 }
-function sBlocDragLeave(ev) {
-  var el = ev.currentTarget && ev.currentTarget.closest ? ev.currentTarget.closest(".trame-bloc") : null;
-  if(el) el.style.outline="";
+
+function sBlocDragLeave(ev, bid) {
+  // Retirer seulement si on quitte vraiment le bloc (pas un enfant)
+  var rel = ev.relatedTarget;
+  var el = document.getElementById("sbloc-" + bid);
+  if (el && rel && el.contains(rel)) return; // on reste dans le bloc
+  if (el) el.style.borderTop = "";
 }
+
 function sBlocDrop(ev, targetBid) {
   ev.preventDefault();
-  var el=document.getElementById("sbloc-"+targetBid); if(el) el.style.outline="";
-  if(!_sDragBid || _sDragBid===targetBid) { _sDragBid=null; return; }
-  var blocs=seanceData.blocs;
-  var fi=blocs.findIndex(function(b){return b.id===_sDragBid;});
-  var ti=blocs.findIndex(function(b){return b.id===targetBid;});
-  if(fi<0||ti<0) { _sDragBid=null; return; }
-  var moved=blocs.splice(fi,1)[0]; blocs.splice(ti,0,moved);
-  seanceDirty=true; _sDragBid=null; renderSeance();
+  ev.stopPropagation();
+  // Nettoyer tous les styles
+  document.querySelectorAll(".trame-bloc").forEach(function(b) {
+    b.style.opacity = ""; b.style.transform = ""; b.style.borderTop = "";
+  });
+  if (!_sDragBid || _sDragBid === targetBid) { _sDragBid = null; return; }
+  var blocs = seanceData.blocs;
+  var fi = blocs.findIndex(function(b) { return b.id === _sDragBid; });
+  var ti = blocs.findIndex(function(b) { return b.id === targetBid; });
+  if (fi < 0 || ti < 0) { _sDragBid = null; return; }
+  var moved = blocs.splice(fi, 1)[0];
+  blocs.splice(ti, 0, moved);
+  seanceDirty = true; _sDragBid = null;
+  renderSeance();
 }
+
+// Nettoyage si on lâche en dehors d'un bloc valide
+document.addEventListener("dragend", function() {
+  document.querySelectorAll(".trame-bloc").forEach(function(b) {
+    b.style.opacity = ""; b.style.transform = ""; b.style.borderTop = "";
+  });
+  _sDragBid = null;
+});
 
 // ── 2. HISTORIQUE & MODÈLES SÉANCE ───────────────────────────────
 function _seanceSaveHistory() {
