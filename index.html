@@ -334,10 +334,13 @@ button,input{font-family:'Barlow',sans-serif}
 .seance-axe-input{flex:1;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--w);outline:none}
 .seance-axe-input::placeholder{color:rgba(255,255,255,.35);font-weight:400}
 /* Grille 4 colonnes */
-.seance-grid{display:grid;grid-template-columns:260px 1fr 200px 180px 140px;min-height:400px}
-.seance-col{border-right:1px solid var(--gray2);overflow:hidden}
-.seance-col:last-child{border-right:none}
-.seance-col-hd{background:var(--g9);color:var(--w);padding:0 12px;height:36px;min-height:36px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--gold);white-space:nowrap}
+.seance-grid{display:grid;grid-template-columns:260px 1fr 200px 180px 140px;border:1px solid var(--gray2);border-radius:8px;overflow:hidden}
+.seance-grid > *{border-right:1px solid var(--gray2)}
+.seance-grid > *:last-child{border-right:none}
+.seance-col-hd{background:var(--g9);color:var(--w);padding:0 10px;height:36px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;display:flex;align-items:center;gap:5px;border-bottom:2px solid var(--gold);white-space:nowrap;overflow:hidden}
+.seance-row-cell{padding:7px 9px;border-bottom:1px solid var(--gray1);display:flex;flex-direction:column;gap:4px;background:var(--w)}
+.seance-row-cell:hover{background:var(--gray1)}
+.seance-trame-cell{padding:0;border-bottom:1px solid var(--gray1);background:var(--w)}
 /* ═══ ONGLET JOUEURS — style SARxMOM ═══════════════════════════ */
 .jp-fbar{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:8px 10px;background:var(--w);border-radius:var(--r);border:1px solid var(--gray2)}
 .jp-search{padding:5px 9px;border:1px solid var(--gray2);border-radius:6px;font-size:12px;font-family:var(--fb),sans-serif;flex:1;min-width:120px;outline:none;color:var(--gray7)}
@@ -983,8 +986,8 @@ function goSection(s) {
   if (mni) mni.classList.add("act");
   document.getElementById("si").value = "";
 
-  if (s === "bib")    { buildSbBib(); goPage("home"); }
-  else if (s === "plan")   { buildSbPlan(); renderPlan(); }
+  if (s === "bib")    { document.getElementById("bc").innerHTML = "<b>Bibliothèque</b>"; buildSbBib(); goPage("home"); }
+  else if (s === "plan")   { document.getElementById("bc").innerHTML = "<b>Planification</b>"; buildSbPlan(); renderPlan(); }
   else if (s === "ressources") { goSection_ressources(); }
   else if (s === "saison") { goSection_saison(); }
   else if (s === "seance") { goSection_seance(); }
@@ -2545,68 +2548,11 @@ function renderSeance() {
   h += '<div class="seance-axe-bar"><span class="seance-axe-lbl">⚽ Axe de travail général</span>';
   h += '<input class="seance-axe-input" value="' + (d.axe||"") + '" placeholder="Ex: Continuité debout autour du PB / Duels..." oninput="seanceDirty=true;seanceData.axe=this.value"></div>';
 
-  // ── GRILLE ──────────────────────────────────────────────────────
-  h += '<div class="seance-grid">';
-
-  // COL 1 : TRAME
+  // ── GRILLE ROW-BASED (chaque bloc = 1 ligne) ────────────────────
   var totalMin = totalDureeBlocs(d.blocs || []);
-  h += '<div class="seance-col trame-col">';
-  h += '<div class="seance-col-hd">⏱ Trame &mdash; <span style="color:var(--gold);font-weight:700">' + formatDuree(totalMin) + '</span></div>';
-  h += '<div class="trame-blocs" id="trame-blocs-list">';
-  (d.blocs||[]).forEach(function(bloc, i) {
-    h += renderTrameBloc(bloc, i, d.blocs.length, totalMin);
-  });
-  h += '</div>';
-  h += '<div style="padding:4px 6px 6px;display:flex;flex-wrap:wrap;gap:3px">';
-  BLOC_TYPES.forEach(function(bt) {
-    var burl = "addSBloc('" + bt.val + "')";
-    h += '<button class="add-trame-btn" style="width:auto;padding:3px 7px;font-size:9px;border-color:' + bt.color + ';color:' + bt.color + ';cursor:pointer" onclick="' + burl + '">' + bt.label + '</button>';
-  });
-  h += '</div></div>';
-
-  // COL 2 : COMPORTEMENTS
-  h += '<div class="seance-col comp-col">';
-  h += '<div class="seance-col-hd">✅ Comportements attendus</div>';
-  h += '<div class="comp-rows">';
-  if (!(d.blocs||[]).length) {
-    h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">Ajoutez des blocs dans la trame</div>';
-  }
-  (d.blocs||[]).forEach(function(bloc, i) {
-    if (bloc.type === "pause") return;
-    var color = getBlocColor(bloc.type);
-    var titreAffiche = (bloc.titre && bloc.titre !== "-- Choisir --") ? (bloc.titre === "Autre..." ? (bloc.titreCustom||"Autre") : bloc.titre) : (bloc.titreCustom || (BLOC_TYPES.find(function(b){return b.val===bloc.type;})||{label:""}).label);
-    h += '<div class="comp-row">';
-    h += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px">';
-    h += '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;color:var(--w);background:' + color + '">' + titreAffiche.substring(0,22) + '</span>';
-    var firstAt = (bloc.ateliers||[]).find(function(a){ return a.atelierIdx >= 0; });
-    if (firstAt && ALL_ITEMS[firstAt.atelierIdx]) {
-      var autoOc = "showComportProposal('" + bloc.id + "'," + firstAt.atelierIdx + ")";
-      h += '<span class="comp-auto-tag" onclick="' + autoOc + '" title="Propositions">📚 Propositions</span>';
-    }
-    h += '</div>';
-    h += '<textarea class="comp-textarea" placeholder="Comportements attendus, points clés..." oninput="onSBlocField(' + bloc.id + ',\'comportements\',this.value)">' + (bloc.comportements||"") + '</textarea>';
-    h += '</div>';
-  });
-  h += '</div></div>';
-
-  // COL 3 : ORGANISATION SPATIALE
-  h += '<div class="seance-col orga-col">';
-  h += '<div class="seance-col-hd">📐 Organisation spatio-temporelle</div>';
-  h += '<div class="comp-rows">';
-  if (!(d.blocs||[]).length) {
-    h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">—</div>';
-  }
-  (d.blocs||[]).forEach(function(bloc) {
-    if (bloc.type === "pause") return;
-    h += '<div class="comp-row">';
-    h += '<textarea class="comp-textarea" placeholder="Terrain, zones, timing..." oninput="onSBlocField(' + bloc.id + ',\'orga\',this.value)">' + (bloc.orga||"") + '</textarea>';
-    h += '</div>';
-  });
-  h += '</div></div>';
-
-  // COL 4 : GROUPES (par bloc)
   if (!d.materiel) d.materiel = [];
-  // Construire la liste des joueurs disponibles (EDR + manuels)
+
+  // Pool joueurs pour les groupes
   var _grpEdrDB = getJoueursDB();
   var _grpCat = d.categorie || (selAge_ && selAge_ !== "ALL" ? selAge_ : "");
   var _grpAllJoueurs = _grpCat ? (_grpEdrDB[_grpCat]||[]).map(function(j){
@@ -2614,67 +2560,101 @@ function renderSeance() {
   }) : [];
   (d.joueurs||[]).forEach(function(j){ if (_grpAllJoueurs.indexOf(j) < 0) _grpAllJoueurs.push(j); });
 
-  h += '<div class="seance-col groupes-col">';
-  h += '<div class="seance-col-hd">👥 Groupes</div>';
-  h += '<div class="comp-rows">';
-  if (!(d.blocs||[]).length) {
-    h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">—</div>';
-  }
-  (d.blocs||[]).forEach(function(bloc) {
-    if (bloc.type === "pause") return;
-    // Initialiser les groupes du bloc si absent
-    if (!bloc.groupes) bloc.groupes = [[],[],[]];
-    var nb = bloc.groupes.length;
+  h += '<div class="seance-grid">';
 
-    h += '<div class="comp-row" style="padding:5px 6px">';
-    // Ligne de contrôle + / -
-    h += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">';
-    h += '<span style="font-size:8px;font-weight:700;color:var(--gray5)">Groupes :</span>';
-    h += '<button data-bid="' + bloc.id + '" onclick="addBlocGroupe(this.dataset.bid)" style="font-size:9px;width:18px;height:18px;border-radius:50%;border:1px solid var(--g1);background:var(--g0);color:var(--g6);cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>';
-    if (nb > 1) h += '<button data-bid="' + bloc.id + '" onclick="removeBlocGroupe(this.dataset.bid)" style="font-size:9px;width:18px;height:18px;border-radius:50%;border:1px solid var(--gray2);background:transparent;color:var(--gray5);cursor:pointer;display:flex;align-items:center;justify-content:center">−</button>';
+  // ── LIGNE EN-TÊTES (5 cellules dans la même row du grid) ──
+  h += '<div class="seance-col-hd">⏱ Trame &mdash; <span style="color:var(--gold);font-weight:700">' + formatDuree(totalMin) + '</span></div>';
+  h += '<div class="seance-col-hd">✅ Comportements attendus</div>';
+  h += '<div class="seance-col-hd">📐 Organisation spatio-temporelle</div>';
+  h += '<div class="seance-col-hd">👥 Groupes</div>';
+  h += '<div class="seance-col-hd">🧰 Matériel</div>';
+
+  // ── LIGNES PAR BLOC ──────────────────────────────────────────────
+  if (!(d.blocs||[]).length) {
+    h += '<div style="grid-column:1/-1;padding:32px;text-align:center;font-size:12px;color:var(--gray5);font-style:italic;background:var(--gray1)">Ajoutez des blocs dans la trame ↓</div>';
+  }
+
+  (d.blocs||[]).forEach(function(bloc, i) {
+    var color = getBlocColor(bloc.type);
+    var isPause = bloc.type === "pause";
+    var titreAffiche = (bloc.titre && bloc.titre !== "-- Choisir --") ? (bloc.titre === "Autre..." ? (bloc.titreCustom||"Autre") : bloc.titre) : (bloc.titreCustom || (BLOC_TYPES.find(function(b){return b.val===bloc.type;})||{label:""}).label);
+    var rowBg = isPause ? "background:#e8f4ff" : "";
+
+    // ── CEL 1 : TRAME ──
+    h += '<div class="seance-trame-cell">' + renderTrameBloc(bloc, i, d.blocs.length, totalMin) + '</div>';
+
+    if (isPause) {
+      h += '<div class="seance-row-cell" style="' + rowBg + ';grid-column:span 4;align-items:center;justify-content:center"><span style="font-size:11px;color:var(--gray5);font-style:italic">💧 Pause boisson</span></div>';
+      return;
+    }
+
+    // ── CEL 2 : COMPORTEMENTS ──
+    var firstAt = (bloc.ateliers||[]).find(function(a){ return a.atelierIdx >= 0; });
+    h += '<div class="seance-row-cell">';
+    if (firstAt && ALL_ITEMS[firstAt.atelierIdx]) {
+      var autoOc = "showComportProposal('" + bloc.id + "'," + firstAt.atelierIdx + ")";
+      h += '<span class="comp-auto-tag" onclick="' + autoOc + '" title="Propositions" style="align-self:flex-start">📚 Propositions</span>';
+    }
+    h += '<textarea class="comp-textarea" style="flex:1;min-height:60px" placeholder="Comportements attendus, points clés..." oninput="onSBlocField(' + bloc.id + ',\'comportements\',this.value)">' + (bloc.comportements||"") + '</textarea>';
     h += '</div>';
 
+    // ── CEL 3 : ORGANISATION ──
+    h += '<div class="seance-row-cell">';
+    h += '<textarea class="comp-textarea" style="flex:1;min-height:60px" placeholder="Terrain, zones, timing..." oninput="onSBlocField(' + bloc.id + ',\'orga\',this.value)">' + (bloc.orga||"") + '</textarea>';
+    h += '</div>';
+
+    // ── CEL 4 : GROUPES ──
+    if (!bloc.groupes) bloc.groupes = [[],[],[]];
+    var nb = bloc.groupes.length;
+    h += '<div class="seance-row-cell" style="gap:3px">';
+    h += '<div style="display:flex;align-items:center;gap:4px">';
+    h += '<button data-bid="' + bloc.id + '" onclick="addBlocGroupe(this.dataset.bid)" style="font-size:9px;width:16px;height:16px;border-radius:50%;border:1px solid var(--g1);background:var(--g0);color:var(--g6);cursor:pointer;flex-shrink:0">+</button>';
+    if (nb > 1) h += '<button data-bid="' + bloc.id + '" onclick="removeBlocGroupe(this.dataset.bid)" style="font-size:9px;width:16px;height:16px;border-radius:50%;border:1px solid var(--gray2);background:transparent;color:var(--gray5);cursor:pointer;flex-shrink:0">−</button>';
+    h += '</div>';
     bloc.groupes.forEach(function(grp, gi) {
       var gcol = GROUPE_COLORS[gi % GROUPE_COLORS.length];
-      // Joueurs déjà assignés dans ce bloc
       var assignes = [];
       bloc.groupes.forEach(function(g){ g.forEach(function(n){ assignes.push(n); }); });
       var pool = _grpAllJoueurs.filter(function(j){ return assignes.indexOf(j) < 0 && j.trim(); });
-
-      h += '<div style="margin-bottom:4px">';
+      h += '<div style="margin-bottom:2px">';
       h += '<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px">';
-      h += '<div style="width:8px;height:8px;border-radius:50%;background:' + gcol + ';flex-shrink:0"></div>';
+      h += '<div style="width:7px;height:7px;border-radius:50%;background:' + gcol + ';flex-shrink:0"></div>';
       h += '<span style="font-size:8px;font-weight:700;color:' + gcol + '">G' + (gi+1) + '</span>';
       h += '</div>';
-      h += '<div style="display:flex;flex-wrap:wrap;gap:2px;min-height:16px;padding:3px;background:var(--gray1);border-radius:4px;border:1px solid var(--gray2)">';
+      h += '<div style="display:flex;flex-wrap:wrap;gap:2px;min-height:14px;padding:2px;background:var(--gray1);border-radius:4px;border:1px solid var(--gray2)">';
       grp.forEach(function(nom) {
-        h += '<span style="font-size:7px;padding:1px 5px;border-radius:8px;background:' + gcol + ';color:#fff;cursor:pointer;white-space:nowrap" data-bid="' + bloc.id + '" data-gi="' + gi + '" data-nom="' + nom.replace(/'/g,"&apos;") + '" onclick="removeBlocJoueur(this.dataset.bid,parseInt(this.dataset.gi),this.dataset.nom)" title="Retirer">' + nom + '</span>';
+        h += '<span style="font-size:7px;padding:1px 4px;border-radius:8px;background:' + gcol + ';color:#fff;cursor:pointer;white-space:nowrap" data-bid="' + bloc.id + '" data-gi="' + gi + '" data-nom="' + nom.replace(/'/g,"&apos;") + '" onclick="removeBlocJoueur(this.dataset.bid,parseInt(this.dataset.gi),this.dataset.nom)" title="Retirer">' + nom + '</span>';
       });
       h += '</div>';
       h += '<select style="font-size:8px;border:1px solid var(--gray2);border-radius:4px;background:var(--w);color:var(--gray7);cursor:pointer;width:100%;margin-top:2px;padding:2px 3px" data-bid="' + bloc.id + '" data-gi="' + gi + '" onchange="addBlocJoueur(this.dataset.bid,parseInt(this.dataset.gi),this.value);this.value=\'\'">';
       h += '<option value="">＋ Joueur…</option>';
       pool.forEach(function(j){ h += '<option value="' + j + '">' + j + '</option>'; });
-      if (!pool.length) h += '<option disabled>— Tous assignés —</option>';
       h += '</select>';
       h += '</div>';
     });
     h += '</div>';
-  });
-  h += '</div></div>';
 
-  // COL 5 : MATÉRIEL
-  h += '<div class="seance-col mat-col">';
-  h += '<div class="seance-col-hd">🧰 Matériel</div>';
-  h += '<div style="padding:8px">';
-  h += '<div style="font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Général</div>';
-  h += '<div style="display:flex;flex-wrap:wrap;gap:3px">';
-  MATERIEL_LIST.forEach(function(m) {
-    var on = (d.materiel||[]).indexOf(m) >= 0;
-    h += '<button style="font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid ' + (on?"var(--g6)":"var(--gray2)") + ';background:' + (on?"var(--g0)":"transparent") + ';color:' + (on?"var(--g7)":"var(--gray5)") + ';cursor:pointer;font-weight:' + (on?"700":"400") + '" data-mat="' + m + '" onclick="toggleMat(this.dataset.mat);renderSeance()">' + m + '</button>';
+    // ── CEL 5 : MATÉRIEL (1ère ligne seulement, puis vide) ──
+    if (i === 0) {
+      h += '<div class="seance-row-cell" style="grid-row:span ' + d.blocs.filter(function(b){return b.type!=="pause";}).length + '">';
+      h += '<div style="font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">Général</div>';
+      h += '<div style="display:flex;flex-wrap:wrap;gap:3px">';
+      MATERIEL_LIST.forEach(function(m) {
+        var on = (d.materiel||[]).indexOf(m) >= 0;
+        h += '<button style="font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid ' + (on?"var(--g6)":"var(--gray2)") + ';background:' + (on?"var(--g0)":"transparent") + ';color:' + (on?"var(--g7)":"var(--gray5)") + ';cursor:pointer;font-weight:' + (on?"700":"400") + '" data-mat="' + m + '" onclick="toggleMat(this.dataset.mat);renderSeance()">' + m + '</button>';
+      });
+      h += '</div></div>';
+    }
   });
-  h += '</div></div></div>';
 
-  h += '</div>'; // fin grille
+  // ── LIGNE BOUTONS AJOUT BLOCS ──
+  h += '<div style="grid-column:1/-1;padding:6px 8px;background:var(--gray1);border-top:1px solid var(--gray2);display:flex;flex-wrap:wrap;gap:3px">';
+  BLOC_TYPES.forEach(function(bt) {
+    h += '<button class="add-trame-btn" style="padding:3px 8px;font-size:9px;border-color:' + bt.color + ';color:' + bt.color + ';cursor:pointer" onclick="addSBloc(\'' + bt.val + '\')">' + bt.label + '</button>';
+  });
+  h += '</div>';
+
+  h += '</div>'; // fin seance-grid
   h += '</div>'; // fin seance-page
   h += '</div>'; // fin col principale
   h += '</div>'; // fin flex wrap
