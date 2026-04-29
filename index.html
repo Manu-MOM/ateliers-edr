@@ -1235,11 +1235,11 @@ function makeCard(item, sub, gIdx) {
   }
   var tags = item.tags || [];
   return '<div class="card" onclick="openDetailIdx(' + gIdx + ')">' +
-    '<div class="card-top" style="background:' + sub.color + '">' +
-    '<span class="ct-badge" style="background:' + sub.badge + ";color:" + sub.badgeText + '">' +
-    (tags.indexOf("Echauffement") >= 0 ? "Echauffement" : "Atelier") + "</span>" +
-    '<div class="ct-num">' + item.n + "</div></div>" +
-    '<div class="card-body"><div class="card-title">' + item.t + "</div>" +
+    '<div class="card-top" style="background:' + sub.color + ';position:relative;overflow:hidden">' +
+    (item.id ? '<img src="https://drive.google.com/thumbnail?id=' + item.id + '&sz=w400" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85" onerror="this.style.display=\'none\'">' : '') +
+    '<span class="ct-badge" style="background:' + sub.badge + ';color:' + sub.badgeText + ';position:relative;z-index:1">' +
+    (tags.indexOf("Echauffement") >= 0 ? "Echauffement" : "Atelier") + '</span>' +
+    '<div class="ct-num" style="position:relative;z-index:1">' + item.n + '</div></div>' +   '<div class="card-body"><div class="card-title">' + item.t + "</div>" +
     '<div class="card-sub">' + item.s + "</div>" +
     '<div class="card-tags"><span class="tag" style="background:' + sub.badge + ";color:" + sub.badgeText + '">' + sub.icon + " " + sub.label + "</span>" +
     tags.map(function(t) { return '<span class="tag" style="background:var(--goldl);color:var(--goldd)">' + t + "</span>"; }).join("") +
@@ -2623,7 +2623,25 @@ function renderSeance() {
 
     // ── CEL 3 : ORGANISATION ──
     h += '<div class="seance-row-cell">';
-    h += '<textarea class="comp-textarea" style="flex:1;min-height:60px" placeholder="Terrain, zones, timing..." oninput="onSBlocField(' + bloc.id + ',\'orga\',this.value)">' + (bloc.orga||"") + '</textarea>';
+    // Vignettes des ateliers sélectionnés
+    var _vignettes = (bloc.ateliers||[]).filter(function(at){ return at.atelierIdx >= 0 && ALL_ITEMS[at.atelierIdx]; });
+    if (_vignettes.length) {
+      h += '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px">';
+      _vignettes.forEach(function(at) {
+        var entry = ALL_ITEMS[at.atelierIdx];
+        var fid = entry.item.id;
+        h += '<div style="position:relative;flex:1;min-width:80px;max-width:140px">';
+        h += '<img src="https://drive.google.com/thumbnail?id=' + fid + '&sz=w300" '
+          + 'style="width:100%;border-radius:6px;border:1px solid var(--gray2);display:block;cursor:pointer" '
+          + 'title="' + entry.item.t + '" '
+          + 'onclick="window.open(\'https://drive.google.com/file/d/' + fid + '/view\',\'_blank\')" '
+          + 'onerror="this.parentElement.style.display=\'none\'"/>';
+        h += '<div style="font-size:7px;color:var(--gray5);text-align:center;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + entry.item.t.substring(0,20) + '</div>';
+        h += '</div>';
+      });
+      h += '</div>';
+    }
+    h += '<textarea class="comp-textarea" style="flex:1;min-height:' + (_vignettes.length?'40':'60') + 'px" placeholder="Terrain, zones, timing..." oninput="onSBlocField(' + bloc.id + ',\'orga\',this.value)">' + (bloc.orga||"") + '</textarea>';
     h += '</div>';
 
     // ── CEL 4 : GROUPES ──
@@ -4356,10 +4374,64 @@ function _cSave() { try { localStorage.setItem(_CS_KEY, JSON.stringify(_CS)); } 
 function _cInit() { if (!_CS) _CS = _cLoad(); }
 
 // Constantes postes
+// Formats de jeu et postes associés
+var COMPOS_FORMATS = {
+  3:  { label:"3",  subs:1,
+        postes:["Joueur 1","Joueur 2","Joueur 3"] },
+  4:  { label:"4",  subs:1,
+        postes:["Joueur 1","Joueur 2","Joueur 3","Joueur 4"] },
+  5:  { label:"5",  subs:2,
+        postes:["Pilier","Talonneur","Troisième ligne","Demi de mêlée","Ailier"] },
+  6:  { label:"6",  subs:2,
+        postes:["Pilier gauche","Talonneur","Pilier droit",
+                "Demi de mêlée","Demi d'ouverture","Ailier"] },
+  7:  { label:"7",  subs:3,
+        postes:["Pilier gauche","Talonneur","Pilier droit","Troisième ligne",
+                "Demi de mêlée","Demi d'ouverture","Ailier"] },
+  8:  { label:"8",  subs:2,
+        postes:["Pilier gauche","Talonneur","Pilier droit","Troisième ligne",
+                "Demi de mêlée","Demi d'ouverture","Centre","Ailier"] },
+  9:  { label:"9",  subs:3,
+        postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne",
+                "Troisième ligne","Demi de mêlée","Demi d'ouverture","Centre","Ailier"] },
+  10: { label:"10", subs:3,
+        postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne",
+                "Troisième ligne","Demi de mêlée","Demi d'ouverture",
+                "Centre","Ailier","Arrière"] },
+  12: { label:"12", subs:4,
+        postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne",
+                "Troisième ligne","Demi de mêlée","Demi d'ouverture",
+                "Centre gauche","Centre droit","Ailier gauche","Ailier droit","Arrière"] },
+  13: { label:"13", subs:4,
+        postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne",
+                "Flanker fermé","Flanker ouvert","Demi de mêlée","Demi d'ouverture",
+                "Centre gauche","Centre droit","Ailier gauche","Ailier droit","Arrière"] },
+  15: { label:"XV", subs:8,
+        postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne","2ème ligne",
+                "Flanker fermé","Flanker ouvert","Numéro 8","Demi de mêlée","Demi d'ouverture",
+                "Ailier gauche","Centre","Centre","Ailier droit","Arrière"] }
+};
 var COMPOS_P15 = ["Pilier gauche","Talonneur","Pilier droit","2ème ligne","2ème ligne","Flanker fermé","Flanker ouvert","Numéro 8","Demi de mêlée","Demi d'ouverture","Ailier gauche","Centre","Centre","Ailier droit","Arrière"];
 var COMPOS_P7  = ["Pilier gauche","Talonneur","Pilier droit","Troisième ligne","Demi de mêlée","Demi d'ouverture","Ailier"];
 var COMPOS_SUBS = 8;
 var COMPOS_SUBS7 = 3;
+// Génère des positions génériques sur le terrain pour les petits formats
+function _cXYGeneric(fmt, n) {
+  // Disposition en rangées sur la moitié de terrain
+  var positions = [];
+  var rows = fmt <= 3 ? 1 : fmt <= 6 ? 2 : 3;
+  var perRow = Math.ceil(n / rows);
+  for (var r=0; r<rows; r++) {
+    var inRow = (r === rows-1) ? n - r*perRow : perRow;
+    var y = 250 + r * 100;
+    for (var c=0; c<inRow; c++) {
+      var x = (520 / (inRow+1)) * (c+1);
+      positions.push({x: Math.round(x), y: y});
+    }
+  }
+  return positions;
+}
+
 var FXY15 = [{x:130,y:198},{x:260,y:185},{x:390,y:198},{x:193,y:258},{x:327,y:258},{x:145,y:330},{x:375,y:330},{x:260,y:350},{x:260,y:425},{x:340,y:465},{x:95,y:518},{x:208,y:508},{x:312,y:508},{x:425,y:518},{x:260,y:572}];
 var FXY7   = [{x:175,y:220},{x:260,y:200},{x:345,y:220},{x:260,y:310},{x:260,y:420},{x:190,y:510},{x:330,y:510}];
 var COMPOS_EVENT_TYPES = {
@@ -4372,10 +4444,11 @@ var COMPOS_EVENT_TYPES = {
   "seven":{label:"Seven",short:"Seven",color:"#7c2d12"}
 };
 
-function _cIsSeven(ev){ return ev && ev.type==="seven"; }
-function _cPostes(ev){ return _cIsSeven(ev)?COMPOS_P7:COMPOS_P15; }
-function _cLineupSize(ev){ return _cIsSeven(ev)?7+COMPOS_SUBS7:15+COMPOS_SUBS; }
-function _cSubsStart(ev){ return _cIsSeven(ev)?7:15; }
+function _cIsSeven(ev){ return ev && (ev.type==="seven" || (ev.format && parseInt(ev.format)===7)); }
+function _cGetFormat(ev){ return ev && ev.format ? parseInt(ev.format) : (ev && ev.type==="seven" ? 7 : 15); }
+function _cPostes(ev){ var fmt=_cGetFormat(ev); return COMPOS_FORMATS[fmt]?COMPOS_FORMATS[fmt].postes:COMPOS_P15; }
+function _cLineupSize(ev){ var fmt=_cGetFormat(ev); return COMPOS_FORMATS[fmt]?COMPOS_FORMATS[fmt].postes.length+(COMPOS_FORMATS[fmt].subs||8):23; }
+function _cSubsStart(ev){ var fmt=_cGetFormat(ev); return COMPOS_FORMATS[fmt]?COMPOS_FORMATS[fmt].postes.length:15; }
 function _cGetBase(ev,tid){ var k="BASE_"+tid; if(!ev.lineups[k])ev.lineups[k]=new Array(_cLineupSize(ev)).fill(null); return ev.lineups[k]; }
 function _cGetOvr(ev,tid,mid){ var k="OVR_"+tid+"_"+mid; if(!ev.lineups[k])ev.lineups[k]={}; return ev.lineups[k]; }
 function _cIsInd(ev,tid,mid){ return !!ev.lineups["IND_"+tid+"_"+mid]; }
@@ -4581,10 +4654,18 @@ function _cModalBody(ev) {
 
   var h = '';
   // Type + Date
+  // Formats disponibles
+  var fmt = ev && ev.format ? ev.format : "15";
+  var fmtOpts = Object.keys(COMPOS_FORMATS).map(function(k){
+    var f = COMPOS_FORMATS[k];
+    return '<option value="'+k+'"'+(fmt==k?" selected":"")+'>À '+f.label+' ('+f.postes.length+' tit. + '+f.subs+' rem.)</option>';
+  }).join("");
+
   h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
     + _cFG("Type","<select id='cev-type' style='width:100%;padding:7px 8px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;background:#fff;cursor:pointer' onchange='cEvTypeChange()'>"+typeOpts+"</select>")
     + _cFG("Date","<input type='date' id='cev-date' value='"+(ev&&ev.date?ev.date:"")+"' style='width:100%;padding:7px 8px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px'>")
     + '</div>';
+  h += _cFG("Format de jeu","<select id='cev-format' style='width:100%;padding:7px 8px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;background:#fff;cursor:pointer' onchange='cEvFormatChange(this)'>"+fmtOpts+"</select>");
   // Nom
   h += _cFG("Nom / Journée","<input type='text' id='cev-name' value='"+(ev&&ev.name?ev.name.replace(/'/g,"&apos;"):"")+"' placeholder='ex: Journée 3 — Strasbourg' style='width:100%;padding:7px 8px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px'>");
   // Lieu avec autocomplete
@@ -4641,6 +4722,22 @@ function _cRenderPhasesUI() {
   }).join("");
 }
 
+function cEvFormatChange(sel) {
+  // Afficher un résumé du format choisi
+  var fmt = parseInt(sel.value);
+  var info = COMPOS_FORMATS[fmt];
+  if (info) {
+    var hint = document.getElementById("cev-format-hint");
+    if (!hint) {
+      hint = document.createElement("div");
+      hint.id = "cev-format-hint";
+      hint.style.cssText = "font-size:10px;color:var(--g6);background:var(--g0);padding:4px 8px;border-radius:5px;border:1px solid var(--g1);margin-top:3px";
+      sel.parentElement.appendChild(hint);
+    }
+    hint.textContent = "Postes : " + info.postes.join(", ");
+  }
+}
+
 function cEvTypeChange() {
   var type = (document.getElementById("cev-type")||{}).value || "";
   var isTournoi = (type === "tournoi");
@@ -4670,6 +4767,7 @@ function cSaveEvent() {
     id: id || "e"+Date.now(),
     type: type,
     name: document.getElementById("cev-name").value.trim(),
+    format: (document.getElementById("cev-format")||{}).value || "15",
     date: document.getElementById("cev-date").value,
     lieu: document.getElementById("cev-lieu").value.trim(),
     teams: teams,
@@ -4703,31 +4801,93 @@ function cSaveEvent() {
 }
 
 // ── Autocomplétion lieu via OpenStreetMap Nominatim ───────────────
+var _LIEUX_FAVORIS = [
+  {nom:"Stade MOM — Mutzig / Molsheim",    adresse:"Rue du Stade, 67190 Mutzig"},
+  {nom:"Stade de Schiltigheim",            adresse:"67300 Schiltigheim"},
+  {nom:"Stade d'Illkirch-Graffenstaden",   adresse:"67400 Illkirch-Graffenstaden"},
+  {nom:"Stade de la Meinau — Strasbourg",  adresse:"Route de la Fédération, 67100 Strasbourg"},
+  {nom:"Stade de Sélestat",                adresse:"67600 Sélestat"},
+  {nom:"Stade d'Obernai",                  adresse:"67210 Obernai"},
+  {nom:"Stade de Haguenau",                adresse:"67500 Haguenau"},
+  {nom:"Frankfurt (Allemagne)",            adresse:"Frankfurt am Main, Hessen"},
+];
+
 function _cInitLieuAutocomplete(input) {
   var sugg = document.getElementById("cev-lieu-suggestions");
   if (!input || !sugg) return;
   var timer = null;
+
+  function renderSuggestions(items) {
+    if (!items.length) { sugg.style.display = "none"; return; }
+    sugg.innerHTML = items.map(function(item) {
+      var safeName = (item.nom||"").replace(/'/g,"\\'");
+      return '<div style="padding:7px 11px;cursor:pointer;border-bottom:1px solid var(--gray1)"'
+        + ' onmousedown="event.preventDefault();document.getElementById(\'cev-lieu\').value=\''
+        + safeName + '\';document.getElementById(\'cev-lieu-suggestions\').style.display=\'none\'"'
+        + ' onmouseover="this.style.background=\'var(--g0)\'" onmouseout="this.style.background=\'\'">'
+        + '<div style="font-size:11px;font-weight:600;color:var(--g8)">📍 ' + item.nom + '</div>'
+        + (item.adresse ? '<div style="font-size:9px;color:var(--gray5)">' + item.adresse + '</div>' : '')
+        + '</div>';
+    }).join("");
+    sugg.style.display = "block";
+  }
+
+  function searchNominatim(q) {
+    // Essai 1 : requête directe
+    // Essai 2 si peu de résultats : avec "rugby" en contexte
+    var url1 = "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=7&accept-language=fr&q=" + encodeURIComponent(q);
+    fetch(url1).then(function(r){ return r.json(); })
+    .then(function(data) {
+      // Si peu de résultats et pas de "rugby" dans la requête, réessayer avec rugby
+      if (data.length < 2 && q.toLowerCase().indexOf("rugby") < 0) {
+        var url2 = "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=7&accept-language=fr&q=" + encodeURIComponent(q + " rugby");
+        return fetch(url2).then(function(r){ return r.json(); }).then(function(d){
+          return data.concat(d).filter(function(x,i,a){ return a.findIndex(function(y){return y.place_id===x.place_id;})===i; });
+        });
+      }
+      return data;
+    })
+    .then(function(data) {
+      var osmItems = data.slice(0,6).map(function(r) {
+        var addr = r.address || {};
+        var name = r.name || r.display_name.split(",")[0];
+        var city = addr.city || addr.town || addr.village || addr.municipality || "";
+        var postcode = addr.postcode || "";
+        var country = (addr.country_code||"fr") !== "fr" ? " (" + (addr.country||"") + ")" : "";
+        var detail = [postcode, city].filter(Boolean).join(" ") + country;
+        return {nom: name.trim(), adresse: detail};
+      });
+      // Favoris filtrés + résultats OSM
+      var q_low = q.toLowerCase();
+      var favs = _LIEUX_FAVORIS.filter(function(f){
+        return f.nom.toLowerCase().includes(q_low) || (f.adresse||"").toLowerCase().includes(q_low);
+      });
+      renderSuggestions(favs.concat(osmItems).slice(0,8));
+    })
+    .catch(function() {
+      // En cas d'erreur réseau : afficher les favoris filtrés
+      var q_low = q.toLowerCase();
+      renderSuggestions(_LIEUX_FAVORIS.filter(function(f){
+        return f.nom.toLowerCase().includes(q_low) || (f.adresse||"").toLowerCase().includes(q_low);
+      }));
+    });
+  }
+
+  input.addEventListener("focus", function() {
+    if (!input.value.trim()) renderSuggestions(_LIEUX_FAVORIS);
+  });
+
   input.addEventListener("input", function() {
     clearTimeout(timer);
     var q = input.value.trim();
-    if (q.length < 3) { sugg.style.display = "none"; return; }
-    timer = setTimeout(function() {
-      fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(q) + "&limit=5&accept-language=fr")
-        .then(function(r){ return r.json(); })
-        .then(function(data) {
-          if (!data.length) { sugg.style.display = "none"; return; }
-          sugg.innerHTML = data.map(function(r) {
-            var name = r.display_name;
-            return '<div style="padding:8px 10px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--gray1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" '
-              + 'onmousedown="document.getElementById(\'cev-lieu\').value=this.dataset.name;document.getElementById(\'cev-lieu-suggestions\').style.display=\'none\'" '
-              + 'data-name="'+name.replace(/"/g,"&quot;")+'">📍 '+name+'</div>';
-          }).join("");
-          sugg.style.display = "block";
-        })
-        .catch(function(){ sugg.style.display = "none"; });
-    }, 400);
+    if (!q) { renderSuggestions(_LIEUX_FAVORIS); return; }
+    if (q.length < 2) { sugg.style.display = "none"; return; }
+    timer = setTimeout(function() { searchNominatim(q); }, 380);
   });
-  input.addEventListener("blur", function(){ setTimeout(function(){ sugg.style.display="none"; }, 200); });
+
+  input.addEventListener("blur", function(){
+    setTimeout(function(){ sugg.style.display = "none"; }, 200);
+  });
 }
 
 function cDeleteEvent(id) {
@@ -5044,8 +5204,15 @@ function cSetScore(val, side) {
 function cDrawField() {
   var svg = document.getElementById("c-field-svg");
   if (!svg || !_cCurEV) return;
-  var isS = _cIsSeven(_cCurEV);
-  var xy  = isS ? FXY7 : FXY15;
+  var fmt = _cGetFormat(_cCurEV);
+  var ss  = _cSubsStart(_cCurEV);
+  // Sélectionner le plan de terrain adapté
+  var xy;
+  if (fmt <= 4)  xy = _cXYGeneric(fmt, ss);
+  else if (fmt <= 7)  xy = FXY7.slice(0, ss);
+  else xy = FXY15.slice(0, ss);
+  // Compléter si pas assez de positions
+  while (xy.length < ss) xy.push({x:260, y:350});
   var Ps  = _cPostes(_cCurEV);
   var resolved = _cGetEditable();
   var joueurs = _cGetJoueurs() || [];
