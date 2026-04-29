@@ -4341,6 +4341,7 @@ function _cBuildCalendrier() {
       // Actions
       out += '<div style="display:flex;gap:0;border-left:1px solid var(--gray2)">';
       out += '<button onclick="cOpenEditor(\''+ev.id+'\',\''+(ev.teams[0]||'t1')+'\',\''+(ms[0]?ms[0].id:'')+'\',\'base\')" style="padding:0 14px;border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--g6)" title="Composer">⚽</button>';
+      out += '<button onclick="cExportMatchSheet(\''+ev.id+'\')" style="padding:0 12px;border:none;border-left:1px solid var(--gray2);background:transparent;cursor:pointer;font-size:14px;color:var(--gray5)" title="Feuille de match PDF">📄</button>';
       out += '<button onclick="cEditEvent(\''+ev.id+'\')" style="padding:0 12px;border:none;border-left:1px solid var(--gray2);background:transparent;cursor:pointer;font-size:14px;color:var(--gray5)" title="Modifier">✏️</button>';
       out += '<button onclick="cDeleteEvent(\''+ev.id+'\')" style="padding:0 12px;border:none;border-left:1px solid var(--gray2);background:transparent;cursor:pointer;font-size:12px;color:#dc2626" title="Supprimer">✕</button>';
       out += '</div></div></div>';
