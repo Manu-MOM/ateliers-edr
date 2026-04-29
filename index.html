@@ -338,6 +338,52 @@ button,input{font-family:'Barlow',sans-serif}
 .seance-col{border-right:1px solid var(--gray2);overflow:hidden}
 .seance-col:last-child{border-right:none}
 .seance-col-hd{background:var(--g9);color:var(--w);padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--gold)}
+/* ═══ ONGLET JOUEURS — style SARxMOM ═══════════════════════════ */
+.jp-fbar{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:8px 10px;background:var(--w);border-radius:var(--r);border:1px solid var(--gray2)}
+.jp-search{padding:5px 9px;border:1px solid var(--gray2);border-radius:6px;font-size:12px;font-family:var(--fb),sans-serif;flex:1;min-width:120px;outline:none;color:var(--gray7)}
+.jp-search:focus{border-color:var(--g6)}
+.jp-fsel{padding:5px 8px;border:1px solid var(--gray2);border-radius:6px;font-size:11px;background:var(--w);color:var(--gray7);cursor:pointer;outline:none}
+.jp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;padding:0 0 16px}
+.jp-card{background:var(--w);border:1px solid var(--gray2);border-radius:var(--rl);padding:11px;cursor:pointer;transition:box-shadow .15s;position:relative}
+.jp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.jp-card.injured{border-color:#fca5a5;background:#fff5f5}
+.jp-ch{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.jp-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Barlow Condensed",sans-serif;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;overflow:hidden}
+.jp-av img{width:100%;height:100%;object-fit:cover}
+.jp-name{font-weight:700;font-size:13px;color:var(--gray8)}
+.jp-sub{font-size:10px;color:var(--gray5);margin-top:1px}
+.jp-num{margin-left:auto;font-family:"Barlow Condensed",sans-serif;font-size:22px;color:var(--g6);font-weight:900;line-height:1}
+.jp-pb{padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;background:var(--g0);color:var(--g7);font-family:"Barlow Condensed",sans-serif}
+.jp-inj-overlay{position:absolute;top:8px;right:8px}
+.jp-inj-badge{padding:1px 6px;border-radius:3px;font-size:9px;font-weight:800;background:#fee2e2;color:#dc2626;font-family:"Barlow Condensed",sans-serif;letter-spacing:.03em;text-transform:uppercase}
+.jp-tag{padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700;font-family:"Barlow Condensed",sans-serif}
+.jp-tag-runner{background:#fef3c7;color:#92400e}
+.jp-tag-driver{background:#dbeafe;color:#1e40af}
+.jp-tag-tank{background:#fce7f3;color:#9d174d}
+.jp-tag-botteur{background:#d1fae5;color:#065f46}
+.jp-tag-lanceur{background:#ede9fe;color:#4c1d95}
+.jp-tag-sauteur{background:#ffedd5;color:#9a3412}
+.jp-tag-lifteur{background:#f0fdf4;color:#14532d}
+.jp-jdd{background:#d1fae5;color:#065f46;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;font-family:"Barlow Condensed",sans-serif}
+.jp-arb{background:#dbeafe;color:#1e40af;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;font-family:"Barlow Condensed",sans-serif}
+.jp-empty{text-align:center;padding:40px;color:var(--gray5);grid-column:1/-1}
+/* Modal joueur */
+.jpm-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:14px}
+.jpm-bg.open{display:flex}
+.jpm-box{background:#fff;border-radius:var(--rl);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.25)}
+.jpm-hdr{background:var(--g8);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px}
+.jpm-title{font-family:"Barlow Condensed",sans-serif;font-size:18px;font-weight:800;flex:1;letter-spacing:.04em}
+.jpm-body{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.jpm-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.jpm-lbl{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray5);margin-bottom:3px}
+.jpm-inp,.jpm-sel{width:100%;padding:6px 9px;border:1px solid var(--gray2);border-radius:6px;font-size:13px;color:var(--gray7);background:var(--gray1)}
+.jpm-inp:focus,.jpm-sel:focus{outline:2px solid var(--g4);border-color:var(--g6)}
+.jpm-apts{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
+.jpm-foot{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--gray2);justify-content:flex-end}
+.jp-photo-area{border:2px dashed var(--gray2);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:4px}
+.jp-photo-area:hover{border-color:var(--g4);background:var(--g0)}
+.jp-photo-preview{width:70px;height:70px;border-radius:50%;object-fit:cover;margin:0 auto 6px;display:block;border:2px solid var(--g6)}
+
 /* Col 1 : Trame */
 .trame-col{display:flex;flex-direction:column;position:relative}
 .trame-blocs{display:flex;flex-direction:column;gap:0;padding:6px 6px 6px 6px;position:relative;z-index:1}
@@ -461,6 +507,8 @@ button,input{font-family:'Barlow',sans-serif}
 @media(max-width:768px){.sidebar{display:none}.mob-nav{display:block}.section-tabs{display:none}.tb-title small{display:none}.topbar{padding:0 11px;gap:8px}.tb-search{max-width:140px}.content{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}.stat-n{font-size:24px}.cards{grid-template-columns:1fr 1fr;gap:8px}.card-top{height:60px}.ct-num{font-size:36px}.card-body{padding:8px 10px}.card-title{font-size:12px}.modal{border-radius:14px;max-height:92vh}.phase-grid{grid-template-columns:1fr 1fr}.banner{padding:15px 17px}.banner-title{font-size:20px}.toolbar{padding:8px 12px 7px}.vbtns{display:none}.afbar{display:none}}
 @media(max-width:380px){.cards{grid-template-columns:1fr}.phase-grid{grid-template-columns:1fr}}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 <div id="login">
@@ -474,10 +522,12 @@ button,input{font-family:'Barlow',sans-serif}
       <button class="lage-btn" data-age="M8"    onclick="selAge(this)">M8<small>6-7 ans</small></button>
       <button class="lage-btn" data-age="M10"   onclick="selAge(this)">M10<small>8-9 ans</small></button>
       <button class="lage-btn" data-age="M12"   onclick="selAge(this)">M12<small>10-11 ans</small></button>
-      <button class="lage-btn" data-age="M14"   onclick="selAge(this)">M14<small>12-13 ans</small></button>
-      <button class="lage-btn" data-age="M1618" onclick="selAge(this)">M16-M18<small>14-17 ans</small></button>
-      <button class="lage-btn" data-age="SEN"   onclick="selAge(this)">Senior<small>18+ ans</small></button>
-      <button class="lage-btn" data-age="ALL"   onclick="selAge(this)" style="border-color:rgba(212,168,32,.4)">Toutes<small>categories</small></button>
+      <button class="lage-btn" data-age="M14F15" onclick="selAge(this)">M14/F15<small>12-13 ans</small></button>
+      <button class="lage-btn" data-age="M16"   onclick="selAge(this)">M16<small>14-15 ans</small></button>
+      <button class="lage-btn" data-age="M18"   onclick="selAge(this)">M18<small>16-17 ans</small></button>
+      <button class="lage-btn" data-age="SENF"  onclick="selAge(this)">Senior F<small>Féminines</small></button>
+      <button class="lage-btn" data-age="SENM"  onclick="selAge(this)">Senior M<small>Masculins</small></button>
+      <button class="lage-btn" data-age="ALL"   onclick="selAge(this)" style="border-color:rgba(212,168,32,.4)">Toutes<small>catégories</small></button>
     </div>
     <div class="ldiv"></div>
     <label class="llabel">2. Code d'acces educateur</label>
@@ -496,14 +546,14 @@ button,input{font-family:'Barlow',sans-serif}
       <input type="text" id="si" placeholder="Rechercher..." oninput="doSearch()">
     </div>
     <div class="age-badge" id="topbar-age" onclick="doLogout()" title="Changer de categorie"></div>
-    <div class="tb-avatar" title="Deconnexion" onclick="doLogout()">ED</div>
+    <button id="btn-params-global" onclick="openParamsPanel()" title="Paramètres" style="width:34px;height:34px;background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">⚙️</button>
   </div>
   <div class="section-tabs">
-    <div class="stab act" id="stab-bib"    onclick="goSection('bib')">📚 Bibliotheque <span class="stab-badge" id="stab-cnt"></span></div>
-    <div class="stab"     id="stab-plan"   onclick="goSection('plan')">🗂️ Plan des ateliers</div>
+    <div class="stab act" id="stab-bib"    onclick="goSection('bib')">📚 Bibliothèque <span class="stab-badge" id="stab-cnt"></span></div>
     <div class="stab"     id="stab-ressources" onclick="goSection('ressources')">📖 Ressources</div>
     <div class="stab"     id="stab-saison" onclick="goSection('saison')">📅 Planification</div>
     <div class="stab"     id="stab-seance" onclick="goSection('seance')">📋 Ma séance</div>
+    <div class="stab"     id="stab-joueurs" onclick="goSection('joueurs')">👥 Joueurs</div>
   </div>
   <div class="app-body">
     <nav class="sidebar" id="sidebar"></nav>
@@ -528,10 +578,11 @@ button,input{font-family:'Barlow',sans-serif}
     <div class="mob-nav-inner">
       <div class="mni act" id="mn-home"   onclick="goSection('bib');goPage('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Accueil<div class="mni-dot"></div></div>
       <div class="mni"     id="mn-bib"    onclick="goSection('bib')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Biblio<div class="mni-dot"></div></div>
-      <div class="mni"     id="mn-plan"   onclick="goSection('plan')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Plan<div class="mni-dot"></div></div>
+
       <div class="mni"     id="mn-ressources" onclick="goSection('ressources')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Ressources<div class="mni-dot"></div></div>
       <div class="mni"     id="mn-saison" onclick="goSection('saison')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Saison<div class="mni-dot"></div></div>
       <div class="mni"     id="mn-seance" onclick="goSection('seance')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Seance<div class="mni-dot"></div></div>
+      <div class="mni"     id="mn-joueurs" onclick="goSection('joueurs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Joueurs<div class="mni-dot"></div></div>
     </div>
   </nav>
 </div>
@@ -552,8 +603,8 @@ var _LOGO_SVG="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmc
 var _IMG_PNG = _LOGO_PNG;
 var _IMG_SVG = _LOGO_SVG;
 
-var AGES = ["M6","M8","M10","M12","M14","M1618","SEN"];
-var AGE_LABELS = {M6:"M6 (4-5 ans)",M8:"M8 (6-7 ans)",M10:"M10 (8-9 ans)",M12:"M12 (10-11 ans)",M14:"M14 (12-13 ans)",M1618:"M16-M18 (14-17 ans)",SEN:"Seniors",ALL:"Toutes categories"};
+var AGES = ["M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
+var AGE_LABELS = {M6:"M6 (4-5 ans)",M8:"M8 (6-7 ans)",M10:"M10 (8-9 ans)",M12:"M12 (10-11 ans)",M14F15:"M14/F15 (12-13 ans)",M16:"M16 (14-15 ans)",M18:"M18 (16-17 ans)",SENF:"Seniors Féminines",SENM:"Seniors Masculins",ALL:"Toutes catégories"};
 
 function fromAge(a) {
   var i = AGES.indexOf(a);
@@ -581,9 +632,9 @@ var RUBRIQUES = [
           {n:"03",t:"Continuite debout seq 3",s:"1+2 VS 1+1+1 retour 2+1 VS 2+1",id:"1ZVUJCujms2uUJ_QbYpI6NpwWn_ArXGiw",ages:fromAge("M14"),tags:["Intensif"]},
           {n:"04",t:"Continuite debout seq 4",s:"Collectif reduit prise de decision",id:"1l3hsJQDlxvmHuBdnl6N6Hc56_9Wmqmah",ages:fromAge("M14")},
           {n:"05",t:"Continuite debout seq 5",s:"Enchainement collectif avance",id:"1YjLbxTDFHWLWxD04JgqSQTuRfTT0hNBy",ages:fromAge("M14")},
-          {n:"06",t:"Continuite debout seq 6",s:"Reduction espace jeu interieur",id:"1Pj1SilHbOCOdaepI-quvpGAuf4pL0IPW",ages:fromAge("M1618")},
-          {n:"07",t:"Continuite debout seq 7",s:"Jeu groupe complexe",id:"1Mudmb4Pvc3UWpZ0GU7PFRlcgYx2LOyjt",ages:fromAge("M1618")},
-          {n:"08",t:"Continuite debout seq 8",s:"Situation de match continuite totale",id:"1HybAxuEe73Dx28VuNg7sv1b7f47NSDUu",ages:fromAge("M1618")},
+          {n:"06",t:"Continuite debout seq 6",s:"Reduction espace jeu interieur",id:"1Pj1SilHbOCOdaepI-quvpGAuf4pL0IPW",ages:fromAge("M16")},
+          {n:"07",t:"Continuite debout seq 7",s:"Jeu groupe complexe",id:"1Mudmb4Pvc3UWpZ0GU7PFRlcgYx2LOyjt",ages:fromAge("M16")},
+          {n:"08",t:"Continuite debout seq 8",s:"Situation de match continuite totale",id:"1HybAxuEe73Dx28VuNg7sv1b7f47NSDUu",ages:fromAge("M16")},
           {n:"01",t:"Duel offensif n1",s:"Initiation au duel direct",id:"1pKnVtBkNjE7oVu_4KiCXSf51tld7q5xr",ages:fromAge("M10"),cross:"2c Duels"},
           {n:"02",t:"Duel offensif n2",s:"Duel en couloir acceleration",id:"16j4jkIYfMHUvpbQ1CN0xw2KjOe_-RGcn",ages:fromAge("M10"),cross:"2c Duels"},
           {n:"03",t:"Duel offensif n3",s:"Duel et changement de direction",id:"1wOAmSiTgXINm312-2hCudRBDWZUoA9tj",ages:fromAge("M12"),cross:"2c Duels"},
@@ -591,8 +642,8 @@ var RUBRIQUES = [
           {n:"05",t:"Duel offensif n5",s:"Ligne d'avantage 1vs1 intensif",id:"19PBy1vdpFPphJ9_xWoe5xnfyIkoYUxJ9",ages:fromAge("M12"),cross:"2c Duels"},
           {n:"06",t:"Duel offensif n6",s:"Duel avec prise de decision",id:"1bFxcPch8wYVyB1nzx8TiyBwAcSh62Msc",ages:fromAge("M14"),cross:"2c Duels"},
           {n:"07",t:"Duel offensif n7",s:"Enchainement duel et soutien",id:"1HBPYOtswA0FRUjLPMQJjtR6mQ8ohVTWg",ages:fromAge("M14"),cross:"2c Duels"},
-          {n:"08",t:"Duel offensif n8",s:"Situation de jeu complexe",id:"1fgjdF7n06HxHhAFF1wAwa_-m_7qYzIs4",ages:fromAge("M1618"),cross:"2c Duels"},
-          {n:"09",t:"Match Point Duel n9",s:"Jeu reel sous pression",id:"1kPD2UGrNgB-0tHp46c_qnYLqqNHsVS_2",ages:fromAge("M1618"),tags:["Match Point"],cross:"2c Duels"}
+          {n:"08",t:"Duel offensif n8",s:"Situation de jeu complexe",id:"1fgjdF7n06HxHhAFF1wAwa_-m_7qYzIs4",ages:fromAge("M16"),cross:"2c Duels"},
+          {n:"09",t:"Match Point Duel n9",s:"Jeu reel sous pression",id:"1kPD2UGrNgB-0tHp46c_qnYLqqNHsVS_2",ages:fromAge("M16"),tags:["Match Point"],cross:"2c Duels"}
         ]},
         { id:"oc-att-dep", label:"Jeu deploye — Defense groupee", items:[
           {n:"01",t:"Lancement apres conservation seq 1",s:"Jeu deploye apres conservation",id:"1kiFNvPuTkk9IpL7f-h28sZjoJoFUY5Ru",ages:fromAge("M12")},
@@ -600,7 +651,7 @@ var RUBRIQUES = [
           {n:"03",t:"Moyenne Box Jeu en vert seq 1",s:"Animation en espace moyen",id:"1OB8YBNZBTnjq4X9vvqlUnZhLwCZFCNDI",ages:fromAge("M14")},
           {n:"04",t:"Fixer son defenseur 4 VS 3",s:"Fixer avant de liberer l'espace",id:"1Coihgid-ZdukQ1hU8slReJfmClU8Ik2v",ages:fromAge("M14"),tags:["4 VS 3"]},
           {n:"05",t:"Apprendre a pre-agir",s:"Prise d'informations avant reception",id:"16vG9I3ZNDpqAEdjtMasKk3VPb7m0KaXk",ages:fromAge("M14")},
-          {n:"06",t:"Animation offensive Jeu deploye 2VS2",s:"Animation en surnombre deploye",id:"1qVere_J6fgWTz9cCaYpVHAzga0-jaeBV",ages:fromAge("M1618"),tags:["2 VS 2"]}
+          {n:"06",t:"Animation offensive Jeu deploye 2VS2",s:"Animation en surnombre deploye",id:"1qVere_J6fgWTz9cCaYpVHAzga0-jaeBV",ages:fromAge("M16"),tags:["2 VS 2"]}
         ]},
         { id:"oc-att-pied", label:"Jeu au pied — Pas de 2e rideau", items:[], soon:true }
       ]
@@ -612,9 +663,9 @@ var RUBRIQUES = [
       ss:[
         { id:"oc-def-rush", label:"Rush defense et Defense collective", items:[
           {n:"R1",t:"Rush Defense seq 1",s:"Defense montante coordonnee",id:"1_jOMukI5G6yi9HxhwU-ljZe_CSErzftP",ages:fromAge("M14")},
-          {n:"R2",t:"Rush Defense seq 2",s:"Pression defensive intensive",id:"1ROgl6J_85NxJwEnP8ddn6VoQK14V-Gza",ages:fromAge("M1618")},
-          {n:"DC",t:"Defense en controle seq 1",s:"Defense organisee en controle",id:"1GG_MSJ1yUb3iH5qCk_XelfzcB-8s7qzA",ages:fromAge("M1618")},
-          {n:"DR",t:"Defense autour des Rucks seq 1",s:"Organisation defensive au ruck",id:"1AR-TeQZfeNkWpAZ7xaLd_LnD9ZK7eCoJ",ages:fromAge("M1618")},
+          {n:"R2",t:"Rush Defense seq 2",s:"Pression defensive intensive",id:"1ROgl6J_85NxJwEnP8ddn6VoQK14V-Gza",ages:fromAge("M16")},
+          {n:"DC",t:"Defense en controle seq 1",s:"Defense organisee en controle",id:"1GG_MSJ1yUb3iH5qCk_XelfzcB-8s7qzA",ages:fromAge("M16")},
+          {n:"DR",t:"Defense autour des Rucks seq 1",s:"Organisation defensive au ruck",id:"1AR-TeQZfeNkWpAZ7xaLd_LnD9ZK7eCoJ",ages:fromAge("M16")},
           {n:"P1",t:"Plaquages seq 1",s:"Technique plaquage securise",id:"1nu8nvFbl0nMzCAAAA5ZHdPvQYnC5ATeI",ages:fromAge("M12"),cross:"2b Plaquer"},
           {n:"P2",t:"Plaquages seq 2",s:"Plaquage lateral et frontal",id:"1NGiupL61v_Ha7tcx94qRrlYnVdcsGnqO",ages:fromAge("M12"),cross:"2b Plaquer"},
           {n:"P3",t:"Plaquages seq 3",s:"Plaquage en situation de jeu",id:"1tUtx79qdoFFyV6E5PtEGbtpkRK-bUCoQ",ages:fromAge("M14"),cross:"2b Plaquer"},
@@ -632,7 +683,7 @@ var RUBRIQUES = [
           {n:"02",t:"Liberation au contact seq 2",s:"Situations variees de liberation",id:"1982YyWZoLc2HmDk-heDpNTLHWYlFwrLZ",ages:fromAge("M14"),cross:"2d Zones"},
           {n:"03",t:"Comportement dans les Rucks seq 1",s:"Comportement technique sur les zones",id:"1bmfFJSYPkHnT-bLzNHnoUyZm4Ul-1hqe",ages:fromAge("M14"),cross:"2d Zones"},
           {n:"04",t:"Organisation dans les Rucks seq 1",s:"Collectif organisation au ruck",id:"1pmyTMdr_GHUB6F7G6UaMworE2HjXp0Ee",ages:fromAge("M14")},
-          {n:"05",t:"Choix de la forme de jeu seq 1",s:"Choisir ruck ou jeu debout",id:"14cENY-1gnFsjyVB1UXwPcnle1KjBg-S_",ages:fromAge("M1618")}
+          {n:"05",t:"Choix de la forme de jeu seq 1",s:"Choisir ruck ou jeu debout",id:"14cENY-1gnFsjyVB1UXwPcnle1KjBg-S_",ages:fromAge("M16")}
         ]}
       ]
     },
@@ -664,13 +715,13 @@ var RUBRIQUES = [
           {n:"04",t:"Jouer dans les espaces libres 5 VS 3",s:"Exploitation des espaces libres",id:"1I7yhqTA-1OrstvRL6DtZlTNZ5gZpq6H2",ages:fromAge("M14"),tags:["5 VS 3"]},
           {n:"05",t:"Travail en cellules seq 2",s:"Initiation au jeu en cellules",id:"17duPAkC0OeSCcfjblqhHjZsFmKQxEiWh",ages:fromAge("M14")},
           {n:"06",t:"Jeu en vert Demarquage seq 1",s:"Pre-action demarquage transmission",id:"1kV6qfC24rclvo-yNX0BWDniHjGiU3f5s",ages:fromAge("M14"),tags:["Video incluse"]},
-          {n:"07",t:"Jeu en vert Demarquage seq 2",s:"Lecture et exploitation du demarquage",id:"1csHrFlmCQdUXJKARk8vUjeL6QQlwvXFy",ages:fromAge("M1618"),tags:["Video incluse"]},
-          {n:"08",t:"Travail en cellules seq 1",s:"Organisation et coordination en cellule",id:"1yd6CcVukyn45csJzq3cBCJqUt-VZvF_8",ages:fromAge("M1618")}
+          {n:"07",t:"Jeu en vert Demarquage seq 2",s:"Lecture et exploitation du demarquage",id:"1csHrFlmCQdUXJKARk8vUjeL6QQlwvXFy",ages:fromAge("M16"),tags:["Video incluse"]},
+          {n:"08",t:"Travail en cellules seq 1",s:"Organisation et coordination en cellule",id:"1yd6CcVukyn45csJzq3cBCJqUt-VZvF_8",ages:fromAge("M16")}
         ]},
         { id:"oc-pb-vid", label:"Videos Projet Bleu", items:[
           {n:"V1",t:"Video Demarquage Nicolas Hirn",s:"Modele de pre-action et demarquage",id:"1KDO-wEuopH8E37QOEoQw7uxANRs4zWET",ages:fromAge("M14"),video:true},
           {n:"V2",t:"Video Situation de demarquage",s:"Analyse d'une situation reelle",id:"1d5ELM4PyKziSBlqVN1NmWadHwJr_CO1J",ages:fromAge("M14"),video:true},
-          {n:"V3",t:"Video Demarquage Geoffrey Philippe",s:"Modele de pre-action avance",id:"11q8o6YZTWi93UTaqU5j0CQ8E3Pmg-_zm",ages:fromAge("M1618"),video:true}
+          {n:"V3",t:"Video Demarquage Geoffrey Philippe",s:"Modele de pre-action avance",id:"11q8o6YZTWi93UTaqU5j0CQ8E3Pmg-_zm",ages:fromAge("M16"),video:true}
         ]}
       ]
     }
@@ -700,7 +751,7 @@ var RUBRIQUES = [
           {n:"09",t:"Manipulation de balle seq 9",s:"Passe apres contact court",id:"1bgCBZ_I2rcjn8WxUHcChPn1oBpnKtxW6",ages:fromAge("M12")},
           {n:"10",t:"Manipulation de balle seq 10",s:"Passes longues travail aplatissant",id:"1625W3LMmEwYNurPsTmbz7UafdlvNjDI8",ages:fromAge("M12")},
           {n:"11",t:"Manipulation de balle seq 11",s:"Jeu au pied initiation",id:"1WLu-vNXs9Z70XUiKnzjt3uFGhfbmYmSA",ages:fromAge("M14")},
-          {n:"12",t:"Manipulation de balle seq 12",s:"Jeu au pied avance",id:"1FkAPzUYYxskCM_rebC9irJO8C5_rg_P8",ages:fromAge("M1618")}
+          {n:"12",t:"Manipulation de balle seq 12",s:"Jeu au pied avance",id:"1FkAPzUYYxskCM_rebC9irJO8C5_rg_P8",ages:fromAge("M16")}
         ]}
       ]
     },
@@ -730,8 +781,8 @@ var RUBRIQUES = [
           {n:"05",t:"Duel offensif n5",s:"Ligne avantage 1vs1 intensif",id:"19PBy1vdpFPphJ9_xWoe5xnfyIkoYUxJ9",ages:fromAge("M12"),cross:"1a Jeu penetrant"},
           {n:"06",t:"Duel offensif n6",s:"Duel avec prise de decision",id:"1bFxcPch8wYVyB1nzx8TiyBwAcSh62Msc",ages:fromAge("M14"),cross:"1a Jeu penetrant"},
           {n:"07",t:"Duel offensif n7",s:"Enchainement duel et soutien",id:"1HBPYOtswA0FRUjLPMQJjtR6mQ8ohVTWg",ages:fromAge("M14"),cross:"1a Jeu penetrant"},
-          {n:"08",t:"Duel offensif n8",s:"Situation de jeu complexe",id:"1fgjdF7n06HxHhAFF1wAwa_-m_7qYzIs4",ages:fromAge("M1618"),cross:"1a Jeu penetrant"},
-          {n:"09",t:"Match Point Duel n9",s:"Jeu reel sous pression",id:"1kPD2UGrNgB-0tHp46c_qnYLqqNHsVS_2",ages:fromAge("M1618"),tags:["Match Point"],cross:"1a Jeu penetrant"}
+          {n:"08",t:"Duel offensif n8",s:"Situation de jeu complexe",id:"1fgjdF7n06HxHhAFF1wAwa_-m_7qYzIs4",ages:fromAge("M16"),cross:"1a Jeu penetrant"},
+          {n:"09",t:"Match Point Duel n9",s:"Jeu reel sous pression",id:"1kPD2UGrNgB-0tHp46c_qnYLqqNHsVS_2",ages:fromAge("M16"),tags:["Match Point"],cross:"1a Jeu penetrant"}
         ]}
       ]
     },
@@ -920,6 +971,7 @@ function goSection(s) {
   else if (s === "ressources") { goSection_ressources(); }
   else if (s === "saison") { goSection_saison(); }
   else if (s === "seance") { goSection_seance(); }
+  else if (s === "joueurs") { goSection_joueurs(); }
 }
 
 // ═══ SIDEBAR ═════════════════════════════════════════════════════
@@ -927,6 +979,7 @@ function buildSbBib() {
   var sb = document.getElementById("sidebar");
   var h = '<div class="sb-sec"><div class="sb-sec-lbl">Navigation</div>';
   h += sbItem("home", "🏠", "Accueil", curPage === "home", "goPage('home')");
+  h += sbItem("plan-link", "🗂️", "Plan des ateliers", curSection === "plan", "goSection('plan')");
   h += '</div><div class="sb-div"></div>';
 
   RUBRIQUES.forEach(function(rub) {
@@ -1374,13 +1427,19 @@ var GRILLES_AGE = [
   {age:"M12",  label:"M12 (10-11 ans)", driveId:"1HgboGWyKkgbjmtyH8vwPyX1A_RRo2v09",
    color:"#166334", bg:"var(--g0)", fg:"var(--g6)",
    comps:["Plaquage securise","Continuité autour du porteur","Lecture simple du jeu","Liberation au sol","Projet Bleu initiation"]},
-  {age:"M14",  label:"M14 (12-13 ans)", driveId:null,
+  {age:"M14F15",label:"M14/F15 (12-13 ans)",driveId:null,
    color:"#0f4f28", bg:"var(--gray1)", fg:"var(--gray5)",
    comps:[], soon:true},
-  {age:"M1618", label:"M16-M18 (14-17 ans)", driveId:null,
+  {age:"M16",   label:"M16 (14-15 ans)",          driveId:null,
    color:"#0a3a1e", bg:"var(--gray1)", fg:"var(--gray5)",
    comps:[], soon:true},
-  {age:"SEN",  label:"Seniors (18+ ans)", driveId:null,
+  {age:"M18",   label:"M18 (16-17 ans)",          driveId:null,
+   color:"#0a3a1e", bg:"var(--gray1)", fg:"var(--gray5)",
+   comps:[], soon:true},
+  {age:"SENF",  label:"Seniors Féminines",         driveId:null,
+   color:"#04200f", bg:"var(--gray1)", fg:"var(--gray5)",
+   comps:[], soon:true},
+  {age:"SENM",  label:"Seniors Masculins",         driveId:null,
    color:"#04200f", bg:"var(--gray1)", fg:"var(--gray5)",
    comps:[], soon:true}
 ];
@@ -1524,7 +1583,7 @@ function buildCrossRefHtml(ssId) {
 // ═══ PLANIFICATION DE SAISON ═════════════════════════════════════
 
 var DRIVE_FOLDER_PLAN = "16zWlSMKjrzQlGIXrYfxB8Dy4nAj-aij9";
-var CATS_PLAN = ["Commun","M6","M8","M10","M12","M14","M1618","SEN"];
+var CATS_PLAN = ["Commun","M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
 var curPlanCat = "Commun";
 var curPlanView = "plan"; // "plan" | "config"
 var planData = {};
@@ -1534,7 +1593,7 @@ var CFG_CODE = "EDR2025"; // code responsable EDR
 // Base de données joueurs par catégorie
 // Format : { age: [{prenom, nom, poste}] }
 var JOUEURS_DB = {
-  M6:[], M8:[], M10:[], M12:[], M14:[], M1618:[], SEN:[]
+  M6:[], M8:[], M10:[], M12:[], "M14F15":[], M16:[], M18:[], SENF:[], SENM:[]
 };
 
 // Postes disponibles par catégorie
@@ -2179,1274 +2238,29 @@ function printPlan() {
   h += '<div>Document g&eacute;n&eacute;r&eacute; le ' + new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}) + '</div>';
   h += '</div>';
 
-  h += '</body></html>';
 
-  var win = window.open("", "_blank", "width=1100,height=750");
-  win.document.write(h);
-  win.document.close();
-  win.onload = function(){ win.print(); };
-}
-
-// ═══ CONFIGURATION DES AXES ══════════════════════════════════════
-
-var cfgUnlocked = false;
-
-function openConfig() {
-  curPlanView = "config";
-  buildSbSaison();
-  document.getElementById("bc").innerHTML = "<b>Configuration des axes</b>";
-  document.getElementById("tc").style.display = "none";
-  document.getElementById("vbtns").style.display = "none";
-  document.getElementById("afbar").style.display = "none";
-
-  if (!cfgUnlocked) {
-    renderConfigLock();
-  } else {
-    renderConfigEditor();
-  }
-}
-
-function renderConfigLock() {
-  var h = '<div class="cfg-lock">';
-  h += '<div class="cfg-lock-icon">🔐</div>';
-  h += '<div class="cfg-lock-title">Espace Responsable EDR</div>';
-  h += '<div class="cfg-lock-sub">Saisissez le code responsable pour acceder a la configuration des listes deroulantes</div>';
-  h += '<div style="display:flex;align-items:center;justify-content:center;gap:8px">';
-  h += '<input class="cfg-lock-input" id="cfg-code-input" type="password" maxlength="10" placeholder="Code..." autocomplete="off" onkeydown="if(event.key===\'Enter\')checkCfgCode()">';
-  h += '<button class="cfg-lock-btn" onclick="checkCfgCode()">Acceder →</button>';
-  h += '</div>';
-  h += '<div class="cfg-lock-err" id="cfg-lock-err">Code incorrect</div>';
-  h += '</div>';
-  document.getElementById("content").innerHTML = h;
-  document.getElementById("content").classList.remove("lv");
-  setTimeout(function(){ var el = document.getElementById("cfg-code-input"); if(el) el.focus(); }, 100);
-}
-
-function checkCfgCode() {
-  var v = (document.getElementById("cfg-code-input") || {}).value || "";
-  if (v.toUpperCase() === CFG_CODE) {
-    cfgUnlocked = true;
-    renderConfigEditor();
-  } else {
-    var err = document.getElementById("cfg-lock-err");
-    if (err) err.style.display = "block";
-    var inp = document.getElementById("cfg-code-input");
-    if (inp) { inp.value = ""; inp.focus(); }
-  }
-}
-
-function renderConfigEditor() {
-  var cfg = getConfig();
-  var scfg = getSeanceConfig();
-
-  var h = '<div class="cfg-save-bar">';
-  h += '<div class="cfg-save-bar-text">⚙️ Mode Responsable EDR — Personnalisez les listes de la planification et des séances</div>';
-  h += '<button class="plan-save-btn" onclick="saveConfig()">💾 Sauvegarder la configuration</button>';
-  h += '<span class="plan-save-ok" id="cfg-save-ok" style="display:none">✅ Sauvegarde!</span>';
-  h += '</div>';
-
-  // ── SÉANCE ──
-  h += '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:var(--gray7);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--g1)">📋 Séances — Listes déroulantes</div>';
-
-  h += renderCfgSection("coachs", "👨‍🏫 Liste des coachs / éducateurs",
-    "Noms proposés dans le menu Coachs de la séance",
-    scfg.coachs || [], []);
-
-  h += renderCfgSection("timekeepers", "⏱️ Liste des time keepers",
-    "Noms proposés dans le menu Time keeper de la séance",
-    scfg.timekeepers || [], []);
-
-  // ── PLANIFICATION ──
-  h += '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:800;color:var(--gray7);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--g1)">📅 Planification — Axes de travail</div>';
-
-  h += renderCfgSection("titres", "📌 Titres des blocs de planification",
-    "Propositions dans le menu déroulant du titre de chaque bloc",
-    cfg.titres || TITRES_BLOCS.slice(), ["-- Choisir un titre --", "Autre (texte libre)"]);
-
-  h += renderCfgSection("collectif", "🧠 Axe de travail collectif",
-    "Options du menu Organisation collective",
-    cfg.collectif || AXES_COLLECTIF_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
-
-  h += renderCfgSection("physique", "💪 Axe de travail physique",
-    "Options du menu Activations physiques",
-    cfg.physique || AXES_PHYSIQUE_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
-
-  h += renderCfgSection("poste", "🏟️ Axe jeu au poste",
-    "Options du menu Jeu au poste",
-    cfg.poste || AXES_POSTE_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
-
-  // ── JOUEURS PAR CATÉGORIE ──
-  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:800;color:var(--gray7);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--g1)">👥 Base de données Joueurs</div>';
-  h += renderJoueursDB();
-
-  h += '<div style="height:20px"></div>';
-
-  document.getElementById("content").innerHTML = h;
-  document.getElementById("content").classList.remove("lv");
-  // Activer la catégorie sélectionnée dans la base joueurs
-  switchJoueursCat(window._cfgJoueursCat || (selAge_ && selAge_ !== "ALL" ? selAge_ : "M14"));
-}
-
-function renderCfgSection(key, title, subtitle, items, fixed) {
-  var h = '<div class="cfg-section">';
-  h += '<div class="cfg-section-hd">';
-  h += '<div class="cfg-section-icon">' + title.split(' ')[0] + '</div>';
-  h += '<div><div class="cfg-section-title">' + title.split(' ').slice(1).join(' ') + '</div>';
-  h += '<div class="cfg-section-sub">' + subtitle + '</div></div>';
-  h += '</div>';
-  h += '<div class="cfg-list" id="cfg-list-' + key + '">';
-
-  items.forEach(function(item, i) {
-    var isFixed = fixed.indexOf(item) >= 0;
-    h += renderCfgItem(key, i, item, isFixed);
-  });
-
-  h += '<button class="cfg-add-btn" onclick="addCfgItem(\'' + key + '\')">+ Ajouter une option</button>';
-  h += '</div></div>';
-  return h;
-}
-
-function renderCfgItem(key, i, value, isFixed) {
-  var h = '<div class="cfg-item' + (isFixed ? " fixed" : "") + '" id="cfg-item-' + key + '-' + i + '">';
-  h += '<div class="cfg-item-drag" title="Glisser pour reordonner">⠿</div>';
-  h += '<input class="cfg-item-input" value="' + value.replace(/"/g, '&quot;') + '"' +
-    (isFixed ? ' readonly' : ' oninput="cfgDirty=true"') + '>';
-  h += '<button class="cfg-item-del" onclick="delCfgItem(\'' + key + '\',' + i + ')" title="Supprimer">✕</button>';
-  h += '</div>';
-  return h;
-}
-
-function getCfgValues(key) {
-  var list = document.getElementById("cfg-list-" + key);
-  if (!list) return [];
-  var inputs = list.querySelectorAll(".cfg-item-input");
-  var vals = [];
-  inputs.forEach(function(inp){ if(inp.value.trim()) vals.push(inp.value.trim()); });
-  return vals;
-}
-
-function addCfgItem(key) {
-  var list = document.getElementById("cfg-list-" + key);
-  if (!list) return;
-  var addBtn = list.querySelector(".cfg-add-btn");
-  var idx = list.querySelectorAll(".cfg-item").length;
-  var div = document.createElement("div");
-  div.innerHTML = renderCfgItem(key, idx, "", false);
-  list.insertBefore(div.firstChild, addBtn);
-  // Focus sur le nouveau champ
-  var newInput = list.querySelectorAll(".cfg-item-input");
-  var last = newInput[newInput.length - 1];
-  if (last) last.focus();
-}
-
-function delCfgItem(key, idx) {
-  var item = document.getElementById("cfg-item-" + key + "-" + idx);
-  if (item) item.remove();
-}
-
-function saveConfig() {
-  var newCfg = {
-    titres:    getCfgValues("titres"),
-    collectif: getCfgValues("collectif"),
-    physique:  getCfgValues("physique"),
-    poste:     getCfgValues("poste")
-  };
-  var newScfg = {
-    coachs:      getCfgValues("coachs"),
-    timekeepers: getCfgValues("timekeepers")
-  };
-  if (!planData["__config__"]) planData["__config__"] = {};
-  planData["__config__"].axes   = newCfg;
-  planData["__config__"].seance = newScfg;
-  // Les joueurs sont déjà sauvegardés en temps réel dans planData["__config__"].joueurs
-  var ok = document.getElementById("cfg-save-ok");
-  savePlanToDrive("__config__", planData["__config__"], function(success) {
-    if (ok) {
-      ok.style.display = "inline";
-      ok.textContent = success ? "✅ Sauvegarde!" : "⚠️ Sauvegarde locale uniquement";
-      setTimeout(function(){ if(ok) ok.style.display = "none"; }, 3000);
-    }
-    renderConfigEditor();
-  });
-}
-
-// ═══ BASE DE DONNÉES JOUEURS ══════════════════════════════════════
-
-var _cfgJoueursCat = null;
-
-function renderJoueursDB() {
-  var cats = ["M6","M8","M10","M12","M14","M1618","SEN"];
-  var h = '<div id="joueurs-db-section">';
-  // Onglets catégories
-  h += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">';
-  cats.forEach(function(c) {
-    h += '<button id="jcat-btn-' + c + '" onclick="switchJoueursCat(\'' + c + '\')" style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:800;padding:5px 12px;border-radius:16px;border:1.5px solid var(--gray2);background:var(--w);color:var(--gray5);cursor:pointer;transition:all .15s">' + c + '</button>';
-  });
-  h += '</div>';
-  // Zone liste joueurs (remplie dynamiquement)
-  h += '<div id="joueurs-db-list" style="background:var(--w);border:1px solid var(--gray2);border-radius:var(--rl);overflow:hidden">';
-  h += '<div style="padding:20px;text-align:center;color:var(--gray5);font-size:12px">Chargement...</div>';
-  h += '</div>';
-  h += '</div>';
-  return h;
-}
-
-function switchJoueursCat(cat) {
-  window._cfgJoueursCat = cat;
-  // MAJ boutons onglets
-  ["M6","M8","M10","M12","M14","M1618","SEN"].forEach(function(c) {
-    var btn = document.getElementById("jcat-btn-" + c);
-    if (!btn) return;
-    if (c === cat) {
-      btn.style.background = "var(--g8)"; btn.style.color = "var(--w)"; btn.style.borderColor = "var(--g8)";
-    } else {
-      btn.style.background = "var(--w)"; btn.style.color = "var(--gray5)"; btn.style.borderColor = "var(--gray2)";
-    }
-  });
-  renderJoueursListCat(cat);
-}
-
-function renderJoueursListCat(cat) {
-  var container = document.getElementById("joueurs-db-list");
-  if (!container) return;
-  var db = getJoueursDB();
-  var joueurs = (db[cat] || []).slice();
-
-  var h = '<div style="background:var(--g8);color:var(--w);padding:10px 14px;display:flex;align-items:center;gap:10px">';
-  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;flex:1">Catégorie ' + cat + ' — ' + joueurs.length + ' joueur' + (joueurs.length>1?"s":"") + '</div>';
-  h += '<button onclick="importFromSARxMOM(\' + cat + \')" style="font-size:10px;padding:4px 10px;background:rgba(212,168,32,.25);color:var(--gold);border:1px solid var(--gold);border-radius:5px;cursor:pointer;font-weight:700">📥 Import SARxMOM</button>';
-  h += '</div>';
-
-  // En-tête colonnes
-  h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 28px;gap:0;background:var(--gray1);border-bottom:1px solid var(--gray2);padding:5px 10px;font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.08em">';
-  h += '<div>Prénom</div><div>Nom</div><div>Poste</div><div></div></div>';
-
-  // Liste joueurs
-  h += '<div id="joueurs-rows-' + cat + '">';
-  joueurs.forEach(function(j, i) {
-    h += renderJoueurRow(cat, i, j);
-  });
-  h += '</div>';
-
-  // Ligne d'ajout
-  h += '<div style="padding:8px 10px;border-top:1px solid var(--gray2);display:flex;gap:6px;background:var(--g0)">';
-  h += '<input id="new-j-prenom" class="cfg-item-input" data-cat="' + cat + '" style="flex:1;border:1px solid var(--gray2);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--w)" placeholder="Prénom" onkeydown="if(event.key==\'Enter\')addJoueurDB(this.dataset.cat)">';
-  h += '<input id="new-j-nom" class="cfg-item-input" data-cat="' + cat + '" style="flex:1;border:1px solid var(--gray2);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--w)" placeholder="NOM" onkeydown="if(event.key==\'Enter\')addJoueurDB(this.dataset.cat)">';
-  h += '<select id="new-j-poste" style="flex:1;border:1px solid var(--gray2);border-radius:5px;padding:5px 6px;font-size:11px;background:var(--w);color:var(--gray7);cursor:pointer">';
-  POSTES_RUGBY.forEach(function(p){ h += '<option value="' + p + '">' + (p||"-- Poste --") + '</option>'; });
-  h += '</select>';
-  h += '<button onclick="addJoueurDB(\'' + cat + '\')" style="padding:5px 10px;background:var(--g7);color:var(--w);border:none;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer">+</button>';
-  h += '</div>';
-
-  container.innerHTML = h;
-}
-
-function renderJoueurRow(cat, i, j) {
-  var h = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 28px;gap:0;padding:4px 10px;border-bottom:1px solid var(--gray1);align-items:center" id="jrow-' + cat + '-' + i + '">';
-  h += '<input style="font-size:11px;border:none;background:transparent;color:var(--gray7);padding:2px 0;outline:none" value="' + (j.prenom||"").replace(/"/g,"&quot;") + '" data-cat="' + cat + '" data-idx="' + i + '" data-field="prenom" onchange="updateJoueurDB(this.dataset.cat,this.dataset.idx,this.dataset.field,this.value)">';
-  h += '<input style="font-size:11px;border:none;background:transparent;color:var(--gray7);padding:2px 0;outline:none;font-weight:700;text-transform:uppercase" value="' + (j.nom||"").replace(/"/g,"&quot;") + '" data-cat="' + cat + '" data-idx="' + i + '" data-field="nom" onchange="updateJoueurDB(this.dataset.cat,this.dataset.idx,this.dataset.field,this.value)">';
-  h += '<select style="font-size:10px;border:none;background:transparent;color:var(--gray5);cursor:pointer;padding:2px 0" data-cat="' + cat + '" data-idx="' + i + '" data-field="poste" onchange="updateJoueurDB(this.dataset.cat,this.dataset.idx,this.dataset.field,this.value)">';
-  POSTES_RUGBY.forEach(function(p){ h += '<option value="' + p + '"' + (j.poste===p?" selected":"") + '>' + (p||"—") + '</option>'; });
-  h += '</select>';
-  h += '<button onclick="deleteJoueurDB(\'' + cat + '\',' + i + ')" style="width:22px;height:22px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center">✕</button>';
-  h += '</div>';
-  return h;
-}
-
-function addJoueurDB(cat) {
-  var prenom = (document.getElementById("new-j-prenom")||{}).value || "";
-  var nom    = (document.getElementById("new-j-nom")||{}).value || "";
-  var poste  = (document.getElementById("new-j-poste")||{}).value || "";
-  if (!prenom.trim()) return;
-  var db = getJoueursDB();
-  if (!db[cat]) db[cat] = [];
-  db[cat].push({prenom: prenom.trim(), nom: nom.trim(), poste: poste});
-  if (planData["__config__"]) planData["__config__"].joueurs = db;
-  else planData["__config__"] = {joueurs: db};
-  renderJoueursListCat(cat);
-  // Re-focus prénom
-  setTimeout(function(){ var el=document.getElementById("new-j-prenom"); if(el){el.value="";el.focus();} }, 50);
-  var nomEl = document.getElementById("new-j-nom"); if(nomEl) nomEl.value = "";
-}
-
-function updateJoueurDB(cat, i, field, value) {
-  var db = getJoueursDB();
-  if (!db[cat] || !db[cat][i]) return;
-  db[cat][i][field] = value;
-  if (planData["__config__"]) planData["__config__"].joueurs = db;
-  else planData["__config__"] = {joueurs: db};
-}
-
-function deleteJoueurDB(cat, i) {
-  var db = getJoueursDB();
-  if (!db[cat]) return;
-  db[cat].splice(i, 1);
-  if (planData["__config__"]) planData["__config__"].joueurs = db;
-  else planData["__config__"] = {joueurs: db};
-  renderJoueursListCat(cat);
-}
-
-// Import depuis SARxMOM : ouvre un panneau de saisie rapide multi-joueurs
-function importFromSARxMOM(cat) {
-  var existing = document.getElementById("sarxmom-import-overlay");
-  if (existing) existing.remove();
-  var div = document.createElement("div");
-  div.id = "sarxmom-import-overlay";
-  div.style.cssText = "position:fixed;inset:0;background:rgba(4,32,15,.65);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
-
-  var wrap = document.createElement("div");
-  wrap.style.cssText = "background:var(--w);border-radius:16px;width:100%;max-width:500px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)";
-
-  // Header
-  var hdr = document.createElement("div");
-  hdr.style.cssText = "background:var(--g8);color:var(--w);padding:14px 18px;display:flex;align-items:center;gap:8px";
-  hdr.innerHTML = '<div style="flex:1"><div style="font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800">\u{1F4E5} Import rapide — ' + cat + '</div>'
-    + '<div style="font-size:10px;opacity:.6;margin-top:2px">Collez ou saisissez un prénom par ligne (ou Prénom NOM Poste)</div></div>';
-  var closeBtn = document.createElement("button");
-  closeBtn.style.cssText = "width:24px;height:24px;background:rgba(255,255,255,.1);border:none;border-radius:50%;color:var(--w);cursor:pointer;font-size:13px";
-  closeBtn.textContent = "\u00d7";
-  closeBtn.onclick = function(){ div.remove(); };
-  hdr.appendChild(closeBtn);
-
-  // Body
-  var body = document.createElement("div");
-  body.style.cssText = "padding:14px 18px;flex:1;overflow-y:auto";
-  var ta = document.createElement("textarea");
-  ta.id = "sarxmom-paste";
-  ta.style.cssText = "width:100%;height:220px;font-size:12px;border:1px solid var(--gray2);border-radius:8px;padding:10px;resize:vertical;outline:none;font-family:Barlow,sans-serif;color:var(--gray7)";
-  ta.placeholder = "Exemple :\nThéo\nJules MARTIN Pilier G\nLison DUPONT Arrière\n...\n\nChaque ligne = un joueur.\nFormat : Prénom NOM Poste (NOM et Poste optionnels)";
-  body.appendChild(ta);
-  var tip = document.createElement("div");
-  tip.style.cssText = "font-size:10px;color:var(--gray5);margin-top:6px";
-  tip.textContent = "\u{1F4A1} Les doublons existants sont ignorés automatiquement.";
-  body.appendChild(tip);
-
-  // Footer
-  var ftr = document.createElement("div");
-  ftr.style.cssText = "padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px";
-  var cancelBtn = document.createElement("button");
-  cancelBtn.style.cssText = "flex:1;padding:8px;background:var(--gray1);color:var(--gray7);border:none;border-radius:7px;font-weight:700;cursor:pointer";
-  cancelBtn.textContent = "Annuler";
-  cancelBtn.onclick = function(){ div.remove(); };
-  var importBtn = document.createElement("button");
-  importBtn.style.cssText = "flex:2;padding:8px;background:var(--g7);color:var(--w);border:none;border-radius:7px;font-weight:700;cursor:pointer";
-  importBtn.textContent = "\u2705 Importer";
-  importBtn.onclick = function(){ doImportSARxMOM(cat); };
-  ftr.appendChild(cancelBtn);
-  ftr.appendChild(importBtn);
-
-  wrap.appendChild(hdr);
-  wrap.appendChild(body);
-  wrap.appendChild(ftr);
-  div.appendChild(wrap);
-  div.onclick = function(e){ if(e.target===div) div.remove(); };
-  document.body.appendChild(div);
-  setTimeout(function(){ ta.focus(); }, 100);
-}
-
-function doImportSARxMOM(cat) {
-  var ta = document.getElementById("sarxmom-paste");
-  if (!ta) return;
-  var lines = ta.value.split("\n").map(function(l){ return l.trim(); }).filter(Boolean);
-  var db = getJoueursDB();
-  if (!db[cat]) db[cat] = [];
-  var added = 0;
-  lines.forEach(function(line) {
-    var parts = line.split(/\s+/);
-    var prenom = parts[0] || "";
-    var nom = "";
-    var poste = "";
-    if (parts.length >= 2) {
-      // Détecter si la dernière partie est un poste connu
-      var lastParts = parts.slice(1).join(" ");
-      var foundPoste = POSTES_RUGBY.find(function(p){ return p && lastParts.endsWith(p); });
-      if (foundPoste) {
-        poste = foundPoste;
-        nom = lastParts.slice(0, lastParts.length - foundPoste.length).trim();
-      } else {
-        nom = lastParts;
-      }
-    }
-    if (!prenom) return;
-    // Vérifier doublon
-    var exists = db[cat].some(function(j){ return j.prenom.toLowerCase()===prenom.toLowerCase() && j.nom.toLowerCase()===(nom||"").toLowerCase(); });
-    if (!exists) { db[cat].push({prenom:prenom, nom:nom, poste:poste}); added++; }
-  });
-  if (planData["__config__"]) planData["__config__"].joueurs = db;
-  else planData["__config__"] = {joueurs: db};
-  document.getElementById("sarxmom-import-overlay").remove();
-  renderJoueursListCat(cat);
-  // Petit feedback
-  var container = document.getElementById("joueurs-db-list");
-  if (container) {
-    var msg = document.createElement("div");
-    msg.style.cssText = "padding:8px 14px;background:var(--g0);color:var(--g6);font-size:11px;font-weight:700;border-top:1px solid var(--g1)";
-    msg.textContent = "✅ " + added + " joueur" + (added>1?"s":"") + " importé" + (added>1?"s":"");
-    container.appendChild(msg);
-    setTimeout(function(){ if(msg.parentNode) msg.remove(); }, 3000);
-  }
-}
-
-// Charger les joueurs de la catégorie dans la séance courante
-function loadJoueursCatInSeance(cat) {
-  if (!seanceData) return;
-  var db = getJoueursDB();
-  var joueurs = db[cat] || [];
-  if (!joueurs.length) { alert("Aucun joueur enregistré pour la catégorie " + cat + ".\nAjoutez-les dans Paramètres EDR → Base joueurs."); return; }
-  var labels = joueurs.map(function(j){ return joueurShort(j); });
-  // Ajouter les joueurs non déjà présents
-  var added = 0;
-  labels.forEach(function(lbl) {
-    if (seanceData.joueurs.indexOf(lbl) < 0) { seanceData.joueurs.push(lbl); added++; }
-  });
-  seanceDirty = true;
-  renderSeance();
-  if (added === 0) alert("Tous les joueurs de la catégorie " + cat + " sont déjà dans la séance.");
-}
-
-// ═══ CONSTRUCTEUR DE SÉANCE ══════════════════════════════════════
-
-var DRIVE_FOLDER_SEANCE = "1bSmmOr8lCvxiTcX2vsQCAurJ8ek1rPd2";
-var seanceData = null;
-var seanceDirty = false;
-var GROUPE_COLORS = ["#3a7abf","#c060a0","#c09010","#c04040","#8040c0"];
-
-// Types de blocs (thèmes)
-var BLOC_TYPES = [
-  {val:"echauf",  label:"Échauffement",            color:"#5a3a00"},
-  {val:"eveil",   label:"Éveil / Activation",       color:"#0a3a1e"},
-  {val:"atelier", label:"Atelier",                  color:"#166334"},
-  {val:"circuit", label:"Circuit d'ateliers",        color:"#1d7a40"},
-  {val:"poste",   label:"Ateliers au Poste",         color:"#1a4a8a"},
-  {val:"jeu",     label:"Jeux ludiques",             color:"#4a1a7a"},
-  {val:"mvt",     label:"Mouvement général",         color:"#2a4a10"},
-  {val:"bulle",   label:"🫁 Bulle",                  color:"#4a4a40"},
-  {val:"video",   label:"Analyse vidéo",             color:"#1a2a7a"},
-  {val:"retour",  label:"Retour au calme",           color:"#28944f"},
-  {val:"libre",   label:"Bloc libre",                color:"#5a5a50"},
-  {val:"pause",   label:"💧 Pause boisson",            color:"#1a6a8a"}
-];
-
-// Titres prédéfinis des blocs
-var TITRES_BLOCS_SEANCE = [
-  "-- Choisir --",
-  "Activation articulaire et musculaire",
-  "Gammes athlétiques",
-  "Vagues de Passes",
-  "Footing",
-  "Touché 2s",
-  "Touché « All Blacks »",
-  "Touché « Gratte Poule »",
-  "Jeu dirigé",
-  "Ball in Play",
-  "Jeu au Contact (JCO)",
-  "Rugby Éducatif (RE)",
-  "Étirements",
-  "Briefing",
-  "Débriefing",
-  "Autre..."
-];
-
-// Intensités
-var INTENSITES = [
-  {val:"t1", label:"Touché",  sublabel:"Mapping",   color:"#28944f"},
-  {val:"t2", label:"Bloqué",  sublabel:"Modéré",    color:"#d4a820"},
-  {val:"t3", label:"Plaqué",  sublabel:"Vitesse",   color:"#e06020"},
-  {val:"t4", label:"Réel",    sublabel:"Hit",       color:"#c53a22"}
-];
-
-// Matériel
-var MATERIEL_LIST = [
-  "Cônes","Plots","Piquets","Ballons","Chasubles",
-  "Échelles de rythme","Sacs de plaquage","Boucliers",
-  "Cordes","Cerceaux","Filets","Chronomètre"
-];
-
-function getBlocColor(type) {
-  var t = BLOC_TYPES.find(function(b){ return b.val === type; });
-  return t ? t.color : "#0a3a1e";
-}
-
-function newSeance() {
-  return {
-    id: Date.now(), date: "", categorie: selAge_ || "",
-    effectif: "", coachs: [], timekeeper: "", duree: 90, axe: "",
-    heureDebut: "14:00",
-    blocs: [], joueurs: [], groupes: [[],[],[]]
-  };
-}
-
-// Calcule les heures de début de chaque bloc depuis l'heure de départ
-function calcHeures(blocs, heureDebut) {
-  var parts = (heureDebut || "14:00").split(":");
-  var totalMin = parseInt(parts[0]||14)*60 + parseInt(parts[1]||0);
-  blocs.forEach(function(bloc) {
-    var hh = Math.floor(totalMin/60);
-    var mm = totalMin % 60;
-    bloc._heureCalc = (hh < 10 ? "0" : "") + hh + "h" + (mm < 10 ? "0" : "") + mm;
-    var dur = parseInt((bloc.duree||"").replace(/[^\d]/g,"")) || 15;
-    totalMin += dur;
-  });
-}
-
-function totalDureeBlocs(blocs) {
-  return blocs.reduce(function(acc, b) {
-    return acc + (parseInt((b.duree||"").replace(/[^\d]/g,"")) || 15);
-  }, 0);
-}
-
-function newBloc_(type) {
-  return {
-    id: Date.now() + Math.random(),
-    type: type || "atelier", titre: "", titreCustom: "",
-    heureDebut: "", duree: "15'", intensite: "",
-    ateliers: [], comportements: "", orga: "", materiel: []
-  };
-}
-
-// ── Section séance ──────────────────────────────────────────────
-function goSection_seance() {
-  document.getElementById("bc").innerHTML = "<b>Ma Séance</b>";
-  document.getElementById("tc").style.display = "none";
-  document.getElementById("vbtns").style.display = "none";
-  document.getElementById("afbar").style.display = "none";
-  buildSbSeance();
-  if (!seanceData) seanceData = newSeance();
-  renderSeance();
-}
-
-function buildSbSeance() {
-  var sb = document.getElementById("sidebar");
-  var cat = seanceData && seanceData.categorie ? seanceData.categorie : (selAge_ && selAge_ !== "ALL" ? selAge_ : "");
-  var h = '<div class="sb-sec"><div class="sb-sec-lbl">Ma Séance</div>';
-  h += '<div class="sb-item act"><div class="sb-icon">📋</div>Canevas de séance</div>';
-  h += '</div><div class="sb-div"></div>';
-  h += '<div class="sb-sec"><div class="sb-sec-lbl">Actions</div>';
-  h += '<div class="sb-item" onclick="newSeanceConfirm()"><div class="sb-icon">➕</div>Nouvelle séance</div>';
-  h += '<div class="sb-item" onclick="saveSeance()"><div class="sb-icon">💾</div>Sauvegarder</div>';
-  h += '<div class="sb-item" onclick="printSeance()"><div class="sb-icon">🖨️</div>Exporter PDF</div>';
-  h += '</div><div class="sb-div"></div>';
-  h += '<div class="sb-sec"><div class="sb-sec-lbl">Joueurs</div>';
-  if (cat && cat !== "ALL") {
-    var db = getJoueursDB();
-    var nb = (db[cat]||[]).length;
-    h += '<div class="sb-item" onclick="loadJoueursCatInSeance(\' + cat + \')">'
-      + '<div class="sb-icon">👥</div>Charger ' + cat
-      + '<span class="sb-cnt">' + nb + '</span></div>';
-  } else {
-    h += '<div class="sb-item" style="opacity:.5;cursor:default"><div class="sb-icon">👥</div>Choisir une catégorie</div>';
-  }
-  h += '<div class="sb-item" onclick="openConfig()"><div class="sb-icon">⚙️</div>Gérer la base joueurs</div>';
-  h += '</div>';
-  sb.innerHTML = h;
-}
-
-// ── Rendu principal ──────────────────────────────────────────────
-function renderSeance() {
-  var d = seanceData;
-  var scfg = getSeanceConfig();
-  var ages = ["M6","M8","M10","M12","M14","M16-M18","Senior"];
-  var logo = document.querySelector(".llogo img") ? document.querySelector(".llogo img").src : "";
-
-  // Calculer les heures auto
-  calcHeures(d.blocs || [], d.heureDebut || "14:00");
-
-  var h = '<div style="display:flex;gap:14px;align-items:flex-start">';
-  h += '<div style="flex:1;min-width:0">';
-
-  // ── BANDEAU ──────────────────────────────────────────────────
-  h += '<div class="seance-page">';
-  h += '<div class="seance-bandeau">';
-  if (logo) h += '<div class="seance-bandeau-logo"><img src="' + logo + '"></div>';
-  h += '<div><div class="seance-bandeau-title">Fiche d\'entra&icirc;nement <small>EDR &mdash; Mutzig Ovalie Molsheim</small></div></div>';
-
-  h += '<div class="seance-bandeau-meta">';
-  // Date
-  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Date</span>';
-  h += '<input class="seance-input-sm" type="date" value="' + (d.date||"") + '" oninput="seanceDirty=true;seanceData.date=this.value"></div>';
-  // Heure de début
-  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Début</span>';
-  h += '<input class="seance-input-sm" type="time" value="' + (d.heureDebut||"14:00") + '" style="width:75px" oninput="seanceDirty=true;seanceData.heureDebut=this.value;renderSeance()"></div>';
-  // Catégorie
-  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Catégorie</span>';
-  h += '<select class="seance-input-sm" onchange="seanceDirty=true;seanceData.categorie=this.value">';
-  h += '<option value="">--</option>';
-  ages.forEach(function(a){ h += '<option value="' + a + '"' + (d.categorie===a?" selected":"") + '>' + a + '</option>'; });
-  h += '</select></div>';
-  // Effectif
-  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Effectif</span>';
-  h += '<input class="seance-input-sm" type="number" min="1" max="60" value="' + (d.effectif||"") + '" style="width:50px" oninput="seanceDirty=true;seanceData.effectif=this.value"></div>';
-  // Durée
-  var dureeVal = parseInt(d.duree) || 90;
-  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Durée</span>';
-  h += '<button onclick="stepDuree(-15)" style="width:20px;height:20px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:var(--w);cursor:pointer;font-size:12px">−</button>';
-  h += '<span id="duree-display" style="font-size:11px;font-weight:700;color:var(--gold);min-width:34px;text-align:center">' + formatDuree(dureeVal) + '</span>';
-  h += '<button onclick="stepDuree(15)" style="width:20px;height:20px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:var(--w);cursor:pointer;font-size:12px">+</button></div>';
-  // Time keeper
-  var tkList = scfg.timekeepers || [];
-  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Time keeper</span>';
-  h += '<select class="seance-input-sm" onchange="seanceDirty=true;seanceData.timekeeper=this.value">';
-  h += '<option value="">--</option>';
-  tkList.forEach(function(t){ h += '<option value="' + t + '"' + (d.timekeeper===t?" selected":"") + '>' + t + '</option>'; });
-  h += '</select></div>';
-  // Coachs (chips)
-  var coachsList = scfg.coachs || [];
-  var selCoachs = Array.isArray(d.coachs) ? d.coachs : (d.coachs ? d.coachs.split(",").map(function(s){return s.trim();}) : []);
-  h += '<div class="seance-meta-field" style="grid-column:1/-1"><span class="seance-meta-lbl">Coachs</span>';
-  h += '<div style="display:flex;gap:4px;flex-wrap:wrap">';
-  coachsList.forEach(function(c) {
-    var on = selCoachs.indexOf(c) >= 0;
-    var bgC = on ? "var(--gold)" : "rgba(255,255,255,.1)";
-    var bdC = on ? "var(--gold)" : "rgba(255,255,255,.25)";
-    var txC = on ? "var(--g9)" : "var(--w)";
-    var coachOnclick = 'toggleCoach("' + c + '")';
-    h += '<button style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;border:1px solid ' + bdC + ';background:' + bgC + ';color:' + txC + ';cursor:pointer" onclick="' + coachOnclick + '">' + c + '</button>';
-  });
-  if (!coachsList.length) h += '<span style="font-size:10px;color:rgba(255,255,255,.4);font-style:italic">Configurez les coachs dans ⚙️ EDR</span>';
-  h += '</div></div>';
-  h += '</div></div>'; // fin meta + bandeau
-
-  // Axe général
-  h += '<div class="seance-axe-bar"><span class="seance-axe-lbl">⚽ Axe de travail général</span>';
-  h += '<input class="seance-axe-input" value="' + (d.axe||"") + '" placeholder="Ex: Continuité debout autour du PB / Duels..." oninput="seanceDirty=true;seanceData.axe=this.value"></div>';
-
-  // ── GRILLE 4 COLONNES ────────────────────────────────────────
-  h += '<div class="seance-grid">';
-
-  // ── COL 1 : TRAME ─────────────────────────────────────────
-  var totalMin = totalDureeBlocs(d.blocs || []);
-  h += '<div class="seance-col trame-col">';
-  h += '<div class="seance-col-hd">⏱ Trame &mdash; <span style="color:var(--gold);font-weight:700">' + formatDuree(totalMin) + '</span></div>';
-  h += '<div class="trame-blocs" id="trame-blocs-list">';
-  (d.blocs||[]).forEach(function(bloc, i) {
-    h += renderTrameBloc(bloc, i, d.blocs.length, totalMin);
-  });
-  h += '</div>';
-  // Boutons ajout
-  h += '<div style="padding:4px 8px 8px;display:flex;flex-wrap:wrap;gap:3px">';
-  BLOC_TYPES.forEach(function(bt) {
-    var burl = "addSBloc('" + bt.val + "')";
-    h += '<button class="add-trame-btn" style="width:auto;padding:3px 7px;font-size:9px;border-color:' + bt.color + ';color:' + bt.color + ';cursor:pointer" onclick="' + burl + '">' + bt.label + '</button>';
-  });
-  h += '</div>';
-  h += '</div>'; // fin col1
-
-  // ── COL 2 : COMPORTEMENTS ──────────────────────────────────
-  h += '<div class="seance-col comp-col">';
-  h += '<div class="seance-col-hd">✅ Comportements attendus</div>';
-  h += '<div class="comp-rows">';
-  if (!(d.blocs||[]).length) {
-    h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">Ajoutez des blocs dans la trame</div>';
-  }
-  (d.blocs||[]).forEach(function(bloc, i) {
-    if (bloc.type === "bulle") return;
-    var color = getBlocColor(bloc.type);
-    var titre = bloc.titre && bloc.titre !== "-- Choisir --" ? bloc.titre : (bloc.titreCustom || (BLOC_TYPES.find(function(b){return b.val===bloc.type;})||{label:""}).label);
-    h += '<div class="comp-row">';
-    h += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px">';
-    h += '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;color:var(--w);background:' + color + '">' + titre.substring(0,22) + '</span>';
-    // Bouton auto depuis bibliothèque (premier atelier avec atelierIdx valide)
-    var firstAt = (bloc.ateliers||[]).find(function(a){ return a.atelierIdx >= 0; });
-    if (firstAt) {
-      var entry2 = ALL_ITEMS[firstAt.atelierIdx];
-      if (entry2) {
-        var autoOnclick = "showComportProposal('" + bloc.id + "'," + firstAt.atelierIdx + ")";
-        h += '<span class="comp-auto-tag" onclick="' + autoOnclick + '" title="Voir propositions de comportements">&#128218; Propositions</span>';
-      }
-    }
-    h += '</div>';
-    h += '<textarea class="comp-textarea" placeholder="Comportements attendus, points clés..." oninput="onSBlocField(' + bloc.id + ',\'comportements\',this.value)">' + (bloc.comportements||"") + '</textarea>';
-    h += '</div>';
-  });
-  h += '</div></div>'; // fin col2
-
-  // ── COL 3 : MATÉRIEL + GROUPES ────────────────────────────
-  h += '<div class="seance-col mat-col">';
-  h += '<div class="seance-col-hd">📦 Matériel & Groupes</div>';
-
-  // Matériel global
-  h += '<div class="mat-section">';
-  h += '<div class="mat-lbl">Matériel nécessaire</div>';
-  h += '<div class="mat-chips">';
-  (d.materiel||[]).forEach(function(m) {
-    h += '<div class="mat-chip" onclick="removeMat(\'' + m + '\')">' + m + ' <span class="rm">✕</span></div>';
-  });
-  h += '</div>';
-  h += '<select class="mat-sel" onchange="addMat(this.value);this.selectedIndex=0">';
-  h += '<option value="">+ Ajouter matériel</option>';
-  MATERIEL_LIST.forEach(function(m){ if(!(d.materiel||[]).includes(m)) h += '<option value="' + m + '">' + m + '</option>'; });
-  h += '</select>';
-  h += '</div>';
-
-  // Groupes
-  h += '<div class="groupes-col">';
-  h += '<div class="mat-lbl" style="margin-bottom:5px">Groupes de travail</div>';
-  var joueurs = d.joueurs || [];
-  var groupes = d.groupes || [[],[],[]];
-  while (groupes.length < 3) groupes.push([]);
-  var assignes = []; groupes.forEach(function(g){ g.forEach(function(n){ assignes.push(n); }); });
-  var nonAssignes = joueurs.filter(function(j){ return assignes.indexOf(j) < 0; });
-  groupes.forEach(function(grp, gi) {
-    h += '<div class="groupe-bloc">';
-    h += '<div class="groupe-bloc-hd"><div class="groupe-dot" style="background:' + GROUPE_COLORS[gi] + '"></div>';
-    h += '<div class="groupe-lbl" style="color:' + GROUPE_COLORS[gi] + '">Groupe ' + (gi+1) + ' (' + grp.length + ')</div>';
-    if (gi >= 3) h += '<button onclick="removeGroupe(' + gi + ')" style="margin-left:auto;font-size:9px;border:none;background:none;cursor:pointer;color:var(--red)">✕</button>';
-    h += '</div><div class="groupe-chips2">';
-    grp.forEach(function(nom) {
-      h += '<div class="g-chip" style="background:' + GROUPE_COLORS[gi] + '22;border-color:' + GROUPE_COLORS[gi] + ';color:' + GROUPE_COLORS[gi] + '" onclick="removeFromGroupe(' + gi + ',\'' + nom + '\')">' + nom + '</div>';
-    });
-    h += '</div>';
-    h += '<select class="g-add-sel" onchange="addToGroupe(' + gi + ',this.value);this.selectedIndex=0">';
-    h += '<option value="">+ Joueur</option>';
-    nonAssignes.forEach(function(j){ h += '<option value="' + j + '">' + j + '</option>'; });
-    h += '</select></div>';
-  });
-  if (groupes.length < 5) h += '<button class="add-trame-btn" style="margin:4px 0 0" onclick="addGroupe()">+ Groupe</button>';
-  h += '</div>';
-  h += '</div>'; // fin col3
-
-  // ── COL 4 : ORGANISATION SPATIALE ─────────────────────────
-  h += '<div class="seance-col orga-col">';
-  h += '<div class="seance-col-hd">🗺️ Org. Spatiale</div>';
-  h += '<div class="orga-rows">';
-  (d.blocs||[]).forEach(function(bloc) {
-    if (bloc.type === "bulle") return;
-    h += '<div class="orga-row">';
-    h += '<textarea class="orga-textarea" placeholder="Terrain, zones, dispositif..." oninput="onSBlocField(' + bloc.id + ',\'orga\',this.value)">' + (bloc.orga||"") + '</textarea>';
-    h += '</div>';
-  });
-  if (!(d.blocs||[]).filter(function(b){return b.type!=="bulle";}).length) {
-    h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">Org. spatiale par bloc</div>';
-  }
-  h += '</div></div>'; // fin col4
-
-  h += '</div>'; // fin seance-grid
-
-  // ── BARRE INTENSITÉS ──────────────────────────────────────
-  h += '<div class="seance-intensite-bar">';
-  h += '<span style="font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.07em">Echelle d\'intensite :</span>';
-  INTENSITES.forEach(function(it) {
-    h += '<div class="int-scale-item" style="border-color:' + it.color + ';background:' + it.color + '22;color:' + it.color + '">';
-    h += '<strong>' + it.label + '</strong><span style="font-size:8px;opacity:.7;margin-left:2px">— ' + it.sublabel + '</span></div>';
-  });
-  h += '<div style="margin-left:auto;display:flex;gap:8px">';
-  h += '<button class="plan-save-btn" onclick="saveSeance()">💾 Sauvegarder</button>';
-  h += '<button class="plan-save-btn preview" onclick="printSeance()">🖨️ Export PDF</button>';
-  h += '<span class="plan-save-ok" id="seance-save-ok" style="display:none">✅</span>';
-  h += '</div></div>';
-
-  h += '</div>'; // fin seance-page
-
-  h += '</div>'; // fin colonne principale
-
-  // ── SIDEBAR DROITE : JOUEURS ─────────────────────────────
-  h += '<div style="width:220px;min-width:220px;flex-shrink:0">';
-  h += renderJoueurs(d);
-  h += '</div>';
-
-  h += '</div>'; // fin flex wrap
-
-  var ct = document.getElementById("content");
-  ct.innerHTML = h;
-  ct.classList.remove("lv");
-}
-
-// ── Rendu d'un bloc dans la trame ───────────────────────────────────────────
-function renderTrameBloc(bloc, i, total, totalMin) {
-  var color = getBlocColor(bloc.type);
-  var typeLabel = (BLOC_TYPES.find(function(t){ return t.val===bloc.type; })||{label:bloc.type}).label;
-  var isExpanded = !bloc._collapsed;
-  var bid = bloc.id;
-  var durMin = parseInt((bloc.duree||"").replace(/[^\d]/g,"")) || 15;
-  var pct = totalMin > 0 ? durMin / totalMin : 0.1;
-  var minH = Math.max(52, Math.round(pct * 480));
-  var heureAffich = bloc._heureCalc || "";
-  var isPause = bloc.type === "pause";
-
-  var h = '<div class="trame-bloc' + (isPause ? " trame-bloc-pause" : "") + '" id="sbloc-' + bid + '" style="min-height:' + minH + 'px">';
-
-  // Barre laterale coloree avec heure + duree
-  h += '<div class="trame-bloc-bar" style="background:' + color + '">';
-  h += '<span class="trame-bloc-bar-heure">' + heureAffich + '</span>';
-  h += '<span class="trame-bloc-bar-dur">' + (bloc.duree || durMin + "min") + '</span>';
-  h += '</div>';
-
-  // Contenu principal
-  h += '<div class="trame-bloc-content">';
-  h += '<div class="trame-bloc-hdr" onclick="toggleBlocEdit(' + bid + ')">';
-  h += '<span class="trame-bloc-type" style="background:' + color + '">' + typeLabel + '</span>';
-  var titreAffiche = (bloc.titre && bloc.titre !== "-- Choisir --") ? (bloc.titre === "Autre..." ? (bloc.titreCustom||"Autre") : bloc.titre) : (bloc.titreCustom||"");
-  if (titreAffiche) h += '<span class="trame-bloc-titre">' + titreAffiche + '</span>';
-  if (bloc.intensite) {
-    var intObj = INTENSITES.find(function(it){ return it.val === bloc.intensite; });
-    if (intObj) h += '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;border:1px solid ' + intObj.color + ';color:' + intObj.color + ';margin-left:auto;white-space:nowrap">' + intObj.label + '&nbsp;/&nbsp;' + intObj.sublabel + '</span>';
-  }
-  h += '<div class="trame-bloc-actions" onclick="event.stopPropagation()">';
-  if (i > 0) h += '<button class="trame-bloc-btn" onclick="moveSBloc(' + bid + ',-1)">&#8593;</button>';
-  if (i < total-1) h += '<button class="trame-bloc-btn" onclick="moveSBloc(' + bid + ',1)">&#8595;</button>';
-  h += '<button class="trame-bloc-btn del" onclick="deleteSBloc(' + bid + ')">&#10005;</button>';
-  h += '</div></div>';
-
-  if (isExpanded) {
-    h += '<div class="trame-bloc-edit">';
-
-    // Type de bloc
-    h += '<select class="trame-sel" onchange="onSBlocType(this,' + bid + ')">';
-    BLOC_TYPES.forEach(function(bt){
-      h += '<option value="' + bt.val + '"' + (bloc.type===bt.val?" selected":"") + '>' + bt.label + '</option>';
-    });
-    h += '</select>';
-
-    if (!isPause) {
-      // Menu titres prédéfinis
-      var titresList2 = (planData["__config__"] && planData["__config__"].seance && planData["__config__"].seance.titresBlocs)
-        ? planData["__config__"].seance.titresBlocs : TITRES_BLOCS_SEANCE;
-      h += '<select class="trame-sel" onchange="onBlocTitreSeance(this,' + bid + ')">';
-      titresList2.forEach(function(t){
-        h += '<option value="' + t + '"' + (bloc.titre===t?" selected":"") + '>' + t + '</option>';
-      });
-      h += '</select>';
-      // Champ texte libre si "Autre..."
-      if (bloc.titre === "Autre...") {
-        h += '<input class="trame-inp" placeholder="Préciser..." value="' + (bloc.titreCustom||"").replace(/"/g,"&quot;") + '"'
-          + ' oninput="onSBlocField(' + bid + ",\'titreCustom\',this.value)" + '">';
-      }
-
-      // Duree (heure calculee auto)
-      h += '<div class="trame-row">';
-      h += '<span class="trame-row-lbl" style="color:var(--gold);font-weight:700">' + heureAffich + '</span>';
-      h += '<span class="trame-row-lbl" style="margin-left:6px">Dur&eacute;e</span>';
-      h += '<input class="trame-inp" style="width:65px" placeholder="15min" value="' + (bloc.duree||"") + '"'
-        + ' oninput="onSBlocField(' + bid + ",\'duree\',this.value);renderSeance()" + '">';
-      h += '</div>';
-
-      // Intensite sur 2 lignes (label + sublabel dans chaque bouton)
-      if (bloc.type !== "bulle") {
-        h += '<div style="margin-top:3px"><span class="trame-row-lbl">Intensit&eacute;</span>';
-        h += '<div class="intensite-btns" style="margin-top:2px">';
-        INTENSITES.forEach(function(it) {
-          var on = bloc.intensite === it.val;
-          var oc = "onSBlocField(" + bid + ",\'intensite\',\'" + it.val + "\');renderSeance()";
-          h += '<button class="int-btn ' + it.val + (on?" on":"") + '" onclick="' + oc + '" style="display:flex;flex-direction:column;align-items:center;line-height:1.1;padding:3px 7px;min-width:44px">'
-            + '<span style="font-size:9px;font-weight:800">' + it.label + '</span>'
-            + '<span style="font-size:7px;opacity:.8;font-weight:600">' + it.sublabel + '</span>'
-            + '</button>';
-        });
-        h += '</div></div>';
-
-        // Ateliers
-        h += '<div style="font-size:8px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">Ateliers</div>';
-        (bloc.ateliers||[]).forEach(function(at, ai) {
-          h += renderAtelierRow(bloc, at, ai);
-        });
-        h += '<button class="add-trame-btn" onclick="addAtelierRow(' + bid + ')">+ Atelier</button>';
-      }
-    } else {
-      // Pause : juste la duree
-      h += '<div class="trame-row">';
-      h += '<span class="trame-row-lbl">Dur&eacute;e pause</span>';
-      h += '<input class="trame-inp" style="width:65px" placeholder="5min" value="' + (bloc.duree||"5min") + '"'
-        + ' oninput="onSBlocField(' + bid + ",\'duree\',this.value);renderSeance()" + '">';
-      h += '</div>';
-    }
-    h += '</div>';
-  }
-
-  h += '</div>';
-  h += '</div>';
-  return h;
-}
-function toggleBlocEdit(id) {
-  var b = getSBloc(id); if (!b) return;
-  b._collapsed = !b._collapsed;
-  renderSeance();
-}
-
-// ── Rendu d'une ligne atelier ────────────────────────────────────
-function renderAtelierRow(bloc, at, ai) {
-  var bid = bloc.id, aid = at.id;
-  var h = '<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:5px;background:var(--g0);border:1px solid var(--g1);border-radius:6px;padding:5px 7px">';
-
-  // Ligne 1 : sélecteur sous-rubrique + bouton suppr
-  h += '<div style="display:flex;gap:4px;align-items:center">';
-  h += '<select style="font-size:10px;border:1px solid var(--gray2);border-radius:4px;padding:2px 5px;background:var(--w);color:var(--gray7);cursor:pointer;flex:1" onchange="onAtRubrique(this,' + bid + ',' + aid + ')">';
-  h += '<option value="">-- Rubrique --</option>';
-  RUBRIQUES.forEach(function(rub) {
-    rub.subs.forEach(function(sub) {
-      if (sub.soon) return;
-      h += '<option value="' + sub.id + '"' + (at.rubrique===sub.id?" selected":"") + '>' + rub.num + ' ' + sub.label + '</option>';
-    });
-  });
-  h += '</select>';
-  h += '<button onclick="deleteAtelierRow(' + bid + ',' + aid + ')" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center">✕</button>';
-  h += '</div>';
-
-  // Ligne 2 : sélecteur atelier (visible seulement si rubrique choisie)
-  if (at.rubrique) {
-    var sub = null;
-    RUBRIQUES.forEach(function(rub){ rub.subs.forEach(function(s){ if(s.id===at.rubrique) sub=s; }); });
-    if (sub) {
-      var atelierItems = [];
-      (sub.ss||[]).forEach(function(ss) {
-        (ss.items||[]).forEach(function(item) {
-          var gIdx = ALL_ITEMS.findIndex(function(x){ return x.item.id===item.id && x.sub.id===sub.id; });
-          if (gIdx >= 0) atelierItems.push({gIdx:gIdx, label: (ss.items.length > 1 ? item.n + ". " : "") + item.t});
-        });
-      });
-      h += '<select style="font-size:10px;border:1px solid var(--gray2);border-radius:4px;padding:2px 5px;background:var(--w);color:var(--gray7);cursor:pointer;width:100%" onchange="onAtAtelier(this,' + bid + ',' + aid + ')">';
-      h += '<option value="-1">-- Choisir un atelier --</option>';
-      atelierItems.forEach(function(a){
-        h += '<option value="' + a.gIdx + '"' + (at.atelierIdx===a.gIdx?" selected":"") + '>' + a.label + '</option>';
-      });
-      if (!atelierItems.length) h += '<option disabled>Aucun atelier disponible</option>';
-      h += '</select>';
-    }
-  }
-
-  // Ligne 3 : si atelier sélectionné → lien Drive + comportements auto proposés
-  if (at.atelierIdx >= 0 && ALL_ITEMS[at.atelierIdx]) {
-    var entry = ALL_ITEMS[at.atelierIdx];
-    h += '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">';
-    h += '<a href="https://drive.google.com/file/d/' + entry.item.id + '/view" target="_blank" style="font-size:9px;color:var(--g6);text-decoration:none;padding:2px 6px;background:var(--w);border-radius:3px;border:1px solid var(--g1);flex-shrink:0">📂 Fiche Drive</a>';
-    // Bouton "voir comportements" si pas encore rempli
-    h += '<button onclick="showComportProposal(' + bid + ',' + at.atelierIdx + ')" style="font-size:9px;padding:2px 6px;background:var(--goldl);color:var(--goldd);border:1px solid var(--gold);border-radius:3px;cursor:pointer;flex-shrink:0">💡 Comportements</button>';
-    h += '</div>';
-  }
-
-  h += '</div>';
-  return h;
-}
-
-// ── Joueurs ──────────────────────────────────────────────────────
-function renderJoueurs(d) {
-  var joueurs = d.joueurs || [];
-  var groupes = d.groupes || [[],[],[]];
-  while (groupes.length < 3) groupes.push([]);
-  var assignes = []; groupes.forEach(function(g){ g.forEach(function(n){ assignes.push(n); }); });
-  var nonAssignes = joueurs.filter(function(j){ return assignes.indexOf(j) < 0; });
-
-  var h = '<div class="joueurs-card">';
-  h += '<div class="joueurs-card-hd">👥 Joueurs (' + joueurs.length + ')</div>';
-  h += '<div class="joueurs-card-body">';
-  h += '<div class="joueur-input-row">';
-  h += '<input class="joueur-input" id="joueur-inp" placeholder="Nom..." onkeydown="if(event.key===\'Enter\')addJoueur()">';
-  h += '<button class="joueur-add-btn" onclick="addJoueur()">+</button>';
-  h += '</div>';
-
-  // Pool non assignés
-  if (joueurs.length) {
-    h += '<div style="font-size:8px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Non assignés (' + nonAssignes.length + ')</div>';
-    h += '<div class="joueurs-pool">';
-    nonAssignes.forEach(function(j) {
-      h += '<div class="joueur-chip" onclick="removeJoueur(\'' + j + '\')" title="Clic pour supprimer">' + j + '</div>';
-    });
-    if (!nonAssignes.length) h += '<span style="font-size:9px;color:var(--gray5);font-style:italic">Tous assignés ✓</span>';
-    h += '</div>';
-
-    // Groupes
-    h += '<div style="font-size:8px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Groupes</div>';
-    groupes.forEach(function(grp, gi) {
-      h += '<div class="groupe-row2">';
-      h += '<div class="groupe-color2" style="background:' + GROUPE_COLORS[gi] + '"></div>';
-      h += '<div class="groupe-label2" style="color:' + GROUPE_COLORS[gi] + '">Grp ' + (gi+1) + '</div>';
-      h += '<div class="groupe-chips3">';
-      grp.forEach(function(nom) {
-        h += '<div class="groupe-chip3" onclick="removeFromGroupe(' + gi + ',\'' + nom + '\')">' + nom + ' <span class="rm3">✕</span></div>';
-      });
-      h += '<select class="groupe-add-sel2" onchange="addToGroupe(' + gi + ',this.value);this.selectedIndex=0">';
-      h += '<option value="">+ Ajouter</option>';
-      nonAssignes.forEach(function(j){ h += '<option value="' + j + '">' + j + '</option>'; });
-      h += '</select></div></div>';
-    });
-    if (groupes.length < 5) h += '<button class="add-trame-btn" style="margin-top:4px" onclick="addGroupe()">+ Groupe</button>';
-  }
-
-  h += '</div></div>';
-  return h;
-}
-
-// ── Interactions ─────────────────────────────────────────────────
-function getSBloc(id){ return seanceData.blocs.find(function(b){ return String(b.id)===String(id); }); }
-function getAt(blocId,atId){ var b=getSBloc(blocId); return b?b.ateliers.find(function(a){return String(a.id)===String(atId);}):null; }
-
-function newAtelierRow(){ return {id:Date.now()+Math.random(), rubrique:"", atelierIdx:-1, responsable:"", duree:"", groupes:""}; }
-
-function onSBlocType(sel,id){ var b=getSBloc(id);if(!b)return;b.type=sel.value;seanceDirty=true;renderSeance(); }
-function onSBlocField(id,field,value){ var b=getSBloc(id);if(!b)return;b[field]=value;seanceDirty=true; }
-function onBlocTitreSeance(sel,id){ var b=getSBloc(id);if(!b)return;b.titre=sel.value;if(sel.value!=="Autre...")b.titreCustom="";seanceDirty=true;renderSeance(); }
-function addSBloc(type){ seanceData.blocs.push(newBloc_(type));seanceDirty=true;renderSeance(); }
-function deleteSBloc(id){ if(!confirm("Supprimer ce bloc ?"))return;seanceData.blocs=seanceData.blocs.filter(function(b){return String(b.id)!==String(id);});seanceDirty=true;renderSeance(); }
-function moveSBloc(id,dir){ var blocs=seanceData.blocs;var idx=blocs.findIndex(function(b){return String(b.id)===String(id);});if(idx<0)return;var ni=idx+dir;if(ni<0||ni>=blocs.length)return;var tmp=blocs[idx];blocs[idx]=blocs[ni];blocs[ni]=tmp;seanceDirty=true;renderSeance(); }
-function addAtelierRow(blocId){ var b=getSBloc(blocId);if(!b)return;if(!b.ateliers)b.ateliers=[];b.ateliers.push(newAtelierRow());seanceDirty=true;renderSeance(); }
-function deleteAtelierRow(blocId,atId){ var b=getSBloc(blocId);if(!b)return;b.ateliers=b.ateliers.filter(function(a){return String(a.id)!==String(atId);});seanceDirty=true;renderSeance(); }
-function onAtRubrique(sel,blocId,atId){ var at=getAt(blocId,atId);if(!at)return;at.rubrique=sel.value;at.atelierIdx=-1;seanceDirty=true;renderSeance(); }
-function onAtAtelier(sel,blocId,atId){
-  var at=getAt(blocId,atId);if(!at)return;
-  at.atelierIdx=parseInt(sel.value);
-  seanceDirty=true;
-  // Auto-fill comportements si bloc vide
-  if (at.atelierIdx >= 0) {
-    var b = getSBloc(blocId);
-    if (b && !b.comportements) {
-      autoFillComportements(blocId, at.atelierIdx);
-      return; // renderSeance appelé dans autoFillComportements
-    }
-  }
-  renderSeance();
-}
-
-// Retourne les comportements proposés pour un atelier (atelier d'abord, sinon sous-rubrique)
-function getComportProposal(gIdx) {
-  var entry = ALL_ITEMS[gIdx]; if(!entry) return [];
-  // Pas de comportements spécifiques à l'atelier lui-même dans la BDD → on utilise ceux de la sous-rubrique
-  return entry.sub.comp || [];
-}
-
-function autoFillComportements(blocId, gIdx) {
-  var b = getSBloc(blocId); if(!b) return;
-  var comps = getComportProposal(gIdx);
-  if (comps.length) b.comportements = comps.join("\n");
-  seanceDirty = true;
-  renderSeance();
-}
-
-function fillComportements(blocId, gIdx) {
-  var b = getSBloc(blocId); if(!b) return;
-  var comps = getComportProposal(gIdx);
-  if (comps.length) b.comportements = comps.join("\n");
-  seanceDirty = true;
-  renderSeance();
-}
-
-// Affiche un panneau de proposition sans écraser le contenu existant
-function showComportProposal(blocId, gIdx) {
-  var comps = getComportProposal(gIdx);
-  if (!comps.length) { alert("Aucune proposition disponible pour cet atelier."); return; }
-  var b = getSBloc(blocId); if(!b) return;
-  // Créer un overlay de proposition
-  var existing = document.getElementById("comport-proposal-overlay");
-  if (existing) existing.remove();
-  var div = document.createElement("div");
-  div.id = "comport-proposal-overlay";
-  div.style.cssText = "position:fixed;inset:0;background:rgba(4,32,15,.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
-  var inner = '<div style="background:var(--w);border-radius:16px;max-width:440px;width:100%;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)">';
-  inner += '<div style="background:var(--g8);color:var(--w);padding:14px 18px;display:flex;align-items:center;gap:8px">';
-  inner += '<div style="flex:1"><div style="font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800">💡 Comportements proposés</div>';
-  inner += '<div style="font-size:10px;opacity:.6;margin-top:2px">' + (ALL_ITEMS[gIdx] ? ALL_ITEMS[gIdx].sub.label : "") + '</div></div>';
-  inner += '<button onclick="document.getElementById("comport-proposal-overlay").remove()" style="width:24px;height:24px;background:rgba(255,255,255,.1);border:none;border-radius:50%;color:var(--w);cursor:pointer;font-size:13px">✕</button>';
-  inner += '</div>';
-  inner += '<div style="padding:14px 18px">';
-  comps.forEach(function(c) {
-    inner += '<div style="padding:5px 0;border-bottom:1px solid var(--gray1);font-size:12px;color:var(--gray7);display:flex;align-items:center;gap:7px">';
-    inner += '<span style="color:var(--gold);font-weight:700">›</span>' + c + '</div>';
-  });
-  inner += '</div>';
-  inner += '<div style="padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px">';
-  inner += '<button onclick="document.getElementById(\'comport-proposal-overlay\').remove()" style="flex:1;padding:8px;background:var(--gray1);color:var(--gray7);border:none;border-radius:7px;font-weight:700;cursor:pointer">Fermer</button>';
-  var fillOc = "fillComportements('" + blocId + "'," + gIdx + ");document.getElementById('comport-proposal-overlay').remove()";
-  inner += '<button onclick="' + fillOc + '" style="flex:1;padding:8px;background:var(--g7);color:var(--w);border:none;border-radius:7px;font-weight:700;cursor:pointer">Utiliser ces comportements</button>';
-  inner += '</div></div>';
-  div.innerHTML = inner;
-  div.onclick = function(e){ if(e.target===div) div.remove(); };
-  document.body.appendChild(div);
-}
-
-function addMat(m){ if(!m)return;if(!seanceData.materiel)seanceData.materiel=[];if(seanceData.materiel.indexOf(m)<0)seanceData.materiel.push(m);seanceDirty=true;renderSeance(); }
-function removeMat(m){ seanceData.materiel=seanceData.materiel.filter(function(x){return x!==m;});seanceDirty=true;renderSeance(); }
-
-function addJoueur(){ var inp=document.getElementById("joueur-inp");if(!inp||!inp.value.trim())return;var nom=inp.value.trim();if(seanceData.joueurs.indexOf(nom)<0){seanceData.joueurs.push(nom);seanceDirty=true;renderSeance();}inp.value="";setTimeout(function(){var el=document.getElementById("joueur-inp");if(el)el.focus();},50); }
-function removeJoueur(nom){ seanceData.joueurs=seanceData.joueurs.filter(function(j){return j!==nom;});seanceData.groupes.forEach(function(g,i){seanceData.groupes[i]=g.filter(function(n){return n!==nom;});});seanceDirty=true;renderSeance(); }
-function addToGroupe(gi,nom){ if(!nom)return;seanceData.groupes.forEach(function(g,i){seanceData.groupes[i]=g.filter(function(n){return n!==nom;});});seanceData.groupes[gi].push(nom);seanceDirty=true;renderSeance(); }
-function removeFromGroupe(gi,nom){ seanceData.groupes[gi]=seanceData.groupes[gi].filter(function(n){return n!==nom;});seanceDirty=true;renderSeance(); }
-function addGroupe(){ seanceData.groupes.push([]);seanceDirty=true;renderSeance(); }
-function removeGroupe(gi){ seanceData.groupes.splice(gi,1);seanceDirty=true;renderSeance(); }
-
-function toggleCoach(nom){ var c=Array.isArray(seanceData.coachs)?seanceData.coachs:(seanceData.coachs?seanceData.coachs.split(",").map(function(s){return s.trim();}):[]);var idx=c.indexOf(nom);if(idx>=0)c.splice(idx,1);else c.push(nom);seanceData.coachs=c;seanceDirty=true;renderSeance(); }
-function formatDuree(m){ if(m<60)return m+"'";var h=Math.floor(m/60);var mn=m%60;return mn?h+"h"+(mn<10?"0":"")+mn:h+"h"; }
-function stepDuree(d){ var cur=parseInt(seanceData.duree)||90;cur=Math.max(15,cur+d);seanceData.duree=cur;seanceDirty=true;var el=document.getElementById("duree-display");if(el)el.textContent=formatDuree(cur); }
-
-function newSeanceConfirm(){ if(seanceDirty&&!confirm("Nouvelle séance ? Modifications perdues."))return;seanceData=newSeance();seanceDirty=false;renderSeance(); }
-
-// ── Sauvegarde ───────────────────────────────────────────────────
-function saveSeance() {
-  if (!seanceData) return;
-  var fname = "seance-" + (seanceData.categorie||"edr").toLowerCase().replace(/[^a-z0-9]/g,"-") + "-" + (seanceData.date||new Date().toISOString().slice(0,10)) + ".json";
-  var ok = document.getElementById("seance-save-ok");
-  savePlanToDrive_seance(fname, seanceData, function(success) {
-    seanceDirty = false;
-    if (ok) { ok.style.display="inline"; ok.textContent=success?"✅ Sauvegardé!":"⚠️ Local seulement"; setTimeout(function(){if(ok)ok.style.display="none";},3000); }
-  });
-}
-
-function savePlanToDrive_seance(fname, data, cb) {
-  var content = JSON.stringify(data, null, 2);
-  var boundary = "mom_seance_boundary";
-  var url = "https://www.googleapis.com/drive/v3/files?q=name%3D'" + fname + "'+and+'" + DRIVE_FOLDER_SEANCE + "'+in+parents&fields=files(id)";
-  fetch(url, {headers:{"Authorization":"Bearer "+getGToken()}})
-    .then(function(r){return r.json();})
-    .then(function(d2){
-      var files = d2.files||[];
-      var body = "--"+boundary+"\r\nContent-Type: application/json\r\n\r\n"+
-        JSON.stringify({name:fname,parents:files.length?undefined:[DRIVE_FOLDER_SEANCE]})+
-        "\r\n--"+boundary+"\r\nContent-Type: application/json\r\n\r\n"+content+"\r\n--"+boundary+"--";
-      var method = files.length?"PATCH":"POST";
-      var endpoint = files.length?"https://www.googleapis.com/upload/drive/v3/files/"+files[0].id+"?uploadType=multipart":"https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
-      return fetch(endpoint,{method:method,headers:{"Authorization":"Bearer "+getGToken(),"Content-Type":"multipart/related; boundary="+boundary},body:body});
-    }).then(function(r){if(cb)cb(r.ok);}).catch(function(){if(cb)cb(false);});
-}
-
-// ── Export PDF ───────────────────────────────────────────────────
-function printSeance() {
-  var d = seanceData;
-  if (!d) return;
-  var logo = document.querySelector(".llogo img") ? document.querySelector(".llogo img").src : "";
-  var selCoachs = Array.isArray(d.coachs) ? d.coachs.join(", ") : (d.coachs||"");
-
-  var h = '<!DOCTYPE html><html><head><meta charset="UTF-8">';
-  h += '<title>Séance ' + (d.categorie||"") + ' ' + (d.date||"") + '</title>';
-  h += '<style>';
-  h += '@page{size:A4 landscape;margin:8mm 10mm}';
-  h += '*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:10px;color:#1a1a14;background:#fff}';
-  // Bandeau
-  h += '.bandeau{background:#0a3a1e;color:#fff;padding:8px 12px;display:flex;align-items:center;gap:12px;margin-bottom:6px}';
-  h += '.bandeau img{width:36px;height:36px;object-fit:contain;flex-shrink:0}';
-  h += '.bandeau-title{font-size:16px;font-weight:900;flex:1}';
-  h += '.bandeau-title small{display:block;font-size:8px;font-weight:400;color:rgba(255,255,255,.6)}';
-  h += '.bandeau-meta{display:grid;grid-template-columns:repeat(3,auto);gap:3px 10px}';
-  h += '.meta-item{display:flex;align-items:center;gap:4px}';
-  h += '.meta-lbl{font-size:7px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em}';
-  h += '.meta-val{font-size:9px;font-weight:700;color:#fff}';
-  h += '.axe-strip{background:#166334;color:#fff;padding:4px 12px;font-size:9px;margin-bottom:6px;display:flex;gap:8px}';
-  h += '.axe-strip span{color:#d4a820;font-weight:700;text-transform:uppercase;font-size:7px;letter-spacing:.07em}';
-  // Grille
-  h += '.grid{display:grid;grid-template-columns:230px 1fr 180px 150px;border:1px solid #ccc;border-radius:6px;overflow:hidden;margin-bottom:6px}';
-  h += '.col{border-right:1px solid #ddd}';
-  h += '.col:last-child{border-right:none}';
-  h += '.col-hd{background:#0a3a1e;color:#fff;padding:5px 8px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #d4a820}';
-  h += '.col-body{padding:6px 8px}';
-  // Blocs trame
-  h += '.tbloc{display:flex;align-items:flex-start;gap:5px;padding:4px 0;border-bottom:1px solid #f0f0ea;position:relative}';
-  h += '.tbloc:last-child{border-bottom:none}';
-  h += '.tbloc-dot{width:6px;height:6px;border-radius:50%;border:1.5px solid #d4a820;background:#fff;flex-shrink:0;margin-top:4px}';
-  h += '.tbloc-type{font-size:7px;font-weight:800;padding:1px 4px;border-radius:3px;color:#fff;flex-shrink:0;white-space:nowrap}';
-  h += '.tbloc-info{flex:1}';
-  h += '.tbloc-titre{font-size:9px;font-weight:700;color:#333;line-height:1.2}';
-  h += '.tbloc-meta{font-size:7px;color:#888;display:flex;gap:6px;margin-top:1px}';
-  h += '.int-badge{font-size:7px;font-weight:700;padding:1px 4px;border-radius:2px;border:1px solid}';
-  h += '.tbloc-at{font-size:8px;color:#166334;margin-top:2px;line-height:1.4}';
-  // Comportements / orga
-  h += '.comp-row{padding:4px 0;border-bottom:1px solid #f0f0ea;min-height:50px}';
-  h += '.comp-row:last-child{border-bottom:none}';
-  h += '.comp-lbl{font-size:7px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}';
-  h += '.comp-txt{font-size:8px;color:#333;line-height:1.5}';
-  // Matériel
-  h += '.mat-chips-pdf{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px}';
-  h += '.mat-chip-pdf{font-size:7px;font-weight:600;padding:1px 5px;border-radius:8px;background:#edfada;color:#166334;border:1px solid #c4efd4}';
-  // Groupes
-  h += '.grp-bloc{margin-bottom:5px}';
-  h += '.grp-hdr{font-size:8px;font-weight:800;margin-bottom:2px}';
-  h += '.grp-body{font-size:7px;color:#333;line-height:1.5;background:#f9f9f5;border-radius:3px;padding:2px 5px}';
-  // Intensité
-  h += '.int-bar{display:flex;align-items:center;gap:8px;padding:5px 10px;background:#f5f5f2;border-top:2px solid #0a3a1e;margin-top:0}';
-  h += '.int-bar-lbl{font-size:7px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.07em}';
-  h += '.int-item{display:flex;align-items:center;gap:3px;font-size:8px;font-weight:700;padding:2px 7px;border-radius:3px;border:1.5px solid}';
-  h += '.int-item small{font-size:6px;font-weight:400;opacity:.7;margin-left:2px}';
-  h += '.footer{display:flex;justify-content:space-between;font-size:7px;color:#aaa;padding-top:4px}';
-  h += '</style></head><body>';
-
-  // Bandeau
-  h += '<div class="bandeau">';
-  if (logo) h += '<img src="' + logo + '">';
-  h += '<div class="bandeau-title">Fiche d\'entra&icirc;nement <small>EDR Mutzig Ovalie Molsheim</small></div>';
-  h += '<div class="bandeau-meta">';
-  [["Date",d.date],["Catégorie",d.categorie],["Effectif",d.effectif],
-   ["Coachs",selCoachs],["Time keeper",d.timekeeper],["Durée",formatDuree(parseInt(d.duree)||90)]].forEach(function(m){
-    h += '<div class="meta-item"><span class="meta-lbl">' + m[0] + '</span><span class="meta-val">' + (m[1]||"—") + '</span></div>';
-  });
-  h += '</div></div>';
-
-  // Axe
-  h += '<div class="axe-strip"><span>Axe de travail</span>' + (d.axe||"Non renseigné") + '</div>';
-
-  // Grille 4 colonnes
-  h += '<div class="grid">';
-
-  // Col 1 — Trame
-  h += '<div class="col"><div class="col-hd">⬆️ Trame de séance</div><div class="col-body">';
-  (d.blocs||[]).forEach(function(bloc) {
-    var color = getBlocColor(bloc.type);
-    var typeLabel = (BLOC_TYPES.find(function(t){return t.val===bloc.type;})||{label:bloc.type}).label;
-    var titre = bloc.titre && bloc.titre !== "-- Choisir --" ? bloc.titre : (bloc.titreCustom||"");
-    var intensite = bloc.intensite ? INTENSITES.find(function(i){return i.val===bloc.intensite;}) : null;
-    h += '<div class="tbloc">';
-    h += '<div class="tbloc-dot"></div>';
-    h += '<div style="flex-shrink:0"><span class="tbloc-type" style="background:' + color + '">' + typeLabel + '</span></div>';
-    h += '<div class="tbloc-info">';
-    if (titre) h += '<div class="tbloc-titre">' + titre + '</div>';
-    h += '<div class="tbloc-meta">';
-    if (bloc.heureDebut) h += '<span>' + bloc.heureDebut + '</span>';
-    if (bloc.duree) h += '<span>' + bloc.duree + '</span>';
-    if (intensite) h += '<span class="int-badge" style="border-color:' + intensite.color + ';color:' + intensite.color + '">' + intensite.label + '</span>';
-    h += '</div>';
-    if (bloc.ateliers && bloc.ateliers.length) {
-      h += '<div class="tbloc-at">';
-      bloc.ateliers.forEach(function(at) {
-        if (at.atelierIdx >= 0 && ALL_ITEMS[at.atelierIdx]) h += '• ' + ALL_ITEMS[at.atelierIdx].item.t + '<br>';
-      });
-      h += '</div>';
-    }
-    h += '</div></div>';
-  });
-  h += '</div></div>';
-
-  // Col 2 — Comportements
-  h += '<div class="col"><div class="col-hd">✅ Comportements attendus</div><div class="col-body">';
-  (d.blocs||[]).filter(function(b){return b.type!=="bulle";}).forEach(function(bloc) {
-    h += '<div class="comp-row">';
-    if (bloc.comportements) { h += '<div class="comp-txt">' + bloc.comportements + '</div>'; }
-    else { h += '<div class="comp-txt" style="color:#ccc;font-style:italic">—</div>'; }
-    h += '</div>';
-  });
-  h += '</div></div>';
-
-  // Col 3 — Matériel + Groupes
-  h += '<div class="col"><div class="col-hd">📦 Matériel & Groupes</div><div class="col-body">';
-  if ((d.materiel||[]).length) {
-    h += '<div class="comp-lbl">Matériel</div>';
-    h += '<div class="mat-chips-pdf">';
-    (d.materiel||[]).forEach(function(m){ h += '<div class="mat-chip-pdf">' + m + '</div>'; });
-    h += '</div>';
-  }
-  var groupes = (d.groupes||[]).filter(function(g){return g.length>0;});
-  if (groupes.length) {
-    h += '<div class="comp-lbl" style="margin-top:5px">Groupes</div>';
-    groupes.forEach(function(grp, gi) {
-      h += '<div class="grp-bloc"><div class="grp-hdr" style="color:' + GROUPE_COLORS[gi] + '">Groupe ' + (gi+1) + ' (' + grp.length + ' j.)</div>';
-      h += '<div class="grp-body">' + grp.join(" · ") + '</div></div>';
-    });
-  }
-  h += '</div></div>';
-
-  // Col 4 — Org spatiale
-  h += '<div class="col"><div class="col-hd">🗺️ Org. Spatiale</div><div class="col-body">';
-  (d.blocs||[]).filter(function(b){return b.type!=="bulle";}).forEach(function(bloc) {
-    h += '<div class="comp-row"><div class="comp-txt">' + (bloc.orga||"<span style=\'color:#ccc;font-style:italic\'>—</span>") + '</div></div>';
-  });
-  h += '</div></div>';
-
-  h += '</div>'; // fin grid
-
-  // Barre intensité
-  h += '<div class="int-bar"><span class="int-bar-lbl">Intensité :</span>';
-  INTENSITES.forEach(function(it) {
-    h += '<div class="int-item" style="border-color:' + it.color + ';color:' + it.color + '">' + it.label + '<small>' + it.sublabel + '</small></div>';
-  });
-  h += '</div>';
-
-  h += '<div class="footer"><div>EDR MOM — ' + (d.categorie||"") + ' — ' + (d.date||"") + '</div>';
-  h += '<div>Généré le ' + new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}) + '</div></div>';
-
-  h += '</body></html>';
+  h += '
+<!-- Panneau Paramètres global -->
+<div id="params-panel-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;align-items:flex-start;justify-content:flex-end;padding:54px 8px 8px 8px">
+  <div id="params-panel" style="background:#fff;width:100%;max-width:520px;height:calc(100vh - 62px);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.28)">
+    <!-- Header -->
+    <div style="background:var(--g8);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <div style="flex:1;font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:800;letter-spacing:.04em">⚙️ Paramètres</div>
+      <button onclick="closeParamsPanel()" style="width:28px;height:28px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:#fff;cursor:pointer;font-size:15px">&#10005;</button>
+    </div>
+    <!-- Onglets sections -->
+    <div id="params-tabs" style="display:flex;border-bottom:2px solid var(--gray2);flex-shrink:0;overflow-x:auto;background:var(--gray1)"></div>
+    <!-- Contenu -->
+    <div id="params-body" style="flex:1;overflow-y:auto;padding:16px 18px"></div>
+    <!-- Footer -->
+    <div style="padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px;flex-shrink:0;background:var(--gray1)">
+      <button onclick="saveParamsPanel()" style="flex:2;padding:9px;background:var(--g7);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:.04em">💾 Sauvegarder</button>
+      <button onclick="closeParamsPanel()" style="flex:1;padding:9px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:7px;font-weight:700;cursor:pointer">Fermer</button>
+      <span id="params-save-ok" style="display:none;align-items:center;font-size:12px;color:var(--g6);font-weight:700">✅ Sauvegardé !</span>
+    </div>
+  </div>
+</div>
+</body></html>';
 
   var win = window.open("", "_blank", "width=1100,height=750");
   win.document.write(h);
@@ -3484,13 +2298,860 @@ function doSearch() {
   }
   c.innerHTML = '<div class="cards">' + results.map(function(r) { return makeCard(r.item, r.sub, r.gIdx); }).join("") + "</div>";
 }
-// Injecter les logos dans les balises img après chargement
-document.addEventListener('DOMContentLoaded', function() {
-  var loginLogo = document.getElementById('logo-img-login');
-  if (loginLogo) loginLogo.src = _LOGO_PNG;
-  var topbarLogo = document.getElementById('logo-img-topbar');
-  if (topbarLogo) topbarLogo.src = _LOGO_PNG;
-});
+// Injecter les logos directement (pas besoin d'attendre DOMContentLoaded
+// car ce script est en fin de body)
+(function() {
+  function injectLogos() {
+    var loginLogo = document.getElementById('logo-img-login');
+    if (loginLogo) loginLogo.src = _LOGO_PNG;
+    var topbarLogo = document.getElementById('logo-img-topbar');
+    if (topbarLogo) topbarLogo.src = _LOGO_PNG;
+  }
+  // Essayer immédiatement
+  injectLogos();
+  // Et aussi au DOMContentLoaded si besoin
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectLogos);
+  }
+})();
+
+// ═══ ONGLET JOUEURS ══════════════════════════════════════════════
+
+var EDR_APTS = ["Tank","Driver","Runner","Botteur","Lanceur","Sauteur","Lifteur"];
+var EDR_CLUBS_COLORS = {MOM:"#1a6b1a", SAR:"#1a3a6b", ASCS:"#374151", Autre:"#5a5a50"};
+
+function goSection_joueurs() {
+  var cat = selAge_ && selAge_ !== "ALL" ? selAge_ : "M14F15";
+  var db = getJoueursDB();
+  var content = document.getElementById("content");
+  if (!content) return;
+  content.classList.remove("lv");
+  content.innerHTML = buildJoueursSection(cat, db);
+  // Déclencher le rendu de la grille après injection du HTML
+  setTimeout(renderJoueursGrid, 0);
+  // Binder le click outside modal
+  var modal = document.getElementById("jpm-modal");
+  if (modal) modal.onclick = function(e){ if(e.target===modal) closeJPM(); };
+}
+
+function buildJoueursSection(cat, db) {
+  var cats = ["M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
+  var all = [];
+  cats.forEach(function(c){ (db[c]||[]).forEach(function(j,i){ all.push({j:j, cat:c, idx:i}); }); });
+  var total = all.length;
+
+  var h = '<div style="padding:12px 14px 0">';
+  // Titre
+  h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--g8);letter-spacing:.04em;flex:1" id="jp-title">Joueurs</div>';
+  h += '<button onclick="openJPM(null,\'' + cat + '\')" style="padding:6px 14px;background:var(--g7);color:#fff;border:none;border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.04em">+ Nouveau</button>';
+  h += '<button onclick="openImportFichier(\'' + cat + '\')" style="padding:6px 12px;background:#d4a820;color:#000;border:none;border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em">📂 Importer</button>';
+  h += '<button onclick="openConfig()" style="padding:6px 12px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">⚙️ Gérer</button>';
+  h += '</div>';
+
+  // Filtres
+  h += '<div class="jp-fbar">';
+  h += '<input class="jp-search" id="jp-s" placeholder="Nom, pr&eacute;nom..." oninput="renderJoueursGrid()">';
+  h += '<select class="jp-fsel" id="jp-fcat" onchange="renderJoueursGrid()">';
+  h += '<option value="">Toutes cat&eacute;gories</option>';
+  cats.forEach(function(c){ h += '<option value="' + c + '"' + (c===cat?' selected':'') + '>' + c + '</option>'; });
+  h += '</select>';
+  h += '<select class="jp-fsel" id="jp-fclub" onchange="renderJoueursGrid()">';
+  h += '<option value="">Tous clubs</option><option>MOM</option><option>SAR</option><option>ASCS</option>';
+  h += '</select>';
+  h += '<select class="jp-fsel" id="jp-fposte" onchange="renderJoueursGrid()">';
+  h += '<option value="">Tous postes</option>';
+  POSTES_RUGBY.filter(Boolean).forEach(function(p){ h += '<option value="' + p + '">' + p + '</option>'; });
+  h += '</select>';
+  h += '<select class="jp-fsel" id="jp-fdispo" onchange="renderJoueursGrid()">';
+  h += '<option value="">Tous &eacute;tats</option><option value="ok">Disponibles</option><option value="inj">Bless&eacute;s</option>';
+  h += '</select>';
+  h += '</div>';
+
+  // Grille (sera remplie par renderJoueursGrid)
+  h += '<div class="jp-grid" id="jp-grid"></div>';
+  h += '</div>';
+  return h;
+}
+
+function renderJoueursGrid() {
+  var s = (document.getElementById("jp-s") && document.getElementById("jp-s").value || "").toLowerCase();
+  var fcat = (document.getElementById("jp-fcat") && document.getElementById("jp-fcat").value) || "";
+  var fclub = (document.getElementById("jp-fclub") && document.getElementById("jp-fclub").value) || "";
+  var fposte = (document.getElementById("jp-fposte") && document.getElementById("jp-fposte").value) || "";
+  var fdispo = (document.getElementById("jp-fdispo") && document.getElementById("jp-fdispo").value) || "";
+
+  var db = getJoueursDB();
+  var cats = ["M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
+  var items = [];
+  cats.forEach(function(c) {
+    (db[c]||[]).forEach(function(j, i) {
+      items.push({j:j, cat:c, idx:i});
+    });
+  });
+
+  // Filtrage
+  var filtered = items.filter(function(o) {
+    var j = o.j;
+    var nom = ((j.prenom||"") + " " + (j.nom||"")).toLowerCase();
+    if (s && nom.indexOf(s) < 0) return false;
+    if (fcat && o.cat !== fcat) return false;
+    if (fclub && (j.club||"") !== fclub) return false;
+    if (fposte) {
+      var postes = (j.postes||"").toLowerCase();
+      if (postes.indexOf(fposte.toLowerCase()) < 0) return false;
+    }
+    if (fdispo === "ok" && j.inj) return false;
+    if (fdispo === "inj" && !j.inj) return false;
+    return true;
+  }).sort(function(a,b){ return ((a.j.nom||"")+(a.j.prenom||"")).localeCompare((b.j.nom||"")+(b.j.prenom||"")); });
+
+  var grid = document.getElementById("jp-grid");
+  if (!grid) return;
+  var title = document.getElementById("jp-title");
+  if (title) title.textContent = "Joueurs (" + filtered.length + "/" + items.length + ")";
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="jp-empty"><div style="font-size:36px;margin-bottom:8px">&#128269;</div><div>Aucun joueur trouv&eacute;</div></div>';
+    return;
+  }
+
+  var cc = EDR_CLUBS_COLORS;
+  var html_inner = filtered.map(function(o, num) {
+    var j = o.j, cat = o.cat, idx = o.idx;
+    var color = cc[j.club] || cc.Autre;
+    var initials = (j.prenom ? j.prenom[0] : "") + (j.nom ? j.nom[0] : "");
+    var photoHtml = j.photo
+      ? '<img src="' + j.photo + '" style="width:100%;height:100%;object-fit:cover">'
+      : '<span style="font-size:15px;font-weight:800">' + initials + '</span>';
+    var postes = (j.postes || "").split(",").map(function(p){ return p.trim(); }).filter(Boolean);
+    var postesHtml = postes.length
+      ? postes.slice(0,2).map(function(p){ return '<span class="jp-pb">' + p + '</span>'; }).join("")
+      : '<span style="font-size:10px;color:var(--gray5)">Poste non d&eacute;fini</span>';
+    var tagsHtml = (j.apts||[]).map(function(a){ return '<span class="jp-tag jp-tag-' + a.toLowerCase() + '">' + a + '</span>'; }).join("");
+    var jddHtml = j.jdd === "oui" ? '<span class="jp-jdd">JDD &#10003;</span>' : "";
+    var arbHtml = j.arb === "oui" ? '<span class="jp-arb">ARB &#10003;</span>' : "";
+    var injHtml = j.inj ? '<span class="jp-inj-badge">&#127973; BLESS&Eacute;</span>' : "";
+
+    return '<div class="jp-card' + (j.inj?" injured":"") + '" onclick="openJPM(' + idx + ',\'' + cat + '\')">'
+      + (j.inj ? '<div class="jp-inj-overlay">' + injHtml + '</div>' : '')
+      + '<div class="jp-ch"><div class="jp-av" style="background:' + color + '">' + photoHtml + '</div>'
+      + '<div style="flex:1"><div class="jp-name">' + (j.prenom||"") + ' <span style="font-weight:900">' + (j.nom||"").toUpperCase() + '</span></div>'
+      + '<div class="jp-sub"><span style="background:' + color + '22;color:' + color + ';padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700">' + (j.club||"MOM") + '</span> ' + cat + '</div></div>'
+      + '<div class="jp-num">' + (num+1) + '</div></div>'
+      + '<div style="display:flex;gap:2px;flex-wrap:wrap;margin-bottom:4px">' + postesHtml + '</div>'
+      + '<div style="display:flex;gap:2px;flex-wrap:wrap;margin-bottom:4px">' + tagsHtml + '</div>'
+      + '<div style="display:flex;gap:3px;flex-wrap:wrap">' + jddHtml + arbHtml + '</div>'
+      + (j.taille ? '<div style="font-size:10px;color:var(--gray5);margin-top:4px">&#128207; ' + j.taille + 'm &middot; &#9878; ' + (j.poids||"?") + 'kg</div>' : '')
+      + '</div>';
+  }).join("");
+
+  grid.innerHTML = html_inner;
+}
+
+// ── Modal joueur ──
+function openJPM(idx, cat) {
+  var db = getJoueursDB();
+  var j = (idx !== null && idx >= 0 && db[cat] && db[cat][idx]) ? db[cat][idx] : null;
+  document.getElementById("jpm-idx").value = (idx !== null && idx >= 0) ? idx : -1;
+  document.getElementById("jpm-cat").value = cat || (selAge_ && selAge_ !== "ALL" ? selAge_ : "M14F15");
+  document.getElementById("jpm-title").textContent = j ? (j.prenom + " " + (j.nom||"").toUpperCase()) : "Nouveau joueur";
+  document.getElementById("jpm-prenom").value = j ? (j.prenom||"") : "";
+  document.getElementById("jpm-nom").value = j ? (j.nom||"") : "";
+  document.getElementById("jpm-club").value = j ? (j.club||"MOM") : "MOM";
+  document.getElementById("jpm-postes").value = j ? (j.postes||"") : "";
+  document.getElementById("jpm-taille").value = j ? (j.taille||"") : "";
+  document.getElementById("jpm-poids").value = j ? (j.poids||"") : "";
+  document.getElementById("jpm-jdd").value = j ? (j.jdd||"") : "";
+  document.getElementById("jpm-arb").value = j ? (j.arb||"") : "";
+  document.getElementById("jpm-inj").checked = j ? !!j.inj : false;
+  document.getElementById("jpm-inj-nat").value = j ? (j.injNat||"") : "";
+  document.getElementById("jpm-inj-to").value = j ? (j.injTo||"") : "";
+  jpmToggleInj();
+  // Photo
+  var prev = document.getElementById("jpm-photo-preview");
+  var ph = document.getElementById("jpm-photo-ph");
+  var photoData = j ? (j.photo||"") : "";
+  document.getElementById("jpm-photo-data").value = photoData;
+  if (photoData) { prev.src = photoData; prev.style.display = "block"; ph.style.display = "none"; }
+  else { prev.style.display = "none"; ph.style.display = "block"; }
+  // Aptitudes
+  var apts_div = document.getElementById("jpm-apts");
+  apts_div.innerHTML = EDR_APTS.map(function(a) {
+    var checked = j && (j.apts||[]).indexOf(a) >= 0 ? "checked" : "";
+    return '<label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;padding:3px 7px;border-radius:14px;border:1px solid var(--gray2);background:var(--w)">'
+      + '<input type="checkbox" value="' + a + '" ' + checked + '> ' + a + '</label>';
+  }).join("");
+  // Bouton supprimer
+  var delBtn = document.getElementById("jpm-del-btn");
+  if (delBtn) delBtn.style.display = (j ? "block" : "none");
+  document.getElementById("jpm-modal").classList.add("open");
+}
+
+function closeJPM() {
+  document.getElementById("jpm-modal").classList.remove("open");
+}
+
+function jpmToggleInj() {
+  var inj = document.getElementById("jpm-inj").checked;
+  document.getElementById("jpm-inj-fields").style.display = inj ? "block" : "none";
+}
+
+function jpmLoadPhoto(input) {
+  var file = input.files[0]; if (!file) return;
+  var r = new FileReader();
+  r.onload = function(e) {
+    var data = e.target.result;
+    document.getElementById("jpm-photo-data").value = data;
+    var prev = document.getElementById("jpm-photo-preview");
+    prev.src = data; prev.style.display = "block";
+    document.getElementById("jpm-photo-ph").style.display = "none";
+  };
+  r.readAsDataURL(file);
+}
+
+function saveJoueurEDR() {
+  var cat = document.getElementById("jpm-cat").value;
+  var idx = parseInt(document.getElementById("jpm-idx").value);
+  var apts = Array.from(document.querySelectorAll("#jpm-apts input:checked")).map(function(i){ return i.value; });
+  var data = {
+    prenom:   document.getElementById("jpm-prenom").value.trim(),
+    nom:      document.getElementById("jpm-nom").value.trim().toUpperCase(),
+    club:     document.getElementById("jpm-club").value,
+    postes:   document.getElementById("jpm-postes").value.trim(),
+    taille:   parseFloat(document.getElementById("jpm-taille").value) || null,
+    poids:    parseFloat(document.getElementById("jpm-poids").value) || null,
+    jdd:      document.getElementById("jpm-jdd").value,
+    arb:      document.getElementById("jpm-arb").value,
+    apts:     apts,
+    inj:      document.getElementById("jpm-inj").checked,
+    injNat:   document.getElementById("jpm-inj-nat").value,
+    injTo:    document.getElementById("jpm-inj-to").value,
+    photo:    document.getElementById("jpm-photo-data").value
+  };
+  if (!data.prenom) { alert("Le prénom est obligatoire."); return; }
+  var db = getJoueursDB();
+  if (!db[cat]) db[cat] = [];
+  if (idx >= 0 && db[cat][idx]) {
+    Object.assign(db[cat][idx], data);
+  } else {
+    db[cat].push(data);
+  }
+  if (planData["__config__"]) planData["__config__"].joueurs = db;
+  else planData["__config__"] = {joueurs: db};
+  closeJPM();
+  renderJoueursGrid();
+}
+
+function deleteJoueurEDR() {
+  var cat = document.getElementById("jpm-cat").value;
+  var idx = parseInt(document.getElementById("jpm-idx").value);
+  if (idx < 0) return;
+  if (!confirm("Supprimer ce joueur ?")) return;
+  var db = getJoueursDB();
+  if (db[cat]) db[cat].splice(idx, 1);
+  if (planData["__config__"]) planData["__config__"].joueurs = db;
+  closeJPM();
+  renderJoueursGrid();
+}
+
+
+// ═══ IMPORT FICHIER JOUEURS (Excel / CSV) ════════════════════════
+
+// Colonnes reconnues automatiquement (insensible à la casse, accents tolérés)
+var IMPORT_COL_MAP = {
+  prenom:  ["prenom","prénom","firstname","first name","first_name","forename"],
+  nom:     ["nom","name","lastname","last name","last_name","surname","family name"],
+  club:    ["club","equipe","équipe","team"],
+  postes:  ["poste","postes","position","positions","role","rôle"],
+  taille:  ["taille","height","hauteur","h"],
+  poids:   ["poids","weight","masse","w"],
+  jdd:     ["jdd","passeport jdd","passeport","licence jdd"],
+  arb:     ["arbitrage","arb","arbitre"],
+  apts:    ["aptitudes","apt","aptitude","profil","tags"]
+};
+
+function normalizeColKey(s) {
+  return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim();
+}
+
+function detectColumns(headers) {
+  // Retourne un objet { fieldName: colIndex } pour chaque colonne reconnue
+  var map = {};
+  headers.forEach(function(h, i) {
+    var key = normalizeColKey(h);
+    Object.keys(IMPORT_COL_MAP).forEach(function(field) {
+      if (map[field] !== undefined) return; // déjà trouvé
+      IMPORT_COL_MAP[field].forEach(function(alias) {
+        if (key === alias || key.startsWith(alias)) map[field] = i;
+      });
+    });
+    // Fallback : si c'est la première colonne non mappée → prénom
+    if (i === 0 && map.prenom === undefined) map.prenom = 0;
+    if (i === 1 && map.nom === undefined) map.nom = 1;
+  });
+  return map;
+}
+
+function rowToJoueur(row, colMap) {
+  function get(field) {
+    var idx = colMap[field];
+    return (idx !== undefined && row[idx] !== undefined && row[idx] !== null)
+      ? String(row[idx]).trim() : "";
+  }
+  var prenom = get("prenom");
+  var nom = get("nom").toUpperCase();
+  if (!prenom && !nom) return null;
+  // Postes : peut contenir plusieurs postes séparés par virgule/point-virgule
+  var postesRaw = get("postes");
+  // Taille : forcer format 1.xx si saisie en cm (ex: 170 → 1.70)
+  var tailleRaw = parseFloat(get("taille")) || null;
+  if (tailleRaw && tailleRaw > 3) tailleRaw = tailleRaw / 100;
+  // JDD / ARB : normaliser oui/non/en cours
+  function normalizeYN(v) {
+    v = v.toLowerCase();
+    if (v === "oui" || v === "yes" || v === "1" || v === "true" || v === "x" || v === "✓") return "oui";
+    if (v === "non" || v === "no" || v === "0" || v === "false") return "non";
+    if (v.includes("cours") || v.includes("progress")) return "en cours";
+    return v || "";
+  }
+  return {
+    prenom:  prenom,
+    nom:     nom,
+    club:    get("club") || "MOM",
+    postes:  postesRaw,
+    taille:  tailleRaw,
+    poids:   parseFloat(get("poids")) || null,
+    jdd:     normalizeYN(get("jdd")),
+    arb:     normalizeYN(get("arb")),
+    apts:    get("apts") ? get("apts").split(/[,;]/).map(function(a){ return a.trim(); }).filter(Boolean) : [],
+    inj:     false,
+    photo:   ""
+  };
+}
+
+function openImportFichier(cat) {
+  // Créer un input file invisible et le déclencher
+  var input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".xlsx,.xls,.csv";
+  input.style.display = "none";
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var ext = file.name.split(".").pop().toLowerCase();
+    if (ext === "csv") {
+      importCSV(file, cat);
+    } else {
+      importXLSX(file, cat);
+    }
+  };
+  document.body.appendChild(input);
+  input.click();
+  setTimeout(function(){ input.remove(); }, 5000);
+}
+
+function importCSV(file, cat) {
+  Papa.parse(file, {
+    header: false,
+    skipEmptyLines: true,
+    complete: function(results) {
+      processImportRows(results.data, cat);
+    },
+    error: function(err) {
+      alert("Erreur lecture CSV : " + err.message);
+    }
+  });
+}
+
+function importXLSX(file, cat) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = new Uint8Array(e.target.result);
+      var workbook = XLSX.read(data, {type:"array"});
+      var sheet = workbook.Sheets[workbook.SheetNames[0]];
+      var rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:""});
+      processImportRows(rows, cat);
+    } catch(err) {
+      alert("Erreur lecture Excel : " + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function processImportRows(rows, cat) {
+  if (!rows || rows.length < 2) {
+    alert("Fichier vide ou sans données.");
+    return;
+  }
+
+  // Première ligne = en-têtes
+  var headers = rows[0].map(function(h){ return String(h||""); });
+  var colMap = detectColumns(headers);
+
+  // Convertir les lignes en joueurs
+  var joueurs = [];
+  for (var i = 1; i < rows.length; i++) {
+    var j = rowToJoueur(rows[i], colMap);
+    if (j) joueurs.push(j);
+  }
+
+  if (!joueurs.length) {
+    alert("Aucun joueur détecté dans le fichier.
+Vérifiez que la première ligne contient bien les en-têtes (Prénom, Nom, Poste...)");
+    return;
+  }
+
+  // Afficher l'overlay de prévisualisation avant import
+  showImportPreview(joueurs, colMap, headers, cat);
+}
+
+function showImportPreview(joueurs, colMap, headers, cat) {
+  var existing = document.getElementById("import-preview-overlay");
+  if (existing) existing.remove();
+
+  var db = getJoueursDB();
+  var existing_list = db[cat] || [];
+
+  // Identifier doublons potentiels
+  joueurs.forEach(function(j) {
+    j._doublon = existing_list.some(function(e) {
+      return e.prenom.toLowerCase() === j.prenom.toLowerCase()
+          && (e.nom||"").toLowerCase() === (j.nom||"").toLowerCase();
+    });
+  });
+
+  var nb_new = joueurs.filter(function(j){ return !j._doublon; }).length;
+  var nb_dup = joueurs.filter(function(j){ return j._doublon; }).length;
+
+  var div = document.createElement("div");
+  div.id = "import-preview-overlay";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(4,32,15,.65);z-index:600;display:flex;align-items:center;justify-content:center;padding:12px";
+
+  // En-têtes détectées
+  var detectedFields = Object.keys(colMap).map(function(f){
+    return '<span style="background:var(--g0);color:var(--g7);padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;border:1px solid var(--g1)">' + f + '</span>';
+  }).join(" ");
+
+  var wrap = document.createElement("div");
+  wrap.style.cssText = "background:#fff;border-radius:16px;width:100%;max-width:600px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)";
+
+  // Header
+  var hdr = document.createElement("div");
+  hdr.style.cssText = "background:var(--g8);color:#fff;padding:14px 18px;flex-shrink:0";
+  hdr.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800;margin-bottom:4px">📂 Prévisualisation de l'import — ' + cat + '</div>'
+    + '<div style="font-size:11px;opacity:.7">' + joueurs.length + ' joueur' + (joueurs.length>1?"s":"") + ' détecté' + (joueurs.length>1?"s":"")
+    + (nb_dup ? ' · <span style="color:#fbbf24;font-weight:700">' + nb_dup + ' doublon' + (nb_dup>1?"s":"") + '</span>' : '') + '</div>';
+
+  // Colonnes détectées
+  var colInfo = document.createElement("div");
+  colInfo.style.cssText = "padding:8px 18px;background:var(--g0);border-bottom:1px solid var(--gray2);font-size:10px;color:var(--gray5);flex-shrink:0";
+  colInfo.innerHTML = '<span style="font-weight:700;text-transform:uppercase;letter-spacing:.05em">Colonnes détectées : </span>' + detectedFields;
+
+  // Liste joueurs avec cases à cocher
+  var body = document.createElement("div");
+  body.style.cssText = "flex:1;overflow-y:auto;padding:8px 18px";
+
+  var listHtml = '<div style="margin-bottom:6px;display:flex;gap:8px;align-items:center">';
+  listHtml += '<label style="font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px"><input type="checkbox" id="imp-select-all" checked onchange="impToggleAll(this.checked)"> Tout sélectionner</label>';
+  if (nb_dup) listHtml += '<span style="font-size:10px;color:#d97706;font-weight:700">⚠️ ' + nb_dup + ' doublon(s) : décoché par défaut</span>';
+  listHtml += '</div>';
+
+  listHtml += '<div style="border:1px solid var(--gray2);border-radius:8px;overflow:hidden">';
+  listHtml += '<div style="display:grid;grid-template-columns:28px 1fr 1fr 100px 28px;background:var(--gray1);padding:5px 10px;font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray5);letter-spacing:.06em;border-bottom:1px solid var(--gray2)">';
+  listHtml += '<div></div><div>Prénom</div><div>NOM</div><div>Club / Poste</div><div></div></div>';
+
+  joueurs.forEach(function(j, i) {
+    var isChecked = !j._doublon;
+    var bg = j._doublon ? 'background:#fffbeb' : '';
+    listHtml += '<div style="display:grid;grid-template-columns:28px 1fr 1fr 100px 28px;padding:5px 10px;border-bottom:1px solid var(--gray1);align-items:center;' + bg + '">';
+    listHtml += '<input type="checkbox" class="imp-row-cb" data-idx="' + i + '"' + (isChecked ? " checked" : "") + '>';
+    listHtml += '<div style="font-size:12px;font-weight:500">' + (j.prenom||"—") + '</div>';
+    listHtml += '<div style="font-size:12px;font-weight:700">' + (j.nom||"—") + '</div>';
+    listHtml += '<div style="font-size:10px;color:var(--gray5)">' + (j.club||"") + (j.postes ? " · " + j.postes.split(",")[0] : "") + '</div>';
+    listHtml += j._doublon ? '<span style="font-size:8px;font-weight:800;color:#d97706;background:#fef3c7;padding:1px 4px;border-radius:3px">DUP</span>' : '<div></div>';
+    listHtml += '</div>';
+  });
+  listHtml += '</div>';
+  body.innerHTML = listHtml;
+
+  // Footer
+  var ftr = document.createElement("div");
+  ftr.style.cssText = "padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px;flex-shrink:0";
+  var cancelBtn = document.createElement("button");
+  cancelBtn.style.cssText = "flex:1;padding:8px;background:var(--gray1);color:var(--gray7);border:none;border-radius:7px;font-weight:700;cursor:pointer";
+  cancelBtn.textContent = "Annuler";
+  cancelBtn.onclick = function(){ div.remove(); };
+  var importBtn = document.createElement("button");
+  importBtn.style.cssText = "flex:2;padding:8px;background:var(--g7);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:.04em";
+  importBtn.textContent = "✅ Importer la sélection";
+  importBtn.onclick = function(){ doImportSelected(joueurs, cat); div.remove(); };
+  ftr.appendChild(cancelBtn);
+  ftr.appendChild(importBtn);
+
+  wrap.appendChild(hdr);
+  wrap.appendChild(colInfo);
+  wrap.appendChild(body);
+  wrap.appendChild(ftr);
+  div.appendChild(wrap);
+  div.onclick = function(e){ if(e.target===div) div.remove(); };
+  document.body.appendChild(div);
+  // Stocker les joueurs pour référence
+  window._importJoueurs = joueurs;
+}
+
+function impToggleAll(checked) {
+  document.querySelectorAll(".imp-row-cb").forEach(function(cb){ cb.checked = checked; });
+}
+
+function doImportSelected(joueurs, cat) {
+  var db = getJoueursDB();
+  if (!db[cat]) db[cat] = [];
+  var added = 0;
+  // Récupérer les cases cochées
+  var selected = [];
+  document.querySelectorAll(".imp-row-cb").forEach(function(cb, i) {
+    if (cb.checked && joueurs[i]) selected.push(joueurs[i]);
+  });
+  selected.forEach(function(j) {
+    // Vérifier doublon une dernière fois
+    var exists = db[cat].some(function(e){
+      return e.prenom.toLowerCase() === j.prenom.toLowerCase()
+          && (e.nom||"").toLowerCase() === (j.nom||"").toLowerCase();
+    });
+    if (!exists) {
+      // Nettoyer les propriétés temporaires avant sauvegarde
+      var clean = Object.assign({}, j);
+      delete clean._doublon;
+      db[cat].push(clean);
+      added++;
+    }
+  });
+  if (planData["__config__"]) planData["__config__"].joueurs = db;
+  else planData["__config__"] = {joueurs: db};
+  renderJoueursGrid();
+  // Feedback
+  setTimeout(function(){
+    var grid = document.getElementById("jp-grid");
+    if (grid) {
+      var msg = document.createElement("div");
+      msg.style.cssText = "padding:10px 14px;background:var(--g0);color:var(--g6);font-size:12px;font-weight:700;border-radius:8px;border:1px solid var(--g1);margin-bottom:8px;grid-column:1/-1";
+      msg.textContent = "✅ " + added + " joueur" + (added>1?"s":"") + " importé" + (added>1?"s":"") + " dans " + cat;
+      grid.insertBefore(msg, grid.firstChild);
+      setTimeout(function(){ if(msg.parentNode) msg.remove(); }, 4000);
+    }
+  }, 100);
+}
+
+
+// ═══ PANNEAU PARAMÈTRES GLOBAL ═══════════════════════════════════
+
+var _paramsCurTab = 0;
+
+// Définition des sections par onglet
+var PARAMS_SECTIONS = [
+  {
+    id: "bib",
+    label: "📚 Bibliothèque",
+    build: function() { return buildParamsBib(); }
+  },
+  {
+    id: "saison",
+    label: "📅 Planification",
+    build: function() { return buildParamsSaison(); }
+  },
+  {
+    id: "seance",
+    label: "📋 Séance",
+    build: function() { return buildParamsSeance(); }
+  },
+  {
+    id: "joueurs",
+    label: "👥 Joueurs",
+    build: function() { return buildParamsJoueurs(); }
+  },
+  {
+    id: "general",
+    label: "🔒 EDR",
+    build: function() { return buildParamsGeneral(); }
+  }
+];
+
+var _paramsAuthenticated = false;
+var PARAMS_ADMIN_CODE = "MOM2025"; // Code admin paramètres
+
+function openParamsPanel(tabIdx) {
+  if (!_paramsAuthenticated) {
+    showParamsLogin(tabIdx || 0);
+    return;
+  }
+  _paramsCurTab = tabIdx || 0;
+  var overlay = document.getElementById("params-panel-overlay");
+  if (!overlay) return;
+  overlay.style.display = "flex";
+  overlay.onclick = function(e){ if(e.target===overlay) closeParamsPanel(); };
+  renderParamsTabs();
+  renderParamsBody();
+}
+
+function showParamsLogin(tabIdx) {
+  var existing = document.getElementById("params-login-overlay");
+  if (existing) existing.remove();
+  var div = document.createElement("div");
+  div.id = "params-login-overlay";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px";
+
+  var box = document.createElement("div");
+  box.style.cssText = "background:#fff;border-radius:16px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)";
+
+  // Header
+  var hdr = document.createElement("div");
+  hdr.style.cssText = "background:var(--g8);color:#fff;padding:18px 20px;text-align:center";
+  hdr.innerHTML = '<div style="font-size:32px;margin-bottom:6px">⚙️</div>'
+    + '<div style="font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:800;letter-spacing:.04em">Accès Paramètres</div>'
+    + '<div style="font-size:11px;opacity:.6;margin-top:3px">Réservé aux responsables EDR</div>';
+
+  // Body
+  var body = document.createElement("div");
+  body.style.cssText = "padding:20px";
+
+  var lbl = document.createElement("label");
+  lbl.style.cssText = "display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray5);letter-spacing:.06em;margin-bottom:6px";
+  lbl.textContent = "Code administrateur";
+
+  var inp = document.createElement("input");
+  inp.type = "password";
+  inp.id = "params-admin-inp";
+  inp.placeholder = "Code d'accès...";
+  inp.style.cssText = "width:100%;padding:10px 12px;border:1.5px solid var(--gray2);border-radius:8px;font-size:15px;outline:none;text-align:center;letter-spacing:.15em";
+  inp.addEventListener("keydown", function(e){ if(e.key==="Enter") checkParamsLogin(tabIdx); });
+
+  var err = document.createElement("div");
+  err.id = "params-login-err";
+  err.style.cssText = "font-size:11px;color:#dc2626;font-weight:700;margin-top:6px;text-align:center;display:none";
+  err.textContent = "❌ Code incorrect";
+
+  body.appendChild(lbl);
+  body.appendChild(inp);
+  body.appendChild(err);
+
+  // Footer
+  var ftr = document.createElement("div");
+  ftr.style.cssText = "padding:12px 20px 18px;display:flex;gap:8px";
+
+  var cancelBtn = document.createElement("button");
+  cancelBtn.style.cssText = "flex:1;padding:10px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:8px;font-weight:700;cursor:pointer";
+  cancelBtn.textContent = "Annuler";
+  cancelBtn.onclick = function(){ div.remove(); };
+
+  var okBtn = document.createElement("button");
+  okBtn.style.cssText = "flex:2;padding:10px;background:var(--g7);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:.04em";
+  okBtn.textContent = "Accéder";
+  okBtn.onclick = function(){ checkParamsLogin(tabIdx); };
+
+  ftr.appendChild(cancelBtn);
+  ftr.appendChild(okBtn);
+
+  box.appendChild(hdr);
+  box.appendChild(body);
+  box.appendChild(ftr);
+  div.appendChild(box);
+  div.onclick = function(e){ if(e.target===div) div.remove(); };
+  document.body.appendChild(div);
+  setTimeout(function(){ inp.focus(); }, 100);
+}
+
+function checkParamsLogin(tabIdx) {
+  var inp = document.getElementById("params-admin-inp");
+  var err = document.getElementById("params-login-err");
+  if (!inp) return;
+  if (inp.value.toUpperCase() === PARAMS_ADMIN_CODE || inp.value.toUpperCase() === CFG_CODE) {
+    _paramsAuthenticated = true;
+    document.getElementById("params-login-overlay").remove();
+    openParamsPanel(tabIdx);
+  } else {
+    if (err) { err.style.display = "block"; }
+    inp.value = "";
+    inp.focus();
+  }
+}
+
+function closeParamsPanel() {
+  var overlay = document.getElementById("params-panel-overlay");
+  if (overlay) overlay.style.display = "none";
+}
+
+function switchParamsTab(idx) {
+  _paramsCurTab = idx;
+  renderParamsTabs();
+  renderParamsBody();
+}
+
+function renderParamsTabs() {
+  var tabs = document.getElementById("params-tabs");
+  if (!tabs) return;
+  tabs.innerHTML = PARAMS_SECTIONS.map(function(s, i) {
+    var active = i === _paramsCurTab;
+    return '<button onclick="switchParamsTab(' + i + ')" style="padding:8px 13px;font-size:11px;font-weight:700;font-family:Barlow Condensed,sans-serif;border:none;background:' + (active ? '#fff' : 'transparent') + ';color:' + (active ? 'var(--g8)' : 'var(--gray5)') + ';cursor:pointer;border-bottom:2px solid ' + (active ? 'var(--g7)' : 'transparent') + ';white-space:nowrap;letter-spacing:.03em">' + s.label + '</button>';
+  }).join("");
+}
+
+function renderParamsBody() {
+  var body = document.getElementById("params-body");
+  if (!body) return;
+  body.innerHTML = PARAMS_SECTIONS[_paramsCurTab].build();
+}
+
+// ── Section Bibliothèque ──
+function buildParamsBib() {
+  var h = '<div style="font-size:12px;color:var(--gray5);margin-bottom:12px">Personnalisez les comportements attendus et les données pédagogiques de la bibliothèque.</div>';
+  h += '<div style="padding:12px;background:var(--g0);border-radius:8px;border:1px solid var(--g1);color:var(--g6);font-size:12px">';
+  h += '✅ Aucun paramètre modifiable pour la Bibliothèque pour le moment.<br>Les ateliers et comportements sont définis dans le catalogue.';
+  h += '</div>';
+  return h;
+}
+
+// ── Section Planification ──
+function buildParamsSaison() {
+  var cfg = getConfig ? getConfig() : {};
+  var h = '<div style="font-size:12px;color:var(--gray5);margin-bottom:12px">Listes déroulantes utilisées dans les blocs de planification de saison.</div>';
+  h += renderParamsListSection("titres", "📌 Titres des blocs", cfg.titres || TITRES_BLOCS.slice(), ["-- Choisir un titre --", "Autre (texte libre)"]);
+  h += renderParamsListSection("collectif", "🧠 Axe collectif", cfg.collectif || AXES_COLLECTIF_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
+  h += renderParamsListSection("physique", "💪 Axe physique", cfg.physique || AXES_PHYSIQUE_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
+  h += renderParamsListSection("poste", "🏟️ Axe jeu au poste", cfg.poste || AXES_POSTE_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
+  return h;
+}
+
+// ── Section Séance ──
+function buildParamsSeance() {
+  var scfg = getSeanceConfig ? getSeanceConfig() : {};
+  var h = '<div style="font-size:12px;color:var(--gray5);margin-bottom:12px">Listes déroulantes et options pour la construction de séance.</div>';
+  h += renderParamsListSection("coachs", "👨‍🏫 Coachs / Éducateurs", scfg.coachs || [], []);
+  h += renderParamsListSection("timekeepers", "⏱ Time keepers", scfg.timekeepers || [], []);
+  return h;
+}
+
+// ── Section Joueurs ──
+function buildParamsJoueurs() {
+  var cats = ["M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
+  var db = getJoueursDB();
+  var totals = cats.map(function(c){ return (db[c]||[]).length; });
+  var h = '<div style="font-size:12px;color:var(--gray5);margin-bottom:12px">Base de données des joueurs, organisée par catégorie.</div>';
+  // Grille des catégories
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:14px">';
+  cats.forEach(function(c, i) {
+    h += '<div style="background:var(--g0);border:1px solid var(--g1);border-radius:8px;padding:10px;text-align:center;cursor:pointer" onclick="closeParamsPanel();setTimeout(function(){goSection('joueurs');setTimeout(function(){var el=document.getElementById('jp-fcat');if(el){el.value='' + c + '';renderJoueursGrid();}},100);},200)">';
+    h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;color:var(--g8)">' + c + '</div>';
+    h += '<div style="font-size:11px;color:var(--gray5)">' + totals[i] + ' joueur' + (totals[i]>1?"s":"") + '</div>';
+    h += '</div>';
+  });
+  h += '</div>';
+  h += '<div style="background:var(--g0);border-radius:8px;border:1px solid var(--g1);padding:12px;font-size:12px;color:var(--g6)">';
+  h += '💡 Cliquer sur une catégorie pour ouvrir l'onglet Joueurs filtré.<br>';
+  h += 'Pour importer depuis un fichier Excel/CSV, rendez-vous dans l'onglet <b>👥 Joueurs</b> → bouton <b>📂 Importer</b>.';
+  h += '</div>';
+  return h;
+}
+
+// ── Section Général / EDR ──
+function buildParamsGeneral() {
+  var h = '<div style="font-size:12px;color:var(--gray5);margin-bottom:12px">Accès responsable EDR et paramètres généraux.</div>';
+  h += '<div style="margin-bottom:14px"><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray5);letter-spacing:.06em;margin-bottom:4px">Code EDR</label>';
+  h += '<div style="display:flex;gap:8px"><input class="trame-inp" id="params-cfg-code" type="password" placeholder="Code EDR" style="max-width:200px">';
+  h += '<button onclick="checkCfgCode()" style="padding:6px 14px;background:var(--g7);color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px">Vérifier</button></div>';
+  h += '<div id="params-cfg-code-result" style="font-size:11px;margin-top:5px"></div></div>';
+  h += '<div style="background:var(--g0);border-radius:8px;border:1px solid var(--g1);padding:12px;font-size:12px;color:var(--g6)">';
+  h += '🔒 L'accès EDR permet de modifier le code d'accès, les axes pédagogiques et de sauvegarder la configuration sur Google Drive.';
+  h += '</div>';
+  return h;
+}
+
+function checkCfgCode() {
+  var inp = document.getElementById("params-cfg-code");
+  var res = document.getElementById("params-cfg-code-result");
+  if (!inp || !res) return;
+  if (inp.value.toUpperCase() === CFG_CODE) {
+    res.innerHTML = '<span style="color:var(--g6);font-weight:700">✅ Code correct — accès EDR activé</span>';
+    cfgUnlocked = true;
+  } else {
+    res.innerHTML = '<span style="color:#dc2626;font-weight:700">❌ Code incorrect</span>';
+  }
+}
+
+// ── Rendu d'une liste paramétrable ──
+function renderParamsListSection(key, title, items, fixed) {
+  var h = '<div style="margin-bottom:14px">';
+  h += '<div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--g7);letter-spacing:.06em;margin-bottom:6px">' + title + '</div>';
+  h += '<div id="params-list-' + key + '" style="background:var(--w);border:1px solid var(--gray2);border-radius:8px;overflow:hidden">';
+  items.forEach(function(item, i) {
+    var isFixed = fixed.indexOf(item) >= 0;
+    h += '<div style="display:flex;align-items:center;gap:6px;padding:5px 10px;border-bottom:1px solid var(--gray1)">';
+    h += '<input style="flex:1;font-size:12px;border:none;background:transparent;color:var(--gray7);outline:none;padding:2px 0" value="' + item.replace(/"/g,"&quot;") + '"' + (isFixed ? ' readonly style="flex:1;font-size:12px;border:none;background:transparent;color:var(--gray5);outline:none;padding:2px 0"' : ' oninput="cfgDirty=true"') + '>';
+    if (!isFixed) h += '<button onclick="this.closest('div').remove();cfgDirty=true" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0">✕</button>';
+    h += '</div>';
+  });
+  h += '</div>';
+  h += '<button onclick="addParamsListItem('' + key + '')" style="margin-top:5px;padding:4px 10px;background:none;border:1px dashed var(--gray2);border-radius:5px;color:var(--gray5);font-size:11px;cursor:pointer;font-weight:600">+ Ajouter</button>';
+  h += '</div>';
+  return h;
+}
+
+function addParamsListItem(key) {
+  var list = document.getElementById("params-list-" + key);
+  if (!list) return;
+  var div = document.createElement("div");
+  div.style.cssText = "display:flex;align-items:center;gap:6px;padding:5px 10px;border-bottom:1px solid var(--gray1)";
+  div.innerHTML = '<input style="flex:1;font-size:12px;border:none;background:transparent;color:var(--gray7);outline:none;padding:2px 0" placeholder="Nouvelle valeur..." oninput="cfgDirty=true">'
+    + '<button onclick="this.closest('div').remove();cfgDirty=true" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0">✕</button>';
+  list.appendChild(div);
+  div.querySelector("input").focus();
+}
+
+function getParamsListValues(key) {
+  var list = document.getElementById("params-list-" + key);
+  if (!list) return null;
+  var inputs = list.querySelectorAll("input");
+  var vals = [];
+  inputs.forEach(function(inp){ if(inp.value.trim()) vals.push(inp.value.trim()); });
+  return vals;
+}
+
+function saveParamsPanel() {
+  var ok = document.getElementById("params-save-ok");
+  // Sauvegarder selon l'onglet actif
+  var sec = PARAMS_SECTIONS[_paramsCurTab];
+  if (sec.id === "saison" || sec.id === "seance") {
+    // Récupérer les valeurs et sauvegarder
+    if (!planData["__config__"]) planData["__config__"] = {};
+    if (sec.id === "saison") {
+      planData["__config__"].axes = {
+        titres:    getParamsListValues("titres") || [],
+        collectif: getParamsListValues("collectif") || [],
+        physique:  getParamsListValues("physique") || [],
+        poste:     getParamsListValues("poste") || []
+      };
+    } else {
+      if (!planData["__config__"].seance) planData["__config__"].seance = {};
+      planData["__config__"].seance.coachs = getParamsListValues("coachs") || [];
+      planData["__config__"].seance.timekeepers = getParamsListValues("timekeepers") || [];
+    }
+    savePlanToDrive("__config__", planData["__config__"], function(success) {
+      if (ok) {
+        ok.style.display = "flex";
+        ok.textContent = success ? "✅ Sauvegardé !" : "⚠️ Local seulement";
+        setTimeout(function(){ if(ok) ok.style.display = "none"; }, 3000);
+      }
+    });
+  } else {
+    if (ok) {
+      ok.style.display = "flex";
+      ok.textContent = "✅ OK";
+      setTimeout(function(){ if(ok) ok.style.display = "none"; }, 2000);
+    }
+  }
+}
+
 
 </script>
 </body>
