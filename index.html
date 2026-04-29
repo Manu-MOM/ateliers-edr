@@ -3134,7 +3134,7 @@ function printSeance(){
   if(d.axe)h+='<div class="axe"><b>&#127919; Axe de travail&nbsp;:</b>'+d.axe+'</div>';
   // Notif blessés
   var _injN=[];
-  var _jjl=getJoueursDB()[selectedAge]||getJoueursDB()["M14F15"]||[];
+  var _jjl=getJoueursDB()[selAge_]||getJoueursDB()["M14F15"]||[];
   (d.blocs||[]).forEach(function(b){(b.groupes||[]).forEach(function(g){(Array.isArray(g)?g:(g.joueurs||[])).forEach(function(nom){var jj=_jjl.find(function(x){return((x.prenom||x.p||"")+" "+(x.nom||x.n||"")).toLowerCase()===nom.toLowerCase();});if(jj&&jj.inj&&_injN.indexOf(nom)<0)_injN.push(nom+(jj.injNat?" ("+jj.injNat+")":""));});});});
   if(_injN.length){h+='<div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:7px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px"><span style="font-size:16px">🏥</span><div><div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:1px">Joueur'+(_injN.length>1?"s blessés":" blessé")+" dans la séance</div><div style='font-size:10px;color:#dc2626'>"+_injN.join(" · ")+"</div></div></div>";}
 
@@ -4424,6 +4424,7 @@ function getComposMatch(cat, matchId) {
 }
 
 var _composCurCat = null;
+var _composFmtFilter = "";
 var _composCurMatch = null;
 var _composView = "calendrier";
 
