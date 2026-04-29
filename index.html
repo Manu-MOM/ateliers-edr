@@ -1655,7 +1655,28 @@ var JOUEURS_DB = {
     {"prenom": "Gaspard", "nom": "KEMLER-NAILI", "club": "SAR", "postes": "Demi d'ouverture, Ailier G, Arrière", "apts": [], "jdd": "", "arb": "", "inj": false},
     {"prenom": "Benjamin", "nom": "BIRIKORANG", "club": "ASCS", "postes": "Demi de mêlée, Demi d'ouverture", "apts": [], "jdd": "", "arb": "", "inj": false, "taille": 1.6, "poids": 56.4},
     {"prenom": "Jarvin", "nom": "OBIDI", "club": "ASCS", "postes": "Demi d'ouverture, Ailier G", "apts": [], "jdd": "", "arb": "", "inj": false, "taille": 1.66, "poids": 78.0},
-    {"prenom": "Mathis", "nom": "BAUDOIN", "club": "MOM", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false}
+    {"prenom": "Mathis", "nom": "BAUDOIN", "club": "MOM", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Adam", "nom": "DJENIDI", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Alexandre", "nom": "MAKARASHVILI", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Pierre", "nom": "KREBS", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Arthur", "nom": "DUCHATELLE", "club": "SAR", "postes": "3e ligne flanker", "apts": ["Driver"], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Tausiale", "nom": "LAMI", "club": "SAR", "postes": "3e ligne flanker", "apts": ["Tank", "Driver"], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Anas", "nom": "ALSHSHIAT", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Jacques", "nom": "ALIAS", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Benjamin", "nom": "KRAUS", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Mériadec", "nom": "PROU", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Côme", "nom": "MISCHEL", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Maher", "nom": "EL-OUARIACHI", "club": "SAR", "postes": "Demi de mêlée", "apts": ["Driver"], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Ismael", "nom": "CELLIER", "club": "SAR", "postes": "Ailier", "apts": ["Runner"], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Emil", "nom": "TERLIER", "club": "SAR", "postes": "Demi d'ouverture", "apts": ["Driver", "Botteur"], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Alphonse", "nom": "FLORENTIN", "club": "SAR", "postes": "Pilier", "apts": ["Tank"], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Elise", "nom": "HOCH", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Auriane", "nom": "DECOURCELLE", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Sidi-Mohamed", "nom": "CHAKOR", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Yasmine", "nom": "GAID", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Léon", "nom": "GASTYC", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Lucien", "nom": "LABARRAQUE-DUPOUY", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Brandon", "nom": "DIZENGA", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false}
   ], M16:[], M18:[], SENF:[], SENM:[]
 };
 
@@ -2626,11 +2647,21 @@ function renderSeance() {
         h += '<span style="font-size:7px;padding:1px 4px;border-radius:8px;background:' + gcol + ';color:#fff;cursor:pointer;white-space:nowrap" data-bid="' + bloc.id + '" data-gi="' + gi + '" data-nom="' + nom.replace(/'/g,"&apos;") + '" onclick="removeBlocJoueur(this.dataset.bid,parseInt(this.dataset.gi),this.dataset.nom)" title="Retirer">' + nom + '</span>';
       });
       h += '</div>';
-      h += '<select style="font-size:8px;border:1px solid var(--gray2);border-radius:4px;background:var(--w);color:var(--gray7);cursor:pointer;width:100%;margin-top:2px;padding:2px 3px" data-bid="' + bloc.id + '" data-gi="' + gi + '" onchange="addBlocJoueur(this.dataset.bid,parseInt(this.dataset.gi),this.value);this.value=\'\'">';
-      h += '<option value="">＋ Joueur…</option>';
-      pool.forEach(function(j){ h += '<option value="' + j + '">' + j + '</option>'; });
-      h += '</select>';
-      h += '</div>';
+      var panelId = 'gp-' + bloc.id + '-' + gi;
+      h += '<div style="position:relative">';
+      h += '<button type="button" data-panel="' + panelId + '" onclick="cToggleGrpPanel(this.dataset.panel)" style="font-size:8px;padding:2px 8px;border:1px dashed var(--g2);border-radius:12px;background:var(--g0);color:var(--g6);cursor:pointer;width:100%;margin-top:3px;text-align:left">＋ Ajouter joueurs</button>';
+      h += '<div id="' + panelId + '" style="display:none;position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;border:1.5px solid var(--g2);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:999;max-height:220px;overflow-y:auto;padding:3px 0">';
+      if (!pool.length) {
+        h += '<div style="padding:8px 10px;font-size:10px;color:var(--gray5);font-style:italic">Tous les joueurs sont assignés</div>';
+      }
+      pool.forEach(function(j) {
+        var safeNom = j.replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+        h += '<label style="display:flex;align-items:center;gap:7px;padding:5px 10px;cursor:pointer;font-size:11px;color:var(--g8)" onmouseover="this.style.background=\'var(--g0)\'" onmouseout="this.style.background=\'transparent\'">'
+          + '<input type="checkbox" style="width:14px;height:14px;accent-color:var(--g6);flex-shrink:0;cursor:pointer" '
+          + 'data-bid="' + bloc.id + '" data-gi="' + gi + '" data-nom="' + safeNom + '" onchange="cCheckboxGroupe(this)"> ' + j + '</label>';
+      });
+      h += '</div></div>';
+h += '</div>';
     });
     h += '</div>';
 
@@ -2647,12 +2678,18 @@ function renderSeance() {
     }
   });
 
-  // ── LIGNE BOUTONS AJOUT BLOCS ──
-  h += '<div style="grid-column:1/-1;padding:6px 8px;background:var(--gray1);border-top:1px solid var(--gray2);display:flex;flex-wrap:wrap;gap:3px">';
+  // ── LIGNE AJOUT BLOCS — compact ──
+  h += '<div style="grid-column:1/-1;padding:4px 10px;background:var(--g0);border-top:2px solid var(--g1);display:flex;align-items:center;gap:6px">';
+  h += '<span style="font-size:9px;font-weight:700;color:var(--g6);white-space:nowrap;flex-shrink:0">+ Ajouter :</span>';
+  h += '<div style="display:flex;flex-wrap:wrap;gap:3px">';
   BLOC_TYPES.forEach(function(bt) {
-    h += '<button class="add-trame-btn" style="padding:3px 8px;font-size:9px;border-color:' + bt.color + ';color:' + bt.color + ';cursor:pointer" onclick="addSBloc(\'' + bt.val + '\')">' + bt.label + '</button>';
+    h += '<button style="padding:2px 9px;font-size:9px;border-radius:12px;border:1px solid ' + bt.color + ';color:' + bt.color + ';background:transparent;cursor:pointer;font-weight:600;white-space:nowrap" '
+      + 'onmouseover="this.style.background=\'' + bt.color + '\';this.style.color=\'#fff\'" '
+      + 'onmouseout="this.style.background=\'transparent\';this.style.color=\'' + bt.color + '\'" '
+      + 'onclick="addSBloc(\'' + bt.val + '\')">' + bt.label + '</button>';
   });
-  h += '</div>';
+  h += '</div></div>';
+h += '</div>';
 
   h += '</div>'; // fin seance-grid
   h += '</div>'; // fin seance-page
@@ -2716,8 +2753,11 @@ function renderTrameBloc(bloc, i, total, totalMin) {
       }
       h += '<div class="trame-row">';
       h += '<span class="trame-row-lbl" style="color:var(--gold);font-weight:700">' + heureAffich + '</span>';
-      h += '<span class="trame-row-lbl" style="margin-left:6px">Durée</span>';
-      h += '<input class="trame-inp" style="width:65px" placeholder="15min" value="' + (bloc.duree||"") + '" data-bid="' + bid + '" oninput="onSBlocField(this.dataset.bid,\'duree\',this.value);renderSeance()">';
+      h += '<span class="trame-row-lbl" style="margin-left:4px">Durée</span>';
+      var _durOpts = '';
+      for (var _di=1; _di<=10; _di++) _durOpts += '<option value="'+_di+'min"'+((bloc.duree||'15min')===''+_di+'min'?' selected':'')+'>'+_di+' min</option>';
+      [15,20,25,30,35,40,45,50,55,60,75,90].forEach(function(_d){ _durOpts += '<option value="'+_d+'min"'+((bloc.duree||'15min')===''+_d+'min'?' selected':'')+'>'+_d+' min</option>'; });
+      h += '<select class="trame-inp" style="width:70px;padding:2px 4px;cursor:pointer" data-bid="' + bid + '" onchange="onSBlocField(this.dataset.bid,\'duree\',this.value);renderSeance()">' + _durOpts + '</select>';
       h += '</div>';
       h += '<div style="margin-top:3px"><span class="trame-row-lbl">Intensité</span>';
       h += '<div class="intensite-btns" style="margin-top:2px">';
@@ -2839,6 +2879,35 @@ function stepDuree(delta){ if(!seanceData)return;seanceData.duree=Math.max(15,Ma
 function toggleCoach(c){ if(!seanceData)return;if(!Array.isArray(seanceData.coachs))seanceData.coachs=[];var idx=seanceData.coachs.indexOf(c);if(idx>=0)seanceData.coachs.splice(idx,1);else seanceData.coachs.push(c);seanceDirty=true;renderSeance(); }
 
 function toggleMat(m){ if(!seanceData)return;if(!seanceData.materiel)seanceData.materiel=[];var idx=seanceData.materiel.indexOf(m);if(idx>=0)seanceData.materiel.splice(idx,1);else seanceData.materiel.push(m);seanceDirty=true; }
+
+function cToggleGrpPanel(id) {
+  var panel = document.getElementById(id);
+  if (!panel) return;
+  // Fermer tous les autres panels ouverts
+  document.querySelectorAll('[id^="grp-panel-"]').forEach(function(p){
+    if (p.id !== id) p.style.display = "none";
+  });
+  panel.style.display = panel.style.display === "none" ? "block" : "none";
+  // Fermer au clic ailleurs
+  if (panel.style.display === "block") {
+    setTimeout(function(){
+      document.addEventListener("click", function _close(e) {
+        if (!panel.contains(e.target) && !e.target.dataset.panel) {
+          panel.style.display = "none";
+          document.removeEventListener("click", _close);
+        }
+      });
+    }, 50);
+  }
+}
+
+function cCheckboxGroupe(cb) {
+  if (cb.checked) {
+    addBlocJoueur(cb.dataset.bid, parseInt(cb.dataset.gi), cb.dataset.nom);
+  } else {
+    removeBlocJoueur(cb.dataset.bid, parseInt(cb.dataset.gi), cb.dataset.nom);
+  }
+}
 
 function addBlocGroupe(bid) {
   var b = getSBloc(bid);
