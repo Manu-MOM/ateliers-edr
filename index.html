@@ -2293,6 +2293,483 @@ function doSearch() {
   }
 })();
 
+
+// ═══ CONSTRUCTEUR DE SÉANCE ══════════════════════════════════════
+
+var BLOC_TYPES = [
+  {val:"echauf",  label:"Échauffement",            color:"#5a3a00"},
+  {val:"eveil",   label:"Éveil / Activation",       color:"#0a3a1e"},
+  {val:"atelier", label:"Atelier",                  color:"#166334"},
+  {val:"circuit", label:"Circuit d'ateliers",        color:"#1d7a40"},
+  {val:"poste",   label:"Ateliers au Poste",         color:"#1a4a8a"},
+  {val:"jeu",     label:"Jeux ludiques",             color:"#4a1a7a"},
+  {val:"mvt",     label:"Mouvement général",         color:"#2a4a10"},
+  {val:"bulle",   label:"🪁 Bulle",                  color:"#4a4a40"},
+  {val:"video",   label:"Analyse vidéo",             color:"#1a2a7a"},
+  {val:"retour",  label:"Retour au calme",           color:"#28944f"},
+  {val:"libre",   label:"Bloc libre",                color:"#5a5a50"},
+  {val:"pause",   label:"💧 Pause boisson",          color:"#1a6a8a"}
+];
+
+var TITRES_BLOCS_SEANCE = [
+  "-- Choisir --",
+  "Activation articulaire et musculaire",
+  "Gammes athlétiques",
+  "Vagues de Passes",
+  "Footing",
+  "Touché 2s",
+  "Touché « All Blacks »",
+  "Touché « Gratte Poule »",
+  "Jeu dirigé",
+  "Ball in Play",
+  "Jeu au Contact (JCO)",
+  "Rugby Éducatif (RE)",
+  "Étirements",
+  "Briefing",
+  "Débriefing",
+  "Autre..."
+];
+
+var INTENSITES = [
+  {val:"t1", label:"Touché",  sublabel:"Mapping",   color:"#28944f"},
+  {val:"t2", label:"Bloqué",  sublabel:"Modéré",    color:"#d4a820"},
+  {val:"t3", label:"Plaqué",  sublabel:"Vitesse",   color:"#e06020"},
+  {val:"t4", label:"Réel",    sublabel:"Hit",       color:"#c53a22"}
+];
+
+var MATERIEL_LIST = [
+  "Cônes","Plots","Piquets","Ballons","Chasubles",
+  "Échelles de rythme","Sacs de plaquage","Boucliers",
+  "Cordes","Cerceaux","Filets","Chronomètre"
+];
+
+function getBlocColor(type) {
+  var t = BLOC_TYPES.find(function(b){ return b.val === type; });
+  return t ? t.color : "#0a3a1e";
+}
+
+function calcHeures(blocs, heureDebut) {
+  var parts = (heureDebut || "14:00").split(":");
+  var totalMin = parseInt(parts[0]||14)*60 + parseInt(parts[1]||0);
+  blocs.forEach(function(bloc) {
+    var hh = Math.floor(totalMin/60);
+    var mm = totalMin % 60;
+    bloc._heureCalc = (hh < 10 ? "0" : "") + hh + "h" + (mm < 10 ? "0" : "") + mm;
+    var dur = parseInt((bloc.duree||"").replace(/[^\d]/g,"")) || 15;
+    totalMin += dur;
+  });
+}
+
+function totalDureeBlocs(blocs) {
+  return blocs.reduce(function(acc, b) {
+    return acc + (parseInt((b.duree||"").replace(/[^\d]/g,"")) || 15);
+  }, 0);
+}
+
+function newSeance() {
+  return {
+    id: Date.now(), date: "", categorie: selAge_ || "",
+    effectif: "", coachs: [], timekeeper: "", duree: 90, axe: "",
+    heureDebut: "14:00",
+    blocs: [], joueurs: [], groupes: [[],[],[]]
+  };
+}
+
+function newBloc_(type) {
+  return {
+    id: Date.now() + Math.random(),
+    type: type || "atelier", titre: "", titreCustom: "",
+    duree: "15min", intensite: "",
+    ateliers: [], comportements: "", orga: "", materiel: []
+  };
+}
+
+var DRIVE_FOLDER_SEANCE = "1bSmmOr8lCvxiTcX2vsQCAurJ8ek1rPd2";
+var seanceData = null;
+var seanceDirty = false;
+
+// ── Section séance ──────────────────────────────────────────────
+function goSection_seance() {
+  document.getElementById("bc").innerHTML = "<b>Ma Séance</b>";
+  document.getElementById("tc").style.display = "none";
+  document.getElementById("vbtns").style.display = "none";
+  document.getElementById("afbar").style.display = "none";
+  buildSbSeance();
+  if (!seanceData) seanceData = newSeance();
+  renderSeance();
+}
+
+function buildSbSeance() {
+  var sb = document.getElementById("sidebar");
+  var cat = seanceData && seanceData.categorie ? seanceData.categorie : (selAge_ && selAge_ !== "ALL" ? selAge_ : "");
+  var h = '<div class="sb-sec"><div class="sb-sec-lbl">Ma Séance</div>';
+  h += '<div class="sb-item act"><div class="sb-icon">📋</div>Canevas de séance</div>';
+  h += '</div><div class="sb-div"></div>';
+  h += '<div class="sb-sec"><div class="sb-sec-lbl">Actions</div>';
+  h += '<div class="sb-item" onclick="newSeanceConfirm()"><div class="sb-icon">➕</div>Nouvelle séance</div>';
+  h += '<div class="sb-item" onclick="saveSeance()"><div class="sb-icon">💾</div>Sauvegarder</div>';
+  h += '<div class="sb-item" onclick="printSeance()"><div class="sb-icon">🖨️</div>Exporter PDF</div>';
+  h += '</div><div class="sb-div"></div>';
+  h += '<div class="sb-sec"><div class="sb-sec-lbl">Joueurs</div>';
+  if (cat && cat !== "ALL") {
+    var db = getJoueursDB();
+    var nb = (db[cat]||[]).length;
+    h += '<div class="sb-item" onclick="loadJoueursCatInSeance(\'' + cat + '\')">'
+      + '<div class="sb-icon">👥</div>Charger ' + cat
+      + '<span class="sb-cnt">' + nb + '</span></div>';
+  } else {
+    h += '<div class="sb-item" style="opacity:.5;cursor:default"><div class="sb-icon">👥</div>Choisir une catégorie</div>';
+  }
+  h += '<div class="sb-item" onclick="openParamsPanel(3)"><div class="sb-icon">⚙️</div>Gérer la base joueurs</div>';
+  h += '</div>';
+  sb.innerHTML = h;
+}
+
+// ── Rendu principal ──────────────────────────────────────────────
+function renderSeance() {
+  var d = seanceData;
+  var scfg = getSeanceConfig ? getSeanceConfig() : {};
+  var logoEl = document.getElementById("logo-img-topbar");
+  var logo = logoEl ? logoEl.src : "";
+
+  calcHeures(d.blocs || [], d.heureDebut || "14:00");
+
+  var h = '<div style="display:flex;gap:14px;align-items:flex-start">';
+  h += '<div style="flex:1;min-width:0">';
+
+  // ── BANDEAU ──────────────────────────────────────────────────────
+  h += '<div class="seance-page">';
+  h += '<div class="seance-bandeau">';
+  if (logo) h += '<div class="seance-bandeau-logo"><img src="' + logo + '"></div>';
+  h += '<div><div class="seance-bandeau-title">Fiche d\'entra&icirc;nement <small>EDR &mdash; Mutzig Ovalie Molsheim</small></div></div>';
+
+  h += '<div class="seance-bandeau-meta">';
+  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Date</span>';
+  h += '<input class="seance-input-sm" type="date" value="' + (d.date||"") + '" oninput="seanceDirty=true;seanceData.date=this.value"></div>';
+  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Début</span>';
+  h += '<input class="seance-input-sm" type="time" value="' + (d.heureDebut||"14:00") + '" style="width:75px" oninput="seanceDirty=true;seanceData.heureDebut=this.value;renderSeance()"></div>';
+  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Catégorie</span>';
+  h += '<select class="seance-input-sm" onchange="seanceDirty=true;seanceData.categorie=this.value;buildSbSeance()">';
+  h += '<option value="">--</option>';
+  AGES.forEach(function(a){ h += '<option value="' + a + '"' + (d.categorie===a?" selected":"") + '>' + a + '</option>'; });
+  h += '</select></div>';
+  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Effectif</span>';
+  h += '<input class="seance-input-sm" type="number" min="1" max="60" value="' + (d.effectif||"") + '" style="width:50px" oninput="seanceDirty=true;seanceData.effectif=this.value"></div>';
+  var dureeVal = parseInt(d.duree) || 90;
+  h += '<div class="seance-meta-field"><span class="seance-meta-lbl">Durée</span>';
+  h += '<button onclick="stepDuree(-15)" style="width:20px;height:20px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:var(--w);cursor:pointer;font-size:12px">−</button>';
+  h += '<span id="duree-display" style="font-size:11px;font-weight:700;color:var(--gold);min-width:34px;text-align:center">' + formatDuree(dureeVal) + '</span>';
+  h += '<button onclick="stepDuree(15)" style="width:20px;height:20px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:var(--w);cursor:pointer;font-size:12px">+</button></div>';
+  h += '</div></div>'; // fin meta + bandeau
+
+  h += '<div class="seance-axe-bar"><span class="seance-axe-lbl">⚽ Axe de travail général</span>';
+  h += '<input class="seance-axe-input" value="' + (d.axe||"") + '" placeholder="Ex: Continuité debout autour du PB / Duels..." oninput="seanceDirty=true;seanceData.axe=this.value"></div>';
+
+  // ── GRILLE ──────────────────────────────────────────────────────
+  h += '<div class="seance-grid">';
+
+  // COL 1 : TRAME
+  var totalMin = totalDureeBlocs(d.blocs || []);
+  h += '<div class="seance-col trame-col">';
+  h += '<div class="seance-col-hd">⏱ Trame &mdash; <span style="color:var(--gold);font-weight:700">' + formatDuree(totalMin) + '</span></div>';
+  h += '<div class="trame-blocs" id="trame-blocs-list">';
+  (d.blocs||[]).forEach(function(bloc, i) {
+    h += renderTrameBloc(bloc, i, d.blocs.length, totalMin);
+  });
+  h += '</div>';
+  h += '<div style="padding:4px 6px 6px;display:flex;flex-wrap:wrap;gap:3px">';
+  BLOC_TYPES.forEach(function(bt) {
+    var burl = "addSBloc('" + bt.val + "')";
+    h += '<button class="add-trame-btn" style="width:auto;padding:3px 7px;font-size:9px;border-color:' + bt.color + ';color:' + bt.color + ';cursor:pointer" onclick="' + burl + '">' + bt.label + '</button>';
+  });
+  h += '</div></div>';
+
+  // COL 2 : COMPORTEMENTS
+  h += '<div class="seance-col comp-col">';
+  h += '<div class="seance-col-hd">✅ Comportements attendus</div>';
+  h += '<div class="comp-rows">';
+  if (!(d.blocs||[]).length) {
+    h += '<div style="padding:16px;font-size:11px;color:var(--gray5);font-style:italic;text-align:center">Ajoutez des blocs dans la trame</div>';
+  }
+  (d.blocs||[]).forEach(function(bloc, i) {
+    if (bloc.type === "pause") return;
+    var color = getBlocColor(bloc.type);
+    var titreAffiche = (bloc.titre && bloc.titre !== "-- Choisir --") ? (bloc.titre === "Autre..." ? (bloc.titreCustom||"Autre") : bloc.titre) : (bloc.titreCustom || (BLOC_TYPES.find(function(b){return b.val===bloc.type;})||{label:""}).label);
+    h += '<div class="comp-row">';
+    h += '<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px">';
+    h += '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;color:var(--w);background:' + color + '">' + titreAffiche.substring(0,22) + '</span>';
+    var firstAt = (bloc.ateliers||[]).find(function(a){ return a.atelierIdx >= 0; });
+    if (firstAt && ALL_ITEMS[firstAt.atelierIdx]) {
+      var autoOc = "showComportProposal('" + bloc.id + "'," + firstAt.atelierIdx + ")";
+      h += '<span class="comp-auto-tag" onclick="' + autoOc + '" title="Propositions">📚 Propositions</span>';
+    }
+    h += '</div>';
+    h += '<textarea class="comp-textarea" placeholder="Comportements attendus, points clés..." oninput="onSBlocField(' + bloc.id + ',\'comportements\',this.value)">' + (bloc.comportements||"") + '</textarea>';
+    h += '</div>';
+  });
+  h += '</div></div>';
+
+  h += '</div>'; // fin grille
+  h += '</div>'; // fin seance-page
+  h += '</div>'; // fin col principale
+  h += '</div>'; // fin flex wrap
+
+  var ct = document.getElementById("content");
+  ct.innerHTML = h;
+  ct.classList.remove("lv");
+}
+
+// ── Rendu d'un bloc dans la trame ───────────────────────────────
+function renderTrameBloc(bloc, i, total, totalMin) {
+  var color = getBlocColor(bloc.type);
+  var typeLabel = (BLOC_TYPES.find(function(t){ return t.val===bloc.type; })||{label:bloc.type}).label;
+  var isExpanded = !bloc._collapsed;
+  var bid = bloc.id;
+  var durMin = parseInt((bloc.duree||"").replace(/[^\d]/g,"")) || 15;
+  var pct = totalMin > 0 ? durMin / totalMin : 0.1;
+  var minH = Math.max(52, Math.round(pct * 480));
+  var heureAffich = bloc._heureCalc || "";
+  var isPause = bloc.type === "pause";
+
+  var h = '<div class="trame-bloc' + (isPause ? " trame-bloc-pause" : "") + '" id="sbloc-' + bid + '" style="min-height:' + minH + 'px">';
+  h += '<div class="trame-bloc-bar" style="background:' + color + '">';
+  h += '<span class="trame-bloc-bar-heure">' + heureAffich + '</span>';
+  h += '<span class="trame-bloc-bar-dur">' + (bloc.duree || durMin + "min") + '</span>';
+  h += '</div>';
+  h += '<div class="trame-bloc-content">';
+  h += '<div class="trame-bloc-hdr" onclick="toggleBlocEdit(' + bid + ')">';
+  h += '<span class="trame-bloc-type" style="background:' + color + '">' + typeLabel + '</span>';
+  var titreAffiche2 = (bloc.titre && bloc.titre !== "-- Choisir --") ? (bloc.titre === "Autre..." ? (bloc.titreCustom||"") : bloc.titre) : (bloc.titreCustom||"");
+  if (titreAffiche2) h += '<span class="trame-bloc-titre">' + titreAffiche2 + '</span>';
+  if (bloc.intensite) {
+    var intObj = INTENSITES.find(function(it){ return it.val === bloc.intensite; });
+    if (intObj) h += '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;border:1px solid ' + intObj.color + ';color:' + intObj.color + ';margin-left:auto;white-space:nowrap">' + intObj.label + '&nbsp;/&nbsp;' + intObj.sublabel + '</span>';
+  }
+  h += '<div class="trame-bloc-actions" onclick="event.stopPropagation()">';
+  if (i > 0) h += '<button class="trame-bloc-btn" onclick="moveSBloc(' + bid + ',-1)">↑</button>';
+  if (i < total-1) h += '<button class="trame-bloc-btn" onclick="moveSBloc(' + bid + ',1)">↓</button>';
+  h += '<button class="trame-bloc-btn del" onclick="deleteSBloc(' + bid + ')">✕</button>';
+  h += '</div></div>';
+
+  if (isExpanded) {
+    h += '<div class="trame-bloc-edit">';
+    h += '<select class="trame-sel" onchange="onSBlocType(this,' + bid + ')">';
+    BLOC_TYPES.forEach(function(bt){
+      h += '<option value="' + bt.val + '"' + (bloc.type===bt.val?" selected":"") + '>' + bt.label + '</option>';
+    });
+    h += '</select>';
+
+    if (!isPause) {
+      var titresList2 = (planData && planData["__config__"] && planData["__config__"].seance && planData["__config__"].seance.titresBlocs) ? planData["__config__"].seance.titresBlocs : TITRES_BLOCS_SEANCE;
+      h += '<select class="trame-sel" onchange="onBlocTitreSeance(this,' + bid + ')">';
+      titresList2.forEach(function(t){ h += '<option value="' + t + '"' + (bloc.titre===t?" selected":"") + '>' + t + '</option>'; });
+      h += '</select>';
+      if (bloc.titre === "Autre...") {
+        h += '<input class="trame-inp" placeholder="Préciser..." value="' + (bloc.titreCustom||"").replace(/"/g,"&quot;") + '" data-bid="' + bid + '" oninput="onSBlocField(this.dataset.bid,\'titreCustom\',this.value)">';
+      }
+      h += '<div class="trame-row">';
+      h += '<span class="trame-row-lbl" style="color:var(--gold);font-weight:700">' + heureAffich + '</span>';
+      h += '<span class="trame-row-lbl" style="margin-left:6px">Durée</span>';
+      h += '<input class="trame-inp" style="width:65px" placeholder="15min" value="' + (bloc.duree||"") + '" data-bid="' + bid + '" oninput="onSBlocField(this.dataset.bid,\'duree\',this.value);renderSeance()">';
+      h += '</div>';
+      h += '<div style="margin-top:3px"><span class="trame-row-lbl">Intensité</span>';
+      h += '<div class="intensite-btns" style="margin-top:2px">';
+      INTENSITES.forEach(function(it) {
+        var on = bloc.intensite === it.val;
+        h += '<button class="int-btn ' + it.val + (on?" on":"") + '" data-bid="' + bid + '" data-val="' + it.val + '" onclick="onSBlocField(this.dataset.bid,\'intensite\',this.dataset.val);renderSeance()" style="display:flex;flex-direction:column;align-items:center;line-height:1.1;padding:3px 7px;min-width:44px">'
+          + '<span style="font-size:9px;font-weight:800">' + it.label + '</span>'
+          + '<span style="font-size:7px;opacity:.8;font-weight:600">' + it.sublabel + '</span>'
+          + '</button>';
+      });
+      h += '</div></div>';
+      h += '<div style="font-size:8px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-top:4px">Ateliers</div>';
+      (bloc.ateliers||[]).forEach(function(at, ai) { h += renderAtelierRow(bloc, at, ai); });
+      h += '<button class="add-trame-btn" data-bid="' + bid + '" onclick="addAtelierRow(this.dataset.bid)">+ Atelier</button>';
+    } else {
+      h += '<div class="trame-row"><span class="trame-row-lbl">Durée pause</span>';
+      h += '<input class="trame-inp" style="width:65px" placeholder="5min" value="' + (bloc.duree||"5min") + '" data-bid="' + bid + '" oninput="onSBlocField(this.dataset.bid,\'duree\',this.value);renderSeance()"></div>';
+    }
+    h += '</div>';
+  }
+  h += '</div></div>';
+  return h;
+}
+
+function renderAtelierRow(bloc, at, ai) {
+  var bid = bloc.id, aid = at.id;
+  var h = '<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:5px;background:var(--g0);border:1px solid var(--g1);border-radius:6px;padding:5px 7px">';
+  h += '<div style="display:flex;gap:4px;align-items:center">';
+  h += '<select style="font-size:10px;border:1px solid var(--gray2);border-radius:4px;padding:2px 5px;background:var(--w);color:var(--gray7);cursor:pointer;flex:1" data-bid="' + bid + '" data-aid="' + aid + '" onchange="onAtRubrique(this,this.dataset.bid,this.dataset.aid)">';
+  h += '<option value="">-- Rubrique --</option>';
+  RUBRIQUES.forEach(function(rub) {
+    rub.subs.forEach(function(sub) {
+      if (sub.soon) return;
+      h += '<option value="' + sub.id + '"' + (at.rubrique===sub.id?" selected":"") + '>' + rub.num + ' ' + sub.label + '</option>';
+    });
+  });
+  h += '</select>';
+  h += '<button data-bid="' + bid + '" data-aid="' + aid + '" onclick="deleteAtelierRow(this.dataset.bid,this.dataset.aid)" style="width:18px;height:18px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;flex-shrink:0">✕</button>';
+  h += '</div>';
+  if (at.rubrique) {
+    var sub = null;
+    RUBRIQUES.forEach(function(rub){ rub.subs.forEach(function(s){ if(s.id===at.rubrique) sub=s; }); });
+    if (sub) {
+      var atelierItems = [];
+      (sub.ss||[]).forEach(function(ss) {
+        (ss.items||[]).forEach(function(item) {
+          var gIdx = ALL_ITEMS.findIndex(function(x){ return x.item.id===item.id && x.sub.id===sub.id; });
+          if (gIdx >= 0) atelierItems.push({gIdx:gIdx, label: item.t});
+        });
+      });
+      h += '<select style="font-size:10px;border:1px solid var(--gray2);border-radius:4px;padding:2px 5px;background:var(--w);color:var(--gray7);cursor:pointer;width:100%" data-bid="' + bid + '" data-aid="' + aid + '" onchange="onAtAtelier(this,this.dataset.bid,this.dataset.aid)">';
+      h += '<option value="-1">-- Choisir un atelier --</option>';
+      atelierItems.forEach(function(a){ h += '<option value="' + a.gIdx + '"' + (at.atelierIdx===a.gIdx?" selected":"") + '>' + a.label + '</option>'; });
+      if (!atelierItems.length) h += '<option disabled>Aucun atelier disponible</option>';
+      h += '</select>';
+    }
+  }
+  if (at.atelierIdx >= 0 && ALL_ITEMS[at.atelierIdx]) {
+    var entry = ALL_ITEMS[at.atelierIdx];
+    h += '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">';
+    h += '<a href="https://drive.google.com/file/d/' + entry.item.id + '/view" target="_blank" style="font-size:9px;color:var(--g6);text-decoration:none;padding:2px 6px;background:var(--w);border-radius:3px;border:1px solid var(--g1);flex-shrink:0">📂 Fiche Drive</a>';
+    h += '<button data-bid="' + bid + '" data-gidx="' + at.atelierIdx + '" onclick="showComportProposal(this.dataset.bid,this.dataset.gidx)" style="font-size:9px;padding:2px 6px;background:var(--goldl);color:var(--goldd);border:1px solid var(--gold);border-radius:3px;cursor:pointer;flex-shrink:0">💡 Comportements</button>';
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+// ── Joueurs séance ─────────────────────────────────────────────
+function renderJoueurs(d) {
+  var joueurs = d.joueurs || [];
+  var groupes = d.groupes || [[],[],[]];
+  while (groupes.length < 3) groupes.push([]);
+  var assignes = []; groupes.forEach(function(g){ g.forEach(function(n){ assignes.push(n); }); });
+  var nonAssignes = joueurs.filter(function(j){ return assignes.indexOf(j) < 0; });
+  var h = '<div class="joueurs-card">';
+  h += '<div class="joueurs-card-hd">👥 Joueurs (' + joueurs.length + ')</div>';
+  h += '<div class="joueurs-card-body">';
+  h += '<div class="joueur-input-row">';
+  h += '<input class="joueur-input" id="joueur-inp" placeholder="Nom..." onkeydown="if(event.key==\'Enter\')addJoueur()">';
+  h += '<button class="joueur-add-btn" onclick="addJoueur()">+</button>';
+  h += '</div>';
+  if (joueurs.length) {
+    h += '<div style="font-size:8px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Non assignés (' + nonAssignes.length + ')</div>';
+    h += '<div class="joueurs-pool">';
+    nonAssignes.forEach(function(j) { h += '<div class="joueur-chip" onclick="removeJoueur(\'' + j + '\')" title="Clic pour supprimer">' + j + '</div>'; });
+    if (!nonAssignes.length) h += '<span style="font-size:9px;color:var(--gray5);font-style:italic">Tous assignés ✓</span>';
+    h += '</div>';
+  }
+  h += '</div></div>';
+  return h;
+}
+
+// ── Interactions séance ──────────────────────────────────────────
+function getSBloc(id){ return seanceData.blocs.find(function(b){ return String(b.id)===String(id); }); }
+function getAt(blocId,atId){ var b=getSBloc(blocId); return b?b.ateliers.find(function(a){return String(a.id)===String(atId);}):null; }
+function newAtelierRow(){ return {id:Date.now()+Math.random(), rubrique:"", atelierIdx:-1}; }
+
+function onSBlocType(sel,id){ var b=getSBloc(id);if(!b)return;b.type=sel.value;seanceDirty=true;renderSeance(); }
+function onSBlocField(id,field,value){ var b=getSBloc(id);if(!b)return;b[field]=value;seanceDirty=true; }
+function onBlocTitreSeance(sel,id){ var b=getSBloc(id);if(!b)return;b.titre=sel.value;if(sel.value!=="Autre...")b.titreCustom="";seanceDirty=true;renderSeance(); }
+function addSBloc(type){ seanceData.blocs.push(newBloc_(type));seanceDirty=true;renderSeance(); }
+function deleteSBloc(id){ if(!confirm("Supprimer ce bloc ?"))return;seanceData.blocs=seanceData.blocs.filter(function(b){return String(b.id)!==String(id);});seanceDirty=true;renderSeance(); }
+function moveSBloc(id,dir){ var blocs=seanceData.blocs;var idx=blocs.findIndex(function(b){return String(b.id)===String(id);});if(idx<0)return;var ni=idx+dir;if(ni<0||ni>=blocs.length)return;var tmp=blocs[idx];blocs[idx]=blocs[ni];blocs[ni]=tmp;seanceDirty=true;renderSeance(); }
+function toggleBlocEdit(id){ var b=getSBloc(id);if(!b)return;b._collapsed=!b._collapsed;renderSeance(); }
+function addAtelierRow(blocId){ var b=getSBloc(blocId);if(!b)return;if(!b.ateliers)b.ateliers=[];b.ateliers.push(newAtelierRow());seanceDirty=true;renderSeance(); }
+function deleteAtelierRow(blocId,atId){ var b=getSBloc(blocId);if(!b)return;b.ateliers=b.ateliers.filter(function(a){return String(a.id)!==String(atId);});seanceDirty=true;renderSeance(); }
+function onAtRubrique(sel,blocId,atId){ var at=getAt(blocId,atId);if(!at)return;at.rubrique=sel.value;at.atelierIdx=-1;seanceDirty=true;renderSeance(); }
+function onAtAtelier(sel,blocId,atId){
+  var at=getAt(blocId,atId);if(!at)return;
+  at.atelierIdx=parseInt(sel.value);
+  seanceDirty=true;
+  var b=getSBloc(blocId);
+  if(b && !b.comportements && at.atelierIdx>=0){ autoFillComportements(blocId,at.atelierIdx); return; }
+  renderSeance();
+}
+
+function stepDuree(delta){ if(!seanceData)return;seanceData.duree=Math.max(15,Math.min(180,(parseInt(seanceData.duree)||90)+delta));seanceDirty=true;var el=document.getElementById("duree-display");if(el)el.textContent=formatDuree(seanceData.duree); }
+function toggleCoach(c){ if(!seanceData)return;if(!Array.isArray(seanceData.coachs))seanceData.coachs=[];var idx=seanceData.coachs.indexOf(c);if(idx>=0)seanceData.coachs.splice(idx,1);else seanceData.coachs.push(c);seanceDirty=true;renderSeance(); }
+
+function addJoueur(){ var inp=document.getElementById("joueur-inp");if(!inp||!inp.value.trim())return;var nom=inp.value.trim();if(seanceData.joueurs.indexOf(nom)<0){seanceData.joueurs.push(nom);seanceDirty=true;renderSeance();}inp.value=""; }
+function removeJoueur(nom){ seanceData.joueurs=seanceData.joueurs.filter(function(j){return j!==nom;});seanceDirty=true;renderSeance(); }
+
+function loadJoueursCatInSeance(cat){
+  if(!seanceData)return;
+  var db=getJoueursDB();var joueurs=db[cat]||[];
+  if(!joueurs.length){alert("Aucun joueur enregistré pour la catégorie "+cat+".\nAjoutez-les dans Paramètres → Joueurs.");return;}
+  var labels=joueurs.map(function(j){return j.prenom+(j.nom?" "+j.nom.charAt(0).toUpperCase()+".":"");});
+  var added=0;
+  labels.forEach(function(lbl){if(seanceData.joueurs.indexOf(lbl)<0){seanceData.joueurs.push(lbl);added++;}});
+  seanceDirty=true;renderSeance();
+  if(added===0)alert("Tous les joueurs de "+cat+" sont déjà dans la séance.");
+}
+
+function saveSeance(){
+  if(!seanceData)return;
+  savePlanToDrive("__seance_"+seanceData.id, seanceData, function(ok){
+    alert(ok?"✅ Séance sauvegardée !":"⚠️ Sauvegarde locale uniquement.");
+  });
+}
+
+function newSeanceConfirm(){ if(seanceDirty&&!confirm("Nouvelle séance ? Modifications perdues."))return;seanceData=newSeance();seanceDirty=false;renderSeance(); }
+
+function printSeance(){
+  if(!seanceData||!seanceData.blocs||!seanceData.blocs.length){alert("La séance est vide.");return;}
+  var logoEl=document.getElementById("logo-img-topbar");
+  var logo=logoEl?logoEl.src:"";
+  var d=seanceData;
+  var h='<!DOCTYPE html><html><head><meta charset="UTF-8">';
+  h+='<style>body{font-family:Arial,sans-serif;font-size:10px;margin:0;padding:10px}';
+  h+='.hdr{background:#0a3a1e;color:#fff;padding:8px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px;border-radius:6px}';
+  h+='.hdr img{height:40px}';
+  h+='.title{font-size:16px;font-weight:900;font-family:Arial Black,Arial}';
+  h+='.bloc{border:1px solid #ccc;border-radius:4px;margin-bottom:5px;padding:6px 8px}';
+  h+='.bloc-hdr{font-weight:700;font-size:11px;margin-bottom:4px}';
+  h+='</style></head><body>';
+  if(logo)h+='<div class="hdr"><img src="'+logo+'"><div><div class="title">Fiche de séance — '+d.categorie+'</div><div>'+d.date+' · '+formatDuree(parseInt(d.duree)||90)+'</div></div></div>';
+  if(d.axe)h+='<div style="background:#f5f0e0;border-radius:4px;padding:5px 8px;margin-bottom:8px;font-size:10px"><b>Axe :</b> '+d.axe+'</div>';
+  d.blocs.forEach(function(b){
+    var col=getBlocColor(b.type);
+    var titre=(b.titre&&b.titre!=="-- Choisir --"&&b.titre!=="Autre...")?b.titre:(b.titreCustom||(BLOC_TYPES.find(function(t){return t.val===b.type;})||{label:b.type}).label);
+    h+='<div class="bloc"><div class="bloc-hdr" style="color:'+col+'">'+b._heureCalc+' · '+titre+' ('+b.duree+')</div>';
+    if(b.comportements)h+='<div>'+b.comportements.replace(/\n/g,"<br>")+'</div>';
+    h+='</div>';
+  });
+  h+='</body></html>';
+  var win=window.open("","_blank","width=900,height=700");
+  if(win){win.document.write(h);win.document.close();setTimeout(function(){win.print();},400);}
+}
+
+// Comportements auto
+function getComportProposal(gIdx){var entry=ALL_ITEMS[gIdx];if(!entry)return[];return entry.sub.comp||[];}
+function autoFillComportements(blocId,gIdx){var b=getSBloc(blocId);if(!b)return;var comps=getComportProposal(gIdx);if(comps.length)b.comportements=comps.join("\n");seanceDirty=true;renderSeance();}
+function fillComportements(blocId,gIdx){var b=getSBloc(blocId);if(!b)return;var comps=getComportProposal(gIdx);if(comps.length)b.comportements=comps.join("\n");seanceDirty=true;renderSeance();}
+
+function showComportProposal(blocId,gIdx){
+  var comps=getComportProposal(gIdx);
+  if(!comps.length){alert("Aucune proposition disponible.");return;}
+  var div=document.createElement("div");
+  div.style.cssText="position:fixed;inset:0;background:rgba(4,32,15,.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px";
+  var inner='<div style="background:var(--w);border-radius:16px;max-width:440px;width:100%;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)">';
+  inner+='<div style="background:var(--g8);color:var(--w);padding:14px 18px;display:flex;align-items:center;gap:8px">';
+  inner+='<div style="flex:1"><div style="font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800">💡 Comportements proposés</div></div>';
+  inner+='<button onclick="document.getElementById(\'comport-prop-ov\').remove()" style="width:24px;height:24px;background:rgba(255,255,255,.1);border:none;border-radius:50%;color:var(--w);cursor:pointer;font-size:13px">✕</button>';
+  inner+='</div><div style="padding:14px 18px">';
+  comps.forEach(function(c){inner+='<div style="padding:5px 0;border-bottom:1px solid var(--gray1);font-size:12px;color:var(--gray7)"><span style="color:var(--gold);font-weight:700">› </span>'+c+'</div>';});
+  inner+='</div><div style="padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px">';
+  inner+='<button onclick="document.getElementById(\'comport-prop-ov\').remove()" style="flex:1;padding:8px;background:var(--gray1);color:var(--gray7);border:none;border-radius:7px;font-weight:700;cursor:pointer">Fermer</button>';
+  var fillOc="fillComportements('"+blocId+"',"+gIdx+");document.getElementById('comport-prop-ov').remove()";
+  inner+='<button onclick="'+fillOc+'" style="flex:1;padding:8px;background:var(--g7);color:var(--w);border:none;border-radius:7px;font-weight:700;cursor:pointer">Utiliser</button>';
+  inner+='</div></div>';
+  div.id="comport-prop-ov";
+  div.innerHTML=inner;
+  div.onclick=function(e){if(e.target===div)div.remove();};
+  document.body.appendChild(div);
+}
+
+
+
 // ═══ ONGLET JOUEURS ══════════════════════════════════════════════
 
 var EDR_APTS = ["Tank","Driver","Runner","Botteur","Lanceur","Sauteur","Lifteur"];
