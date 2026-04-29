@@ -1640,6 +1640,7 @@ function buildCrossRefHtml(ssId) {
 var DRIVE_FOLDER_PLAN = "16zWlSMKjrzQlGIXrYfxB8Dy4nAj-aij9";
 var CATS_PLAN = ["Commun","M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
 var curPlanCat = "Commun";
+var curJoueursCat = "M14F15";
 var curPlanView = "plan"; // "plan" | "config"
 var planData = {};
 var planDirty = false;
@@ -1932,7 +1933,11 @@ function goSection_saison() {
 function buildSbSaison() {
   var sb = document.getElementById("sidebar");
   var h = '<div class="sb-sec"><div class="sb-sec-lbl">Planification — Categorie</div>';
-  CATS_PLAN.forEach(function(c) {
+  // Afficher uniquement Commun + la catégorie connectée (ou tout si admin)
+  var visibleCats = CATS_PLAN.filter(function(c) {
+    return c === "Commun" || selAge_ === "ALL" || c === selAge_;
+  });
+  visibleCats.forEach(function(c) {
     var act = (c === curPlanCat && curPlanView === "plan") ? " act" : "";
     var icon = c === "Commun" ? "🏛️" : "📅";
     h += '<div class="sb-item' + act + '" onclick="switchPlanCat(\'' + c + '\')">' +
