@@ -857,6 +857,10 @@ function tryLogin() {
     var lbl = selAge_ === "ALL" ? "Tous niveaux" : selAge_;
     document.getElementById("topbar-age").textContent = lbl + " (changer)";
     updateTabCnt();
+    // Charger la config (joueurs inclus) si pas déjà fait
+    loadPlanFromDrive("__config__", function(cfg){
+      if (cfg && cfg.axes) planData["__config__"] = cfg;
+    });
     goSection("bib");
   } else {
     document.getElementById("lerr").style.display = "block";
@@ -1526,6 +1530,41 @@ var curPlanView = "plan"; // "plan" | "config"
 var planData = {};
 var planDirty = false;
 var CFG_CODE = "EDR2025"; // code responsable EDR
+
+// Base de données joueurs par catégorie
+// Format : { age: [{prenom, nom, poste}] }
+var JOUEURS_DB = {
+  M6:[], M8:[], M10:[], M12:[], M14:[], M1618:[], SEN:[]
+};
+
+// Postes disponibles par catégorie
+var POSTES_RUGBY = [
+  "","Pilier G","Talonneur","Pilier D","2e ligne G","2e ligne D",
+  "3e ligne flanker G","3e ligne N°8","3e ligne flanker D",
+  "Demi de mêlée","Demi d'ouverture","Centre G","Centre D",
+  "Ailier G","Ailier D","Arrière"
+];
+
+function getJoueursDB() {
+  // Charger depuis planData si disponible
+  if (planData["__config__"] && planData["__config__"].joueurs) {
+    return planData["__config__"].joueurs;
+  }
+  return JOUEURS_DB;
+}
+
+function getJoueursCat(cat) {
+  var db = getJoueursDB();
+  return db[cat] || [];
+}
+
+// Retourne le label "Prénom NOM" pour affichage
+function joueurLabel(j) {
+  return j.prenom + (j.nom ? " " + j.nom.toUpperCase() : "") + (j.poste ? " (" + j.poste + ")" : "");
+}
+function joueurShort(j) {
+  return j.prenom + (j.nom ? " " + j.nom.charAt(0).toUpperCase() + "." : "");
+}
 
 var TITRES_BLOCS = [
   "-- Choisir un titre --",
@@ -2236,10 +2275,16 @@ function renderConfigEditor() {
     "Options du menu Jeu au poste",
     cfg.poste || AXES_POSTE_DEFAULT.slice(), ["-- Choisir --", "Autre (texte libre)"]);
 
+  // ── JOUEURS PAR CATÉGORIE ──
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:800;color:var(--gray7);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--g1)">👥 Base de données Joueurs</div>';
+  h += renderJoueursDB();
+
   h += '<div style="height:20px"></div>';
 
   document.getElementById("content").innerHTML = h;
   document.getElementById("content").classList.remove("lv");
+  // Activer la catégorie sélectionnée dans la base joueurs
+  switchJoueursCat(window._cfgJoueursCat || (selAge_ && selAge_ !== "ALL" ? selAge_ : "M14"));
 }
 
 function renderCfgSection(key, title, subtitle, items, fixed) {
@@ -2313,6 +2358,7 @@ function saveConfig() {
   if (!planData["__config__"]) planData["__config__"] = {};
   planData["__config__"].axes   = newCfg;
   planData["__config__"].seance = newScfg;
+  // Les joueurs sont déjà sauvegardés en temps réel dans planData["__config__"].joueurs
   var ok = document.getElementById("cfg-save-ok");
   savePlanToDrive("__config__", planData["__config__"], function(success) {
     if (ok) {
@@ -2322,6 +2368,240 @@ function saveConfig() {
     }
     renderConfigEditor();
   });
+}
+
+// ═══ BASE DE DONNÉES JOUEURS ══════════════════════════════════════
+
+var _cfgJoueursCat = null;
+
+function renderJoueursDB() {
+  var cats = ["M6","M8","M10","M12","M14","M1618","SEN"];
+  var h = '<div id="joueurs-db-section">';
+  // Onglets catégories
+  h += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">';
+  cats.forEach(function(c) {
+    h += '<button id="jcat-btn-' + c + '" onclick="switchJoueursCat(\'' + c + '\')" style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:800;padding:5px 12px;border-radius:16px;border:1.5px solid var(--gray2);background:var(--w);color:var(--gray5);cursor:pointer;transition:all .15s">' + c + '</button>';
+  });
+  h += '</div>';
+  // Zone liste joueurs (remplie dynamiquement)
+  h += '<div id="joueurs-db-list" style="background:var(--w);border:1px solid var(--gray2);border-radius:var(--rl);overflow:hidden">';
+  h += '<div style="padding:20px;text-align:center;color:var(--gray5);font-size:12px">Chargement...</div>';
+  h += '</div>';
+  h += '</div>';
+  return h;
+}
+
+function switchJoueursCat(cat) {
+  window._cfgJoueursCat = cat;
+  // MAJ boutons onglets
+  ["M6","M8","M10","M12","M14","M1618","SEN"].forEach(function(c) {
+    var btn = document.getElementById("jcat-btn-" + c);
+    if (!btn) return;
+    if (c === cat) {
+      btn.style.background = "var(--g8)"; btn.style.color = "var(--w)"; btn.style.borderColor = "var(--g8)";
+    } else {
+      btn.style.background = "var(--w)"; btn.style.color = "var(--gray5)"; btn.style.borderColor = "var(--gray2)";
+    }
+  });
+  renderJoueursListCat(cat);
+}
+
+function renderJoueursListCat(cat) {
+  var container = document.getElementById("joueurs-db-list");
+  if (!container) return;
+  var db = getJoueursDB();
+  var joueurs = (db[cat] || []).slice();
+
+  var h = '<div style="background:var(--g8);color:var(--w);padding:10px 14px;display:flex;align-items:center;gap:10px">';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;flex:1">Catégorie ' + cat + ' — ' + joueurs.length + ' joueur' + (joueurs.length>1?"s":"") + '</div>';
+  h += '<button onclick="importFromSARxMOM(\' + cat + \')" style="font-size:10px;padding:4px 10px;background:rgba(212,168,32,.25);color:var(--gold);border:1px solid var(--gold);border-radius:5px;cursor:pointer;font-weight:700">📥 Import SARxMOM</button>';
+  h += '</div>';
+
+  // En-tête colonnes
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 28px;gap:0;background:var(--gray1);border-bottom:1px solid var(--gray2);padding:5px 10px;font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.08em">';
+  h += '<div>Prénom</div><div>Nom</div><div>Poste</div><div></div></div>';
+
+  // Liste joueurs
+  h += '<div id="joueurs-rows-' + cat + '">';
+  joueurs.forEach(function(j, i) {
+    h += renderJoueurRow(cat, i, j);
+  });
+  h += '</div>';
+
+  // Ligne d'ajout
+  h += '<div style="padding:8px 10px;border-top:1px solid var(--gray2);display:flex;gap:6px;background:var(--g0)">';
+  h += '<input id="new-j-prenom" class="cfg-item-input" data-cat="' + cat + '" style="flex:1;border:1px solid var(--gray2);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--w)" placeholder="Prénom" onkeydown="if(event.key==\'Enter\')addJoueurDB(this.dataset.cat)">';
+  h += '<input id="new-j-nom" class="cfg-item-input" data-cat="' + cat + '" style="flex:1;border:1px solid var(--gray2);border-radius:5px;padding:5px 8px;font-size:11px;background:var(--w)" placeholder="NOM" onkeydown="if(event.key==\'Enter\')addJoueurDB(this.dataset.cat)">';
+  h += '<select id="new-j-poste" style="flex:1;border:1px solid var(--gray2);border-radius:5px;padding:5px 6px;font-size:11px;background:var(--w);color:var(--gray7);cursor:pointer">';
+  POSTES_RUGBY.forEach(function(p){ h += '<option value="' + p + '">' + (p||"-- Poste --") + '</option>'; });
+  h += '</select>';
+  h += '<button onclick="addJoueurDB(\'' + cat + '\')" style="padding:5px 10px;background:var(--g7);color:var(--w);border:none;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer">+</button>';
+  h += '</div>';
+
+  container.innerHTML = h;
+}
+
+function renderJoueurRow(cat, i, j) {
+  var h = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 28px;gap:0;padding:4px 10px;border-bottom:1px solid var(--gray1);align-items:center" id="jrow-' + cat + '-' + i + '">';
+  h += '<input style="font-size:11px;border:none;background:transparent;color:var(--gray7);padding:2px 0;outline:none" value="' + (j.prenom||"").replace(/"/g,"&quot;") + '" data-cat="' + cat + '" data-idx="' + i + '" data-field="prenom" onchange="updateJoueurDB(this.dataset.cat,this.dataset.idx,this.dataset.field,this.value)">';
+  h += '<input style="font-size:11px;border:none;background:transparent;color:var(--gray7);padding:2px 0;outline:none;font-weight:700;text-transform:uppercase" value="' + (j.nom||"").replace(/"/g,"&quot;") + '" data-cat="' + cat + '" data-idx="' + i + '" data-field="nom" onchange="updateJoueurDB(this.dataset.cat,this.dataset.idx,this.dataset.field,this.value)">';
+  h += '<select style="font-size:10px;border:none;background:transparent;color:var(--gray5);cursor:pointer;padding:2px 0" data-cat="' + cat + '" data-idx="' + i + '" data-field="poste" onchange="updateJoueurDB(this.dataset.cat,this.dataset.idx,this.dataset.field,this.value)">';
+  POSTES_RUGBY.forEach(function(p){ h += '<option value="' + p + '"' + (j.poste===p?" selected":"") + '>' + (p||"—") + '</option>'; });
+  h += '</select>';
+  h += '<button onclick="deleteJoueurDB(\'' + cat + '\',' + i + ')" style="width:22px;height:22px;border-radius:3px;border:none;background:var(--gray2);color:var(--gray5);cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center">✕</button>';
+  h += '</div>';
+  return h;
+}
+
+function addJoueurDB(cat) {
+  var prenom = (document.getElementById("new-j-prenom")||{}).value || "";
+  var nom    = (document.getElementById("new-j-nom")||{}).value || "";
+  var poste  = (document.getElementById("new-j-poste")||{}).value || "";
+  if (!prenom.trim()) return;
+  var db = getJoueursDB();
+  if (!db[cat]) db[cat] = [];
+  db[cat].push({prenom: prenom.trim(), nom: nom.trim(), poste: poste});
+  if (planData["__config__"]) planData["__config__"].joueurs = db;
+  else planData["__config__"] = {joueurs: db};
+  renderJoueursListCat(cat);
+  // Re-focus prénom
+  setTimeout(function(){ var el=document.getElementById("new-j-prenom"); if(el){el.value="";el.focus();} }, 50);
+  var nomEl = document.getElementById("new-j-nom"); if(nomEl) nomEl.value = "";
+}
+
+function updateJoueurDB(cat, i, field, value) {
+  var db = getJoueursDB();
+  if (!db[cat] || !db[cat][i]) return;
+  db[cat][i][field] = value;
+  if (planData["__config__"]) planData["__config__"].joueurs = db;
+  else planData["__config__"] = {joueurs: db};
+}
+
+function deleteJoueurDB(cat, i) {
+  var db = getJoueursDB();
+  if (!db[cat]) return;
+  db[cat].splice(i, 1);
+  if (planData["__config__"]) planData["__config__"].joueurs = db;
+  else planData["__config__"] = {joueurs: db};
+  renderJoueursListCat(cat);
+}
+
+// Import depuis SARxMOM : ouvre un panneau de saisie rapide multi-joueurs
+function importFromSARxMOM(cat) {
+  var existing = document.getElementById("sarxmom-import-overlay");
+  if (existing) existing.remove();
+  var div = document.createElement("div");
+  div.id = "sarxmom-import-overlay";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(4,32,15,.65);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+
+  var wrap = document.createElement("div");
+  wrap.style.cssText = "background:var(--w);border-radius:16px;width:100%;max-width:500px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)";
+
+  // Header
+  var hdr = document.createElement("div");
+  hdr.style.cssText = "background:var(--g8);color:var(--w);padding:14px 18px;display:flex;align-items:center;gap:8px";
+  hdr.innerHTML = '<div style="flex:1"><div style="font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800">\u{1F4E5} Import rapide — ' + cat + '</div>'
+    + '<div style="font-size:10px;opacity:.6;margin-top:2px">Collez ou saisissez un prénom par ligne (ou Prénom NOM Poste)</div></div>';
+  var closeBtn = document.createElement("button");
+  closeBtn.style.cssText = "width:24px;height:24px;background:rgba(255,255,255,.1);border:none;border-radius:50%;color:var(--w);cursor:pointer;font-size:13px";
+  closeBtn.textContent = "\u00d7";
+  closeBtn.onclick = function(){ div.remove(); };
+  hdr.appendChild(closeBtn);
+
+  // Body
+  var body = document.createElement("div");
+  body.style.cssText = "padding:14px 18px;flex:1;overflow-y:auto";
+  var ta = document.createElement("textarea");
+  ta.id = "sarxmom-paste";
+  ta.style.cssText = "width:100%;height:220px;font-size:12px;border:1px solid var(--gray2);border-radius:8px;padding:10px;resize:vertical;outline:none;font-family:Barlow,sans-serif;color:var(--gray7)";
+  ta.placeholder = "Exemple :\nThéo\nJules MARTIN Pilier G\nLison DUPONT Arrière\n...\n\nChaque ligne = un joueur.\nFormat : Prénom NOM Poste (NOM et Poste optionnels)";
+  body.appendChild(ta);
+  var tip = document.createElement("div");
+  tip.style.cssText = "font-size:10px;color:var(--gray5);margin-top:6px";
+  tip.textContent = "\u{1F4A1} Les doublons existants sont ignorés automatiquement.";
+  body.appendChild(tip);
+
+  // Footer
+  var ftr = document.createElement("div");
+  ftr.style.cssText = "padding:10px 18px;border-top:1px solid var(--gray2);display:flex;gap:8px";
+  var cancelBtn = document.createElement("button");
+  cancelBtn.style.cssText = "flex:1;padding:8px;background:var(--gray1);color:var(--gray7);border:none;border-radius:7px;font-weight:700;cursor:pointer";
+  cancelBtn.textContent = "Annuler";
+  cancelBtn.onclick = function(){ div.remove(); };
+  var importBtn = document.createElement("button");
+  importBtn.style.cssText = "flex:2;padding:8px;background:var(--g7);color:var(--w);border:none;border-radius:7px;font-weight:700;cursor:pointer";
+  importBtn.textContent = "\u2705 Importer";
+  importBtn.onclick = function(){ doImportSARxMOM(cat); };
+  ftr.appendChild(cancelBtn);
+  ftr.appendChild(importBtn);
+
+  wrap.appendChild(hdr);
+  wrap.appendChild(body);
+  wrap.appendChild(ftr);
+  div.appendChild(wrap);
+  div.onclick = function(e){ if(e.target===div) div.remove(); };
+  document.body.appendChild(div);
+  setTimeout(function(){ ta.focus(); }, 100);
+}
+
+function doImportSARxMOM(cat) {
+  var ta = document.getElementById("sarxmom-paste");
+  if (!ta) return;
+  var lines = ta.value.split("\n").map(function(l){ return l.trim(); }).filter(Boolean);
+  var db = getJoueursDB();
+  if (!db[cat]) db[cat] = [];
+  var added = 0;
+  lines.forEach(function(line) {
+    var parts = line.split(/\s+/);
+    var prenom = parts[0] || "";
+    var nom = "";
+    var poste = "";
+    if (parts.length >= 2) {
+      // Détecter si la dernière partie est un poste connu
+      var lastParts = parts.slice(1).join(" ");
+      var foundPoste = POSTES_RUGBY.find(function(p){ return p && lastParts.endsWith(p); });
+      if (foundPoste) {
+        poste = foundPoste;
+        nom = lastParts.slice(0, lastParts.length - foundPoste.length).trim();
+      } else {
+        nom = lastParts;
+      }
+    }
+    if (!prenom) return;
+    // Vérifier doublon
+    var exists = db[cat].some(function(j){ return j.prenom.toLowerCase()===prenom.toLowerCase() && j.nom.toLowerCase()===(nom||"").toLowerCase(); });
+    if (!exists) { db[cat].push({prenom:prenom, nom:nom, poste:poste}); added++; }
+  });
+  if (planData["__config__"]) planData["__config__"].joueurs = db;
+  else planData["__config__"] = {joueurs: db};
+  document.getElementById("sarxmom-import-overlay").remove();
+  renderJoueursListCat(cat);
+  // Petit feedback
+  var container = document.getElementById("joueurs-db-list");
+  if (container) {
+    var msg = document.createElement("div");
+    msg.style.cssText = "padding:8px 14px;background:var(--g0);color:var(--g6);font-size:11px;font-weight:700;border-top:1px solid var(--g1)";
+    msg.textContent = "✅ " + added + " joueur" + (added>1?"s":"") + " importé" + (added>1?"s":"");
+    container.appendChild(msg);
+    setTimeout(function(){ if(msg.parentNode) msg.remove(); }, 3000);
+  }
+}
+
+// Charger les joueurs de la catégorie dans la séance courante
+function loadJoueursCatInSeance(cat) {
+  if (!seanceData) return;
+  var db = getJoueursDB();
+  var joueurs = db[cat] || [];
+  if (!joueurs.length) { alert("Aucun joueur enregistré pour la catégorie " + cat + ".\nAjoutez-les dans Paramètres EDR → Base joueurs."); return; }
+  var labels = joueurs.map(function(j){ return joueurShort(j); });
+  // Ajouter les joueurs non déjà présents
+  var added = 0;
+  labels.forEach(function(lbl) {
+    if (seanceData.joueurs.indexOf(lbl) < 0) { seanceData.joueurs.push(lbl); added++; }
+  });
+  seanceDirty = true;
+  renderSeance();
+  if (added === 0) alert("Tous les joueurs de la catégorie " + cat + " sont déjà dans la séance.");
 }
 
 // ═══ CONSTRUCTEUR DE SÉANCE ══════════════════════════════════════
@@ -2437,6 +2717,7 @@ function goSection_seance() {
 
 function buildSbSeance() {
   var sb = document.getElementById("sidebar");
+  var cat = seanceData && seanceData.categorie ? seanceData.categorie : (selAge_ && selAge_ !== "ALL" ? selAge_ : "");
   var h = '<div class="sb-sec"><div class="sb-sec-lbl">Ma Séance</div>';
   h += '<div class="sb-item act"><div class="sb-icon">📋</div>Canevas de séance</div>';
   h += '</div><div class="sb-div"></div>';
@@ -2444,6 +2725,18 @@ function buildSbSeance() {
   h += '<div class="sb-item" onclick="newSeanceConfirm()"><div class="sb-icon">➕</div>Nouvelle séance</div>';
   h += '<div class="sb-item" onclick="saveSeance()"><div class="sb-icon">💾</div>Sauvegarder</div>';
   h += '<div class="sb-item" onclick="printSeance()"><div class="sb-icon">🖨️</div>Exporter PDF</div>';
+  h += '</div><div class="sb-div"></div>';
+  h += '<div class="sb-sec"><div class="sb-sec-lbl">Joueurs</div>';
+  if (cat && cat !== "ALL") {
+    var db = getJoueursDB();
+    var nb = (db[cat]||[]).length;
+    h += '<div class="sb-item" onclick="loadJoueursCatInSeance(\' + cat + \')">'
+      + '<div class="sb-icon">👥</div>Charger ' + cat
+      + '<span class="sb-cnt">' + nb + '</span></div>';
+  } else {
+    h += '<div class="sb-item" style="opacity:.5;cursor:default"><div class="sb-icon">👥</div>Choisir une catégorie</div>';
+  }
+  h += '<div class="sb-item" onclick="openConfig()"><div class="sb-icon">⚙️</div>Gérer la base joueurs</div>';
   h += '</div>';
   sb.innerHTML = h;
 }
