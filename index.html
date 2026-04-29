@@ -1596,7 +1596,49 @@ var CFG_CODE = "EDR2025"; // code responsable EDR
 // Base de données joueurs par catégorie
 // Format : { age: [{prenom, nom, poste}] }
 var JOUEURS_DB = {
-  M6:[], M8:[], M10:[], M12:[], "M14F15":[], M16:[], M18:[], SENF:[], SENM:[]
+  M6:[], M8:[], M10:[], M12:[], "M14F15":[
+    {"prenom": "Hugo", "nom": "BARTHEL", "club": "MOM", "postes": "Ailier", "apts": ["Runner"], "jdd": "non", "arb": "non", "inj": false, "taille": 1.41, "poids": 30.1},
+    {"prenom": "Léandre", "nom": "BERNHART", "club": "MOM", "postes": "Pilier G, Pilier D, Ailier G, Arrière", "apts": ["Runner", "Botteur"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.57, "poids": 42.8},
+    {"prenom": "Auréline", "nom": "BES", "club": "MOM", "postes": "Pilier G, Pilier D, Centre G", "apts": ["Runner"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.67, "poids": 50.0},
+    {"prenom": "Gauthier", "nom": "CHEVRIER", "club": "MOM", "postes": "Pilier G, Pilier D, Ailier G", "apts": ["Runner"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.56, "poids": 43.2},
+    {"prenom": "Maximilien", "nom": "CUNY", "club": "MOM", "postes": "Pilier G, Demi de mêlée, Demi d'ouverture", "apts": ["Tank", "Runner"], "jdd": "non", "arb": "non", "inj": false, "taille": 1.48, "poids": 56.4},
+    {"prenom": "Benjamin", "nom": "EHRHART", "club": "MOM", "postes": "Pilier G, Pilier D, Centre G", "apts": ["Tank", "Runner"], "jdd": "oui", "arb": "oui", "inj": false, "taille": 1.57, "poids": 45.5},
+    {"prenom": "Anthony", "nom": "FASSEL", "club": "MOM", "postes": "Demi d'ouverture", "apts": ["Tank"], "jdd": "non", "arb": "non", "inj": false, "taille": 1.64, "poids": 76.4},
+    {"prenom": "Eden", "nom": "FAUVEL", "club": "MOM", "postes": "Talonneur, Pilier G, Pilier D, 3e ligne flanker G, 3e ligne N°8, Centre G, Centre D", "apts": ["Tank", "Runner", "Sauteur", "Lifteur"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.67, "poids": 57.6},
+    {"prenom": "Hugo", "nom": "LUTZ", "club": "MOM", "postes": "Pilier G, Ailier G, Arrière", "apts": ["Runner"], "jdd": "non", "arb": "non", "inj": false, "taille": 1.5, "poids": 38.4},
+    {"prenom": "Mathilde", "nom": "MARTIN", "club": "MOM", "postes": "Pilier G, Demi de mêlée, Centre D", "apts": ["Tank", "Runner", "Lifteur"], "jdd": "oui", "arb": "oui", "inj": false, "taille": 1.74, "poids": 73.2},
+    {"prenom": "Arthur", "nom": "PADOWICZ", "club": "MOM", "postes": "3e ligne flanker G, Demi d'ouverture, Centre G", "apts": ["Tank", "Lifteur"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.74, "poids": 73.3},
+    {"prenom": "Jules", "nom": "JUNG", "club": "MOM", "postes": "Demi de mêlée, Demi d'ouverture, Ailier G, Arrière", "apts": ["Driver", "Botteur"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.66, "poids": 47.8},
+    {"prenom": "Aaron", "nom": "PATU", "club": "MOM", "postes": "Pilier G, Pilier D, Demi d'ouverture", "apts": ["Tank", "Runner"], "jdd": "non", "arb": "non", "inj": false, "taille": 1.7, "poids": 68.4},
+    {"prenom": "Emie", "nom": "PIQUEREZ", "club": "MOM", "postes": "Pilier G, Centre G", "apts": [], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.61, "poids": 57.9},
+    {"prenom": "Martin", "nom": "ROOS", "club": "MOM", "postes": "Talonneur, 3e ligne flanker G", "apts": ["Tank", "Runner", "Lifteur"], "jdd": "oui", "arb": "oui", "inj": false, "taille": 1.54, "poids": 55.0},
+    {"prenom": "Timéo", "nom": "RULFO", "club": "MOM", "postes": "Pilier G, 3e ligne flanker G, Centre D", "apts": ["Runner", "Sauteur"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.58, "poids": 39.2},
+    {"prenom": "Alphonse", "nom": "SCHIMPF", "club": "MOM", "postes": "Pilier G, 3e ligne flanker G, 3e ligne N°8", "apts": ["Runner", "Sauteur"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.63, "poids": 51.2},
+    {"prenom": "Léo", "nom": "SCHUCH", "club": "MOM", "postes": "Pilier G, Centre D, Ailier G", "apts": ["Runner"], "jdd": "oui", "arb": "oui", "inj": false, "taille": 1.52, "poids": 48.6},
+    {"prenom": "Agathe", "nom": "TRENDEL", "club": "MOM", "postes": "3e ligne flanker G, 3e ligne N°8, Demi de mêlée, Demi d'ouverture", "apts": ["Tank", "Runner", "Sauteur"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.67, "poids": 66.2},
+    {"prenom": "Eléna", "nom": "TRISTANO", "club": "MOM", "postes": "Pilier G, Centre D, Ailier G", "apts": ["Runner"], "jdd": "oui", "arb": "non", "inj": false, "taille": 1.62, "poids": 51.9},
+    {"prenom": "Nathan", "nom": "VAUTIER", "club": "MOM", "postes": "2e ligne G, 2e ligne D, Arrière", "apts": ["Driver", "Sauteur"], "jdd": "oui", "arb": "oui", "inj": false, "taille": 1.57, "poids": 40.5},
+    {"prenom": "Tahina", "nom": "BERNADSON", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false, "taille": 1.64, "poids": 40.2},
+    {"prenom": "Noé", "nom": "BERRHAUX-MENNA", "club": "SAR", "postes": "Ailier G", "apts": [], "jdd": "", "arb": "", "inj": false, "taille": 1.58, "poids": 44.4},
+    {"prenom": "Léonard", "nom": "CHABBERT", "club": "SAR", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Mohamed", "nom": "ZEAMARI", "club": "SAR", "postes": "Centre G, Centre D", "apts": ["Runner"], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Martin", "nom": "KOENIG", "club": "SAR", "postes": "Ailier G, Arrière", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Marius", "nom": "TOMASI", "club": "SAR", "postes": "3e ligne flanker G, 3e ligne N°8", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Baila", "nom": "SOW", "club": "SAR", "postes": "Centre G, Centre D", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Yann", "nom": "GRANDVUILLEMIN", "club": "SAR", "postes": "3e ligne flanker G, 3e ligne N°8", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Samuel", "nom": "ROLL", "club": "SAR", "postes": "Centre G, Centre D, Ailier G", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Lucas", "nom": "SCHMITT", "club": "SAR", "postes": "3e ligne flanker G, 3e ligne N°8, Centre G", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Fériel", "nom": "SCHNEIDER", "club": "SAR", "postes": "Centre G, Centre D", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Pierre", "nom": "KARLI", "club": "SAR", "postes": "Ailier G", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Marvin", "nom": "MURAIL", "club": "SAR", "postes": "3e ligne flanker G, 3e ligne N°8", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Soan", "nom": "VERRIER", "club": "SAR", "postes": "Pilier G, Talonneur, Pilier D", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Gabriel", "nom": "GHILES", "club": "SAR", "postes": "Pilier G, 3e ligne flanker G", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Andrei", "nom": "DENIS", "club": "SAR", "postes": "Pilier G, Centre G, Ailier G, Arrière", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Gaspard", "nom": "KEMLER-NAILI", "club": "SAR", "postes": "Demi d'ouverture, Ailier G, Arrière", "apts": [], "jdd": "", "arb": "", "inj": false},
+    {"prenom": "Benjamin", "nom": "BIRIKORANG", "club": "ASCS", "postes": "Demi de mêlée, Demi d'ouverture", "apts": [], "jdd": "", "arb": "", "inj": false, "taille": 1.6, "poids": 56.4},
+    {"prenom": "Jarvin", "nom": "OBIDI", "club": "ASCS", "postes": "Demi d'ouverture, Ailier G", "apts": [], "jdd": "", "arb": "", "inj": false, "taille": 1.66, "poids": 78.0},
+    {"prenom": "Mathis", "nom": "BAUDOIN", "club": "MOM", "postes": "", "apts": [], "jdd": "", "arb": "", "inj": false}
+  ], M16:[], M18:[], SENF:[], SENM:[]
 };
 
 // Postes disponibles par catégorie
