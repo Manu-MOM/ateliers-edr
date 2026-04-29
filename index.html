@@ -1229,7 +1229,10 @@ function makeCard(item, sub, gIdx) {
     return '<div class="card" onclick="openVideoIdx(' + gIdx + ')">' +
       '<div class="vcard-top"><div class="play"></div>' +
       '<span class="ct-badge" style="position:absolute;bottom:8px;left:8px;background:#fff0ed;color:#c53a22">&#9654; Video</span></div>' +
-      '<div class="card-body"><div class="card-title">' + item.t + "</div>" +
+      (function(){var _bst=JSON.parse(localStorage.getItem("mom_bib_stats")||"{}");var _cnt=_bst[gIdx]||0;
+      return '<div class="card-body"><div style="display:flex;align-items:flex-start;gap:4px"><div class="card-title" style="flex:1">'+item.t+'</div>'
+        +(_cnt>0?'<span style="font-size:8px;background:var(--g1);color:var(--g7);border-radius:8px;padding:1px 5px;font-weight:700;white-space:nowrap">×'+_cnt+'</span>':'')
+        +'</div>';})() +
       '<div class="card-sub">' + item.s + "</div>" +
       '<div class="card-tags"><span class="tag" style="background:#fff0ed;color:#c53a22">&#9654; Video</span></div>' +
       '<div class="card-ages">' + ageDots + "</div>" + crossH + "</div></div>";
@@ -2508,6 +2511,7 @@ function buildSbSeance() {
   h += '<div class="sb-sec"><div class="sb-sec-lbl">Actions</div>';
   h += '<div class="sb-item" onclick="newSeanceConfirm()"><div class="sb-icon">➕</div>Nouvelle séance</div>';
   h += '<div class="sb-item" onclick="saveSeance()"><div class="sb-icon">💾</div>Sauvegarder</div>';
+  h += '<div class="sb-item" onclick="saveSeanceTemplate()"><div class="sb-icon">📌</div>Enregistrer comme modèle</div>';
   h += '<div class="sb-item" onclick="printSeance()"><div class="sb-icon">🖨️</div>Exporter PDF</div>';
   h += '</div><div class="sb-div"></div>';
   h += '<div class="sb-sec"><div class="sb-sec-lbl">Joueurs</div>';
@@ -2527,6 +2531,33 @@ function buildSbSeance() {
   }
   h += '<div class="sb-item" onclick="openParamsPanel(3)"><div class="sb-icon">⚙️</div>Gérer la base joueurs</div>';
   h += '</div>';
+    // Modèles
+  var _stpls = JSON.parse(localStorage.getItem("mom_seance_templates")||"[]");
+  if(_stpls.length){
+    h += '<div class="sb-div"></div><div class="sb-sec"><div class="sb-sec-lbl">📌 Modèles</div>';
+    _stpls.forEach(function(t){
+      h += '<div class="sb-item" style="padding:5px 12px;display:flex;align-items:center;gap:4px">';
+      h += '<span style="flex:1;font-size:11px;cursor:pointer" onclick="loadSeanceTemplate('+t._tplTs+')">'+t._tplNom+'</span>';
+      h += '<button onclick="deleteSeanceTemplate('+t._tplTs+')" style="border:none;background:none;color:var(--gray4);cursor:pointer;font-size:13px;padding:0 2px">×</button>';
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+  // Historique
+  var _shist = JSON.parse(localStorage.getItem("mom_seance_history")||"[]");
+  if(_shist.length){
+    h += '<div class="sb-div"></div><div class="sb-sec"><div class="sb-sec-lbl">🕐 Historique</div>';
+    _shist.slice(0,8).forEach(function(e){
+      var lbl=e.date?new Date(e.date+"T00:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"2-digit"}):"?";
+      if(e.cat) lbl+=" · "+e.cat;
+      h += '<div class="sb-item" onclick="loadSeanceFromHistory('+e.ts+')" style="padding:5px 12px">';
+      h += '<div class="sb-icon" style="font-size:10px">📋</div><div>';
+      h += '<div style="font-size:11px">'+lbl+'</div>';
+      if(e.axe) h += '<div style="font-size:9px;color:var(--gray4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:138px">'+e.axe.substring(0,40)+'</div>';
+      h += '</div></div>';
+    });
+    h += '</div>';
+  }
   sb.innerHTML = h;
 }
 
@@ -2749,7 +2780,7 @@ function renderTrameBloc(bloc, i, total, totalMin) {
   h += '<span class="trame-bloc-bar-dur">' + (bloc.duree || durMin + "min") + '</span>';
   h += '</div>';
   h += '<div class="trame-bloc-content">';
-  h += '<div class="trame-bloc-hdr" onclick="toggleBlocEdit(' + bid + ')">';
+  h += '<div class="trame-bloc-hdr" draggable="true" ' + 'ondragstart="sBlocDragStart(event,' + bid + ')" ' + 'ondragover="sBlocDragOver(event,' + bid + ')" ' + 'ondrop="sBlocDrop(event,' + bid + ')" ' + 'ondragleave="sBlocDragLeave(event)" ' + 'onclick="toggleBlocEdit(' + bid + ')">';
   h += '<span class="trame-bloc-type" style="background:' + color + '">' + typeLabel + '</span>';
   var titreAffiche2 = (bloc.titre && bloc.titre !== "-- Choisir --") ? (bloc.titre === "Autre..." ? (bloc.titreCustom||"") : bloc.titre) : (bloc.titreCustom||"");
   if (titreAffiche2) h += '<span class="trame-bloc-titre">' + titreAffiche2 + '</span>';
@@ -3005,6 +3036,8 @@ function saveSeance(){
   savePlanToDrive("__seance_"+seanceData.id, seanceData, function(ok){
     alert(ok?"✅ Séance sauvegardée !":"⚠️ Sauvegarde locale uniquement.");
   });
+  _seanceSaveHistory();
+  buildSbSeance();
 }
 
 function newSeanceConfirm(){ if(seanceDirty&&!confirm("Nouvelle séance ? Modifications perdues."))return;seanceData=newSeance();seanceDirty=false;renderSeance(); }
@@ -3099,6 +3132,11 @@ function printSeance(){
 
   // ── AXE ─────────────────────────────────────────────────────────
   if(d.axe)h+='<div class="axe"><b>&#127919; Axe de travail&nbsp;:</b>'+d.axe+'</div>';
+  // Notif blessés
+  var _injN=[];
+  var _jjl=getJoueursDB()[selectedAge]||getJoueursDB()["M14F15"]||[];
+  (d.blocs||[]).forEach(function(b){(b.groupes||[]).forEach(function(g){(Array.isArray(g)?g:(g.joueurs||[])).forEach(function(nom){var jj=_jjl.find(function(x){return((x.prenom||x.p||"")+" "+(x.nom||x.n||"")).toLowerCase()===nom.toLowerCase();});if(jj&&jj.inj&&_injN.indexOf(nom)<0)_injN.push(nom+(jj.injNat?" ("+jj.injNat+")":""));});});});
+  if(_injN.length){h+='<div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:7px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px"><span style="font-size:16px">🏥</span><div><div style="font-size:11px;font-weight:700;color:#dc2626;margin-bottom:1px">Joueur'+(_injN.length>1?"s blessés":" blessé")+" dans la séance</div><div style='font-size:10px;color:#dc2626'>"+_injN.join(" · ")+"</div></div></div>";}
 
   // ── TIMELINE HORIZONTALE ────────────────────────────────────────
   if(totalMin>0){
@@ -4713,6 +4751,10 @@ function buildSbCompos() {
   h += '<div class="sb-sec"><div class="sb-sec-lbl">Catégorie</div>';
   h += '<div style="padding:4px 8px"><select style="width:100%;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;background:var(--w);color:var(--gray7);cursor:pointer" onchange="switchComposCat(this.value)">';
   AGES.forEach(function(a){ h += '<option value="'+a+'"'+(a===_composCurCat?" selected":"")+'>'+a+'</option>'; });
+  h += '</select></div>';
+  h += '<div style="padding:0 8px 8px"><select style="width:100%;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;background:var(--w);color:var(--gray7);cursor:pointer" onchange="_composFmtFilter=this.value;renderCompos()">';
+  h += '<option value="">Tous formats</option>';
+  Object.keys(COMPOS_FORMATS).sort(function(a,b){return +a-+b;}).forEach(function(k){ var f=COMPOS_FORMATS[k]; h += '<option value="'+k+'"'+(_composFmtFilter===k?" selected":"")+'>À '+f.label+' ('+f.postes.length+' tit.)</option>'; });
   h += '</select></div></div>';
   sb.innerHTML = h + _cBuildDrivePanel();
   if (_gDriveReady) setTimeout(function(){ gUpdateDriveStatus("connected"); }, 50);
@@ -4747,7 +4789,7 @@ function renderCompos() {
 // ── CALENDRIER ────────────────────────────────────────────────────
 function _cBuildCalendrier() {
   _cInit();
-  var events = (_CS.events||[]).slice().sort(function(a,b){return (a.date||"").localeCompare(b.date||"");});
+  var events = (_CS.events||[]).filter(function(ev){ return !_composFmtFilter||String(ev.format||"15")===_composFmtFilter; }).slice().sort(function(a,b){return (a.date||"").localeCompare(b.date||"");});
   var today = new Date(); today.setHours(0,0,0,0);
   var upcoming = events.filter(function(e){ return new Date(e.date) >= today; });
   var past = events.filter(function(e){ return new Date(e.date) < today; });
@@ -5731,13 +5773,20 @@ function buildComposJoueurs() {
   var cc = {MOM:"#1a6b1a",SAR:"#1a3a6b",ASCS:"#374151"};
 
   var h = '<div style="padding:12px 14px">';
-  h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+  h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">';
   h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;color:var(--g8);flex:1">👥 Effectif — '+_composCurCat+' ('+joueurs.length+')</div>';
   h += '<button onclick="openParamsPanel(3)" style="padding:6px 14px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">⚙️ Gérer</button>';
   h += '</div>';
+  var _cjsval = (document.getElementById("cj-search")||{}).value||"";
+  h += '<div style="display:flex;gap:6px;margin-bottom:12px">';
+  h += '<input id="cj-search" placeholder="🔍 Rechercher un joueur..." value="'+_cjsval+'" oninput="cFilterJoueurs()" ';
+  h += 'style="flex:1;padding:7px 10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;background:var(--g0)">';
+  h += '</div>';
 
   // Tri par nb matchs (les plus utilisés en premier), puis alphabétique
-  var sorted = joueurs.slice().sort(function(a,b){
+  var _cjq=(document.getElementById("cj-search")||{}).value||"";
+  var joueursFiltres=!_cjq?joueurs:joueurs.filter(function(j){return ((j.prenom||j.p||"")+" "+(j.nom||j.n||"")).toLowerCase().includes(_cjq.toLowerCase());});
+  var sorted = joueursFiltres.slice().sort(function(a,b){
     var sa = stats[a.id||a._cid]||{matchs:0};
     var sb = stats[b.id||b._cid]||{matchs:0};
     if (sb.matchs !== sa.matchs) return sb.matchs - sa.matchs;
@@ -5799,6 +5848,10 @@ function buildComposJoueurs() {
       h += '<div style="display:flex;gap:2px;flex-wrap:wrap;margin-top:3px">';
       apts.forEach(function(a){ h += '<span class="jp-tag jp-tag-'+a.toLowerCase()+'">'+a+'</span>'; });
       h += '</div>';
+    }
+    if (jstat.matchs > 0) {
+      h += '<div style="margin-top:4px"><button onclick="event.stopPropagation();cShowJoueurMatchs(\''+jid+'\')" ';
+      h += 'style="font-size:9px;color:var(--g6);background:none;border:1px solid var(--g2);border-radius:5px;padding:1px 7px;cursor:pointer">📋 Voir les matchs ('+jstat.matchs+')</button></div>';
     }
     if (j.jdd==="oui") h += '<div style="margin-top:3px"><span style="background:#d1fae5;color:#065f46;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700">JDD ✓</span></div>';
     h += '</div>'; // jp-card
@@ -6001,6 +6054,155 @@ function cImportJSON(e) {
   r.readAsText(f);
 }
 
+
+
+// ══════════════════════════════════════════════════════════════════
+// AMÉLIORATIONS v2 — Séance, Compos, Bibliothèque
+// ══════════════════════════════════════════════════════════════════
+
+// ── 1. DRAG & DROP BLOCS SÉANCE ───────────────────────────────────
+var _sDragBid = null;
+function sBlocDragStart(ev, bid) {
+  _sDragBid = bid; ev.dataTransfer.effectAllowed = "move";
+  setTimeout(function(){ var el=document.getElementById("sbloc-"+bid); if(el)el.style.opacity=".4"; }, 0);
+}
+function sBlocDragOver(ev, bid) {
+  ev.preventDefault(); ev.dataTransfer.dropEffect = "move";
+  if(bid===_sDragBid) return;
+  var el=document.getElementById("sbloc-"+bid);
+  if(el) el.style.outline="2px solid var(--g7)";
+}
+function sBlocDragLeave(ev) {
+  var el = ev.currentTarget && ev.currentTarget.closest ? ev.currentTarget.closest(".trame-bloc") : null;
+  if(el) el.style.outline="";
+}
+function sBlocDrop(ev, targetBid) {
+  ev.preventDefault();
+  var el=document.getElementById("sbloc-"+targetBid); if(el) el.style.outline="";
+  if(!_sDragBid || _sDragBid===targetBid) { _sDragBid=null; return; }
+  var blocs=seanceData.blocs;
+  var fi=blocs.findIndex(function(b){return b.id===_sDragBid;});
+  var ti=blocs.findIndex(function(b){return b.id===targetBid;});
+  if(fi<0||ti<0) { _sDragBid=null; return; }
+  var moved=blocs.splice(fi,1)[0]; blocs.splice(ti,0,moved);
+  seanceDirty=true; _sDragBid=null; renderSeance();
+}
+
+// ── 2. HISTORIQUE & MODÈLES SÉANCE ───────────────────────────────
+function _seanceSaveHistory() {
+  var hist = JSON.parse(localStorage.getItem("mom_seance_history")||"[]");
+  hist.unshift({ts:Date.now(),date:seanceData.date,cat:seanceData.categorie,axe:seanceData.axe||"",blocs:(seanceData.blocs||[]).length,data:JSON.stringify(seanceData)});
+  if(hist.length>30) hist=hist.slice(0,30);
+  localStorage.setItem("mom_seance_history", JSON.stringify(hist));
+}
+function saveSeanceTemplate() {
+  var nom = prompt("Nom du modèle :");
+  if(!nom||!nom.trim()) return;
+  var tpls = JSON.parse(localStorage.getItem("mom_seance_templates")||"[]");
+  var tpl = JSON.parse(JSON.stringify(seanceData));
+  tpl._tplNom = nom.trim(); tpl._tplTs = Date.now();
+  tpl.date=""; tpl.coachs=[]; tpl.timekeeper="";
+  tpls.unshift(tpl);
+  if(tpls.length>10) tpls=tpls.slice(0,10);
+  localStorage.setItem("mom_seance_templates", JSON.stringify(tpls));
+  showToast("Modèle \""+nom.trim()+"\" enregistré ✓");
+  buildSbSeance();
+}
+function loadSeanceFromHistory(ts) {
+  var hist = JSON.parse(localStorage.getItem("mom_seance_history")||"[]");
+  var entry = hist.find(function(h){return h.ts===ts;});
+  if(!entry||(seanceDirty&&!confirm("Séance non sauvegardée. Continuer ?"))) return;
+  seanceData = JSON.parse(entry.data); seanceDirty = false; renderSeance(); buildSbSeance();
+}
+function loadSeanceTemplate(ts) {
+  var tpls = JSON.parse(localStorage.getItem("mom_seance_templates")||"[]");
+  var tpl = tpls.find(function(t){return t._tplTs===ts;});
+  if(!tpl||(seanceDirty&&!confirm("Séance non sauvegardée. Continuer ?"))) return;
+  seanceData = JSON.parse(JSON.stringify(tpl)); seanceData.id = Date.now(); seanceDirty = true;
+  renderSeance(); buildSbSeance(); showToast("Modèle \""+tpl._tplNom+"\" chargé");
+}
+function deleteSeanceTemplate(ts) {
+  var tpls = JSON.parse(localStorage.getItem("mom_seance_templates")||"[]");
+  localStorage.setItem("mom_seance_templates",JSON.stringify(tpls.filter(function(t){return t._tplTs!==ts;})));
+  buildSbSeance();
+}
+
+// ── 3. RECHERCHE JOUEUR COMPOS ─────────────────────────────────────
+function cFilterJoueurs() { renderCompos(); }
+
+function cShowJoueurMatchs(jid) {
+  var jrs = _cGetJoueurs()||[];
+  var j = jrs.find(function(x){return (x.id||x._cid)===jid;});
+  if(!j) return;
+  var name = (j.prenom||j.p||"")+" "+(j.nom||j.n||"");
+  var results = [];
+  (_CS.events||[]).forEach(function(ev){
+    var ms = _cGetMatches(ev);
+    var Ps = _cPostes(ev);
+    (ev.teams||[]).forEach(function(tid){
+      ms.forEach(function(m){
+        var res = _cGetResolved(ev,tid,m.id);
+        var idx = res.indexOf(jid);
+        if(idx>=0){
+          var team = (_CS.teams||[]).find(function(t){return t.id===tid;})||{label:tid};
+          results.push({evName:ev.name,date:ev.date,adv:m.adv,team:team.label,poste:Ps[idx]||"Remplaçant"});
+        }
+      });
+    });
+  });
+  var div = document.createElement("div");
+  div.id = "cjm-modal";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px";
+  div.onclick = function(e){if(e.target===div)div.remove();};
+  var content = '<div style="background:#fff;border-radius:12px;max-width:500px;width:100%;max-height:80vh;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.3)">'
+    +'<div style="background:var(--g8);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px">'
+    +'<div style="flex:1;font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800">📋 '+name+'</div>'
+    +'<button id="cjm-close-btn" style="border:none;background:rgba(255,255,255,.15);color:#fff;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:14px">×</button></div>'
+    +'<div style="padding:12px;overflow-y:auto;max-height:60vh">';
+  if(results.length){
+    content += '<div style="font-size:11px;font-weight:600;color:var(--gray5);margin-bottom:8px">'+results.length+' match'+(results.length>1?'s':'')+'</div>';
+    results.forEach(function(r){
+      var ds=r.date?new Date(r.date+"T00:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"}):"";
+      content+='<div style="padding:8px 10px;border:1px solid var(--gray2);border-radius:7px;margin-bottom:5px">'
+        +'<div style="font-size:12px;font-weight:700;color:var(--g8)">'+r.evName+' — vs '+r.adv+'</div>'
+        +'<div style="font-size:10px;color:var(--gray5);margin-top:2px">'+r.team+' · <b>'+r.poste+'</b>'+(ds?' · '+ds:'')+'</div></div>';
+    });
+  } else {
+    content += '<div style="text-align:center;padding:20px;color:var(--gray5);font-style:italic">Aucun match enregistré</div>';
+  }
+  content += '</div></div>';
+  div.innerHTML = content;
+  document.body.appendChild(div);
+  document.getElementById("cjm-close-btn").onclick = function(){ div.remove(); };
+}
+
+// ── 4. STATS BIBLIOTHÈQUE ─────────────────────────────────────────
+function _bibTrackUsage(gIdx) {
+  try {
+    var s = JSON.parse(localStorage.getItem("mom_bib_stats")||"{}");
+    s[gIdx] = (s[gIdx]||0) + 1;
+    localStorage.setItem("mom_bib_stats", JSON.stringify(s));
+  } catch(e) {}
+}
+
+// ── 5. MODE PRÉSENTATION ──────────────────────────────────────────
+function openPresentation(fileId, titleEnc) {
+  var title = decodeURIComponent(titleEnc||"");
+  var ov = document.createElement("div");
+  ov.style.cssText = "position:fixed;inset:0;background:#000;z-index:2000;display:flex;flex-direction:column";
+  ov.innerHTML = '<div style="background:#0a3a1e;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0">'
+    +'<span style="font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800;color:#fff;flex:1">🖥️ '+title+'</span>'
+    +'<span style="font-size:11px;color:rgba(255,255,255,.5);margin-right:8px">Échap pour quitter</span>'
+    +'<button id="pres-close-btn" style="padding:5px 14px;background:#d4a820;color:#0a1a0a;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px">✕ Fermer</button>'
+    +'</div>'
+    +'<iframe src="https://drive.google.com/file/d/'+fileId+'/preview" '
+    +'style="flex:1;border:none;width:100%;background:#fff" allow="autoplay" allowfullscreen></iframe>';
+  document.body.appendChild(ov);
+  document.getElementById("pres-close-btn").onclick = function(){ ov.remove(); document.removeEventListener("keydown",_escFn); };
+  function _escFn(e){ if(e.key==="Escape"){ ov.remove(); document.removeEventListener("keydown",_escFn); } }
+  document.addEventListener("keydown", _escFn);
+  if(ov.requestFullscreen) ov.requestFullscreen().catch(function(){});
+}
 
 </script>
 
