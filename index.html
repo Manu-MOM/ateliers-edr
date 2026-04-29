@@ -554,6 +554,7 @@ button,input{font-family:'Barlow',sans-serif}
     <div class="stab"     id="stab-saison" onclick="goSection('saison')">📅 Planification</div>
     <div class="stab"     id="stab-seance" onclick="goSection('seance')">📋 Ma séance</div>
     <div class="stab"     id="stab-joueurs" onclick="goSection('joueurs')">👥 Joueurs</div>
+    <div class="stab"     id="stab-compos"  onclick="goSection('compos')">🏉 Compos</div>
   </div>
   <div class="app-body">
     <nav class="sidebar" id="sidebar"></nav>
@@ -583,6 +584,7 @@ button,input{font-family:'Barlow',sans-serif}
       <div class="mni"     id="mn-saison" onclick="goSection('saison')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Saison<div class="mni-dot"></div></div>
       <div class="mni"     id="mn-seance" onclick="goSection('seance')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Seance<div class="mni-dot"></div></div>
       <div class="mni"     id="mn-joueurs" onclick="goSection('joueurs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Joueurs<div class="mni-dot"></div></div>
+      <div class="mni"     id="mn-compos"  onclick="goSection('compos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Compos<div class="mni-dot"></div></div>
     </div>
   </nav>
 </div>
@@ -972,6 +974,7 @@ function goSection(s) {
   else if (s === "saison") { goSection_saison(); }
   else if (s === "seance") { goSection_seance(); }
   else if (s === "joueurs") { goSection_joueurs(); }
+  else if (s === "compos")  { goSection_compos(); }
 }
 
 // ═══ SIDEBAR ═════════════════════════════════════════════════════
@@ -3973,6 +3976,536 @@ function saveParamsPanel() {
       setTimeout(function(){ if(ok) ok.style.display = "none"; }, 2000);
     }
   }
+}
+
+
+
+// ═══════════════════════════════════════════════════════════════════
+// MODULE COMPOS — MOM Rugby EDR
+// ═══════════════════════════════════════════════════════════════════
+
+// Postes par catégorie
+var POSTES_CAT = {
+  M6:   ["1","2","3","4","5","6","7","8","R1","R2","R3"],
+  M8:   ["1","2","3","4","5","6","7","8","R1","R2","R3"],
+  M10:  ["1","2","3","4","5","6","7","8","9","10","R1","R2","R3"],
+  M12:  ["1","2","3","4","5","6","7","8","9","10","11","12","R1","R2","R3"],
+  M14F15: ["1 Pilier G","2 Talonneur","3 Pilier D","4 2e ligne G","5 2e ligne D",
+            "6 Flanker G","8 N°8","7 Flanker D","9 Demi mêlée","10 Ouvreur",
+            "12 Centre G","13 Centre D","11 Ailier G","14 Ailier D","15 Arrière",
+            "16 R","17 R","18 R","19 R","20 R"],
+  M16:  ["1 Pilier G","2 Talonneur","3 Pilier D","4 2e ligne G","5 2e ligne D",
+          "6 Flanker G","8 N°8","7 Flanker D","9 Demi mêlée","10 Ouvreur",
+          "12 Centre G","13 Centre D","11 Ailier G","14 Ailier D","15 Arrière",
+          "16 R","17 R","18 R","19 R","20 R","21 R","22 R"],
+  M18:  ["1 Pilier G","2 Talonneur","3 Pilier D","4 2e ligne G","5 2e ligne D",
+          "6 Flanker G","8 N°8","7 Flanker D","9 Demi mêlée","10 Ouvreur",
+          "12 Centre G","13 Centre D","11 Ailier G","14 Ailier D","15 Arrière",
+          "16 R","17 R","18 R","19 R","20 R","21 R","22 R","23 R"],
+  SENF: ["1 Pilier G","2 Talonneure","3 Pilier D","4 2e ligne G","5 2e ligne D",
+          "6 Flanker G","8 N°8","7 Flanker D","9 Demi mêlée","10 Ouvreur",
+          "12 Centre G","13 Centre D","11 Ailier G","14 Ailier D","15 Arrière",
+          "16 R","17 R","18 R","19 R","20 R","21 R","22 R","23 R"],
+  SENM: ["1 Pilier G","2 Talonneur","3 Pilier D","4 2e ligne G","5 2e ligne D",
+          "6 Flanker G","8 N°8","7 Flanker D","9 Demi mêlée","10 Ouvreur",
+          "12 Centre G","13 Centre D","11 Ailier G","14 Ailier D","15 Arrière",
+          "16 R","17 R","18 R","19 R","20 R","21 R","22 R","23 R"]
+};
+
+var TYPES_MATCH = ["Championnat","Challenge","Tournoi","Amical","Seven","Coupe"];
+var APTS_COMPOS = ["Tank","Driver","Runner","Botteur","Lanceur","Sauteur","Lifteur"];
+
+// Structure données Compos
+// composData[cat] = { joueurs:[...], matchs:[{id,date,adversaire,lieu,type,compo:{poste:joueurId},notes}] }
+var composData = {};
+
+function getComposData(cat) {
+  if (!composData[cat]) composData[cat] = {joueurs:[], matchs:[]};
+  // Fusionner avec la base EDR
+  var db = getJoueursDB();
+  var edrJoueurs = (db[cat]||[]).map(function(j,i){
+    return {
+      id: "edr_"+cat+"_"+i,
+      prenom: j.prenom, nom: j.nom||"", club: j.club||"MOM",
+      postes: j.postes||"", apts: j.apts||[], photo: j.photo||"",
+      taille: j.taille||null, poids: j.poids||null,
+      jdd: j.jdd||"", arb: j.arb||"",
+      inj: j.inj||false, source:"edr"
+    };
+  });
+  // Joueurs spécifiques Compos (non-EDR)
+  var compoOnly = (composData[cat].joueurs||[]).filter(function(j){ return j.source==="compos"; });
+  composData[cat].allJoueurs = edrJoueurs.concat(compoOnly);
+  return composData[cat];
+}
+
+function getComposMatch(cat, matchId) {
+  var d = getComposData(cat);
+  return (d.matchs||[]).find(function(m){ return m.id===matchId; });
+}
+
+var _composCurCat = null;
+var _composCurMatch = null; // id du match sélectionné
+var _composView = "calendrier"; // "calendrier" | "compo" | "joueurs"
+
+// ── Navigation ────────────────────────────────────────────────────
+function goSection_compos() {
+  _composCurCat = (selAge_ && selAge_ !== "ALL") ? selAge_ : "M14F15";
+  var sb = document.getElementById("sidebar");
+  if (sb) buildSbCompos();
+  renderCompos();
+}
+
+function buildSbCompos() {
+  var sb = document.getElementById("sidebar");
+  if (!sb) return;
+  var h = '<div class="sb-sec"><div class="sb-sec-lbl">Compos</div>';
+  h += '<div class="sb-item' + (_composView==="calendrier"?" act":"") + '" onclick="switchComposView(\'calendrier\')"><div class="sb-icon">📅</div>Calendrier</div>';
+  h += '<div class="sb-item' + (_composView==="joueurs"?" act":"") + '" onclick="switchComposView(\'joueurs\')"><div class="sb-icon">👥</div>Joueurs</div>';
+  h += '</div><div class="sb-div"></div>';
+  h += '<div class="sb-sec"><div class="sb-sec-lbl">Actions</div>';
+  h += '<div class="sb-item" onclick="newMatch()"><div class="sb-icon">➕</div>Nouveau match</div>';
+  h += '<div class="sb-item" onclick="openParamsPanel(3)"><div class="sb-icon">⚙️</div>Base joueurs</div>';
+  h += '</div>';
+  // Catégorie
+  h += '<div class="sb-div"></div>';
+  h += '<div class="sb-sec"><div class="sb-sec-lbl">Catégorie</div>';
+  h += '<div style="padding:4px 8px">';
+  h += '<select style="width:100%;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;background:var(--w);color:var(--gray7);cursor:pointer" onchange="switchComposCat(this.value)">';
+  AGES.forEach(function(a){ h += '<option value="'+a+'"'+(a===_composCurCat?" selected":"")+'>'+a+'</option>'; });
+  h += '</select></div></div>';
+  sb.innerHTML = h;
+}
+
+function switchComposView(v) { _composView=v; buildSbCompos(); renderCompos(); }
+function switchComposCat(cat) { _composCurCat=cat; _composCurMatch=null; buildSbCompos(); renderCompos(); }
+
+function renderCompos() {
+  var ct = document.getElementById("content");
+  if (!ct) return;
+  ct.classList.remove("lv");
+  if (_composView === "calendrier") ct.innerHTML = buildCalendrier();
+  else if (_composView === "joueurs")  ct.innerHTML = buildComposJoueurs();
+  else if (_composView === "compo" && _composCurMatch) ct.innerHTML = buildEditCompo();
+}
+
+// ── CALENDRIER ────────────────────────────────────────────────────
+function buildCalendrier() {
+  var d = getComposData(_composCurCat);
+  var matchs = (d.matchs||[]).slice().sort(function(a,b){ return (a.date||"").localeCompare(b.date||""); });
+
+  var h = '<div style="padding:12px 14px">';
+  h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;color:var(--g8);text-transform:uppercase;letter-spacing:.04em;flex:1">📅 Calendrier — '+_composCurCat+'</div>';
+  h += '<button onclick="newMatch()" style="padding:6px 14px;background:var(--g7);color:#fff;border:none;border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.04em">+ Nouveau match</button>';
+  h += '</div>';
+
+  if (!matchs.length) {
+    h += '<div style="text-align:center;padding:60px;color:var(--gray5)">';
+    h += '<div style="font-size:48px;margin-bottom:12px">📅</div>';
+    h += '<div style="font-size:16px;font-weight:700">Aucun match planifié</div>';
+    h += '<div style="font-size:12px;margin-top:6px">Cliquez sur "+ Nouveau match" pour commencer</div>';
+    h += '</div>';
+  } else {
+    h += '<div style="display:flex;flex-direction:column;gap:8px">';
+    matchs.forEach(function(m) {
+      var dateStr = m.date ? new Date(m.date+"T00:00:00").toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short",year:"numeric"}) : "Date non définie";
+      var compoCount = Object.keys(m.compo||{}).filter(function(k){ return m.compo[k]; }).length;
+      var postes = POSTES_CAT[_composCurCat] || POSTES_CAT["M14F15"];
+      var total = postes.length;
+      var pct = total > 0 ? Math.round(compoCount/total*100) : 0;
+      var typeColor = {Championnat:"#1a3a6b",Challenge:"#166334",Tournoi:"#7c4200",Amical:"#374151",Seven:"#4a1a7a",Coupe:"#c53a22"}[m.type]||"#374151";
+      var domExt = m.lieu==="domicile"?"🏠 DOM":"✈️ EXT";
+
+      h += '<div style="background:var(--w);border:1px solid var(--gray2);border-radius:10px;overflow:hidden;cursor:pointer;transition:box-shadow .15s;box-shadow:0 1px 4px rgba(0,0,0,.06)" onmouseover="this.style.boxShadow=\'0 4px 14px rgba(0,0,0,.12)\'" onmouseout="this.style.boxShadow=\'0 1px 4px rgba(0,0,0,.06)\'">';
+      h += '<div style="display:flex;align-items:stretch">';
+      // Bande couleur type
+      h += '<div style="width:6px;background:'+typeColor+';flex-shrink:0"></div>';
+      // Contenu principal
+      h += '<div style="flex:1;padding:10px 14px;display:flex;align-items:center;gap:14px" onclick="openCompo(\''+m.id+'\')">';
+      h += '<div style="min-width:80px"><div style="font-size:10px;color:var(--gray5);font-weight:700">'+dateStr+'</div>';
+      h += '<div style="font-size:9px;padding:1px 6px;border-radius:10px;background:'+typeColor+'22;color:'+typeColor+';font-weight:700;display:inline-block;margin-top:2px">'+m.type+'</div></div>';
+      h += '<div style="flex:1"><div style="font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800;color:var(--g8)">vs '+( m.adversaire||"Adversaire")+'</div>';
+      if (m.lieu) h += '<div style="font-size:10px;color:var(--gray5)">'+domExt+(m.lieu_detail?" · "+m.lieu_detail:"")+'</div>';
+      h += '</div>';
+      // Jauge compo
+      h += '<div style="text-align:center;min-width:70px">';
+      h += '<div style="font-size:18px;font-weight:900;font-family:Barlow Condensed,sans-serif;color:'+(pct>=100?"var(--g6)":"var(--gray5)")+'">'+compoCount+'/'+total+'</div>';
+      h += '<div style="height:4px;background:var(--gray2);border-radius:2px;margin-top:3px"><div style="height:100%;background:'+(pct>=100?"var(--g6)":"var(--gold)")+';border-radius:2px;width:'+Math.min(pct,100)+'%"></div></div>';
+      h += '<div style="font-size:9px;color:var(--gray5);margin-top:2px">Compo '+pct+'%</div>';
+      h += '</div>';
+      h += '</div>';
+      // Actions
+      h += '<div style="display:flex;gap:0;border-left:1px solid var(--gray2)">';
+      h += '<button onclick="openCompo(\''+m.id+'\')" style="padding:0 14px;border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--g6)" title="Modifier la compo">⚽</button>';
+      h += '<button onclick="exportCompo(\''+m.id+'\')" style="padding:0 12px;border:none;border-left:1px solid var(--gray2);background:transparent;cursor:pointer;font-size:14px;color:var(--gray5)" title="Exporter PDF">🖨️</button>';
+      h += '<button onclick="deleteMatch(\''+m.id+'\')" style="padding:0 12px;border:none;border-left:1px solid var(--gray2);background:transparent;cursor:pointer;font-size:12px;color:#dc2626" title="Supprimer">✕</button>';
+      h += '</div></div></div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+// ── NOUVEAU MATCH ─────────────────────────────────────────────────
+function newMatch() {
+  var div = document.createElement("div");
+  div.id = "new-match-overlay";
+  div.style.cssText = "position:fixed;inset:0;background:rgba(4,32,15,.65);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px";
+  div.innerHTML = '<div style="background:#fff;border-radius:16px;width:100%;max-width:440px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.3)">'
+    + '<div style="background:var(--g8);color:#fff;padding:14px 18px;font-family:Barlow Condensed,sans-serif;font-size:17px;font-weight:800">🏉 Nouveau match — '+_composCurCat+'</div>'
+    + '<div style="padding:16px;display:flex;flex-direction:column;gap:10px">'
+    + '<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray5);letter-spacing:.06em;margin-bottom:3px">Date</label><input type="date" id="nm-date" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:13px;outline:none"></div>'
+    + '<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray5);letter-spacing:.06em;margin-bottom:3px">Adversaire</label><input type="text" id="nm-adv" placeholder="Nom de l\'équipe adverse" style="width:100%;padding:7px 10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:13px;outline:none"></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    + '<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray5);letter-spacing:.06em;margin-bottom:3px">Type</label><select id="nm-type" style="width:100%;padding:7px 8px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;background:#fff;cursor:pointer">'+TYPES_MATCH.map(function(t){return'<option>'+t+'</option>';}).join("")+'</select></div>'
+    + '<div><label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray5);letter-spacing:.06em;margin-bottom:3px">Lieu</label><select id="nm-lieu" style="width:100%;padding:7px 8px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;background:#fff;cursor:pointer"><option value="domicile">🏠 Domicile</option><option value="exterieur">✈️ Extérieur</option></select></div>'
+    + '</div>'
+    + '</div>'
+    + '<div style="padding:10px 16px 16px;display:flex;gap:8px">'
+    + '<button onclick="document.getElementById(\'new-match-overlay\').remove()" style="flex:1;padding:9px;background:var(--gray1);color:var(--gray5);border:none;border-radius:7px;font-weight:700;cursor:pointer">Annuler</button>'
+    + '<button onclick="saveNewMatch()" style="flex:2;padding:9px;background:var(--g7);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:.04em">✅ Créer</button>'
+    + '</div></div>';
+  div.onclick = function(e){ if(e.target===div) div.remove(); };
+  document.body.appendChild(div);
+  setTimeout(function(){ var el=document.getElementById("nm-adv"); if(el) el.focus(); }, 100);
+}
+
+function saveNewMatch() {
+  var adv = (document.getElementById("nm-adv")||{}).value||"";
+  var date = (document.getElementById("nm-date")||{}).value||"";
+  var type = (document.getElementById("nm-type")||{}).value||"Championnat";
+  var lieu = (document.getElementById("nm-lieu")||{}).value||"domicile";
+  if (!adv) { alert("Veuillez saisir le nom de l\'adversaire."); return; }
+  var d = getComposData(_composCurCat);
+  if (!d.matchs) d.matchs = [];
+  d.matchs.push({ id:"m"+Date.now(), date:date, adversaire:adv, type:type, lieu:lieu, compo:{}, notes:"" });
+  document.getElementById("new-match-overlay").remove();
+  renderCompos();
+}
+
+function deleteMatch(id) {
+  if (!confirm("Supprimer ce match et sa composition ?")) return;
+  var d = getComposData(_composCurCat);
+  d.matchs = d.matchs.filter(function(m){ return m.id!==id; });
+  if (_composCurMatch === id) { _composCurMatch=null; _composView="calendrier"; buildSbCompos(); }
+  renderCompos();
+}
+
+// ── ÉDITEUR DE COMPO ──────────────────────────────────────────────
+function openCompo(matchId) {
+  _composCurMatch = matchId;
+  _composView = "compo";
+  buildSbCompos();
+  renderCompos();
+}
+
+function buildEditCompo() {
+  var d = getComposData(_composCurCat);
+  var m = getComposMatch(_composCurCat, _composCurMatch);
+  if (!m) return '<div style="padding:30px;text-align:center;color:var(--gray5)">Match introuvable</div>';
+  var postes = POSTES_CAT[_composCurCat] || POSTES_CAT["M14F15"];
+  var joueurs = d.allJoueurs || [];
+  var dateStr = m.date ? new Date(m.date+"T00:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}) : "";
+  var titulaires = postes.slice(0, Math.min(15, postes.length));
+  var rempls = postes.slice(Math.min(15, postes.length));
+
+  var h = '<div style="padding:12px 14px">';
+  // Header match
+  h += '<div style="background:var(--g8);color:#fff;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px">';
+  h += '<div style="flex:1"><div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900">🏉 vs '+m.adversaire+'</div>';
+  h += '<div style="font-size:11px;opacity:.7;margin-top:2px">'+dateStr+(m.type?" · "+m.type:"")+(m.lieu?" · "+(m.lieu==="domicile"?"Domicile":"Extérieur"):"")+'</div></div>';
+  h += '<button onclick="_composView=\'calendrier\';buildSbCompos();renderCompos()" style="padding:6px 14px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">← Retour</button>';
+  h += '<button onclick="exportCompo(\''+m.id+'\')" style="padding:6px 14px;background:var(--gold);color:var(--g9);border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:Barlow Condensed,sans-serif;letter-spacing:.04em">🖨️ Export PDF</button>';
+  h += '</div>';
+
+  h += '<div style="display:flex;gap:12px">';
+
+  // ── Terrain (liste des postes) ──
+  h += '<div style="flex:1;min-width:0">';
+
+  // Titulaires
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:800;color:var(--g8);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">⚽ Titulaires</div>';
+  h += '<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:12px">';
+  titulaires.forEach(function(poste, idx) {
+    var num = idx+1;
+    var isFwd = num <= 8;
+    var joueurId = m.compo[poste] || null;
+    var joueur = joueurId ? joueurs.find(function(j){ return j.id===joueurId; }) : null;
+    var nomAffiche = joueur ? joueur.prenom+" "+(joueur.nom?joueur.nom.charAt(0).toUpperCase()+".":"") : "";
+    var barColor = isFwd ? "#1a3a6b" : "#166334";
+    h += '<div style="display:flex;align-items:center;gap:6px">';
+    h += '<div style="width:22px;height:22px;border-radius:4px;background:'+barColor+';color:#fff;font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+num+'</div>';
+    h += '<div style="font-size:9px;color:var(--gray5);min-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+poste.replace(/^\d+ /,"")+'</div>';
+    h += '<select style="flex:1;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:3px 6px;background:var(--w);color:'+(joueur?"var(--g8)":"var(--gray5)")+';cursor:pointer" data-poste="'+poste+'" onchange="assignJoueur(this,\''+m.id+'\',this.dataset.poste)">';
+    h += '<option value="">— Choisir —</option>';
+    joueurs.filter(function(j){ return !j.inj; }).forEach(function(j){
+      var assigned = Object.keys(m.compo||{}).some(function(p){ return m.compo[p]===j.id && p!==poste; });
+      h += '<option value="'+j.id+'"'+(joueurId===j.id?" selected":"")+(assigned?" style=\"color:#aaa\"":"")+'>'+j.prenom+" "+(j.nom||"")+(assigned?" (déjà positionné)":"")+'</option>';
+    });
+    h += '</select>';
+    if (joueur && joueur.apts && joueur.apts.length) {
+      h += '<div style="display:flex;gap:2px">';
+      joueur.apts.slice(0,2).forEach(function(a){
+        var tagcols = {Tank:"#fce7f3",Driver:"#dbeafe",Runner:"#fef3c7",Botteur:"#d1fae5",Lanceur:"#ede9fe",Sauteur:"#ffedd5",Lifteur:"#f0fdf4"};
+        h += '<span style="font-size:7px;padding:1px 4px;border-radius:3px;background:'+(tagcols[a]||"#f0f0f0")+';font-weight:700">'+a+'</span>';
+      });
+      h += '</div>';
+    }
+    h += '</div>';
+  });
+  h += '</div>';
+
+  // Remplaçants
+  if (rempls.length) {
+    h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:800;color:var(--g8);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🔄 Remplaçants</div>';
+    h += '<div style="display:flex;flex-direction:column;gap:3px">';
+    rempls.forEach(function(poste, idx) {
+      var num = Math.min(15,postes.length)+idx+1;
+      var joueurId = m.compo[poste]||null;
+      var joueur = joueurId ? joueurs.find(function(j){ return j.id===joueurId; }) : null;
+      h += '<div style="display:flex;align-items:center;gap:6px">';
+      h += '<div style="width:22px;height:22px;border-radius:4px;background:var(--gray3);color:var(--gray5);font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+num+'</div>';
+      h += '<div style="font-size:9px;color:var(--gray5);min-width:90px">Remplaçant</div>';
+      h += '<select style="flex:1;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:3px 6px;background:var(--w);color:'+(joueur?"var(--g8)":"var(--gray5)")+';cursor:pointer" data-poste="'+poste+'" onchange="assignJoueur(this,\''+m.id+'\',this.dataset.poste)">';
+      h += '<option value="">— Choisir —</option>';
+      joueurs.filter(function(j){ return !j.inj; }).forEach(function(j){
+        var assigned = Object.keys(m.compo||{}).some(function(p){ return m.compo[p]===j.id && p!==poste; });
+        h += '<option value="'+j.id+'"'+(joueurId===j.id?" selected":"")+(assigned?" style=\"color:#aaa\"":"")+'>'+j.prenom+" "+(j.nom||"")+(assigned?" ✓":"")+'</option>';
+      });
+      h += '</select></div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>'; // fin colonne postes
+
+  // ── Pool joueurs disponibles ──
+  h += '<div style="width:200px;flex-shrink:0">';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:800;color:var(--g8);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">👥 Effectif</div>';
+  var assigned = new Set(Object.values(m.compo||{}).filter(Boolean));
+  var available = joueurs.filter(function(j){ return !assigned.has(j.id) && !j.inj; });
+  var injured = joueurs.filter(function(j){ return j.inj; });
+  var positioned = joueurs.filter(function(j){ return assigned.has(j.id); });
+
+  h += '<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;color:var(--g6);margin-bottom:3px">✅ Positionnés ('+positioned.length+')</div>';
+  positioned.forEach(function(j){
+    var postePos = Object.keys(m.compo||{}).find(function(p){ return m.compo[p]===j.id; });
+    var num = postePos ? (POSTES_CAT[_composCurCat]||[]).indexOf(postePos)+1 : "?";
+    h += '<div style="font-size:10px;padding:2px 6px;background:var(--g0);border-radius:4px;margin-bottom:2px;display:flex;justify-content:space-between">';
+    h += '<span>'+j.prenom+" "+(j.nom?j.nom.charAt(0)+".":'')+'</span>';
+    h += '<span style="color:var(--g6);font-weight:700">'+num+'</span></div>';
+  });
+  h += '</div>';
+
+  h += '<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;color:var(--gray5);margin-bottom:3px">⏳ Disponibles ('+available.length+')</div>';
+  available.forEach(function(j){
+    h += '<div style="font-size:10px;padding:2px 6px;background:var(--gray1);border-radius:4px;margin-bottom:2px">'+j.prenom+" "+(j.nom?j.nom.charAt(0)+".":"")+'</div>';
+  });
+  h += '</div>';
+
+  if (injured.length) {
+    h += '<div><div style="font-size:9px;font-weight:700;color:#dc2626;margin-bottom:3px">🏥 Blessés ('+injured.length+')</div>';
+    injured.forEach(function(j){
+      h += '<div style="font-size:10px;padding:2px 6px;background:#fee2e2;border-radius:4px;margin-bottom:2px;color:#dc2626">'+j.prenom+" "+(j.nom?j.nom.charAt(0)+".":"")+'</div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>'; // fin pool
+
+  h += '</div>'; // fin flex
+  h += '</div>'; // fin padding
+  return h;
+}
+
+function assignJoueur(sel, matchId, poste) {
+  var m = getComposMatch(_composCurCat, matchId);
+  if (!m) return;
+  if (!m.compo) m.compo = {};
+  var val = sel.value;
+  // Retirer de tout autre poste si déjà assigné
+  if (val) {
+    Object.keys(m.compo).forEach(function(p){ if(m.compo[p]===val && p!==poste) delete m.compo[p]; });
+  }
+  if (val) m.compo[poste] = val;
+  else delete m.compo[poste];
+  // Re-render juste le pool (pas tout le contenu)
+  renderCompos();
+}
+
+// ── JOUEURS COMPOS ────────────────────────────────────────────────
+function buildComposJoueurs() {
+  var d = getComposData(_composCurCat);
+  var joueurs = d.allJoueurs || [];
+  var h = '<div style="padding:12px 14px">';
+  h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;color:var(--g8);flex:1">👥 Joueurs — '+_composCurCat+' ('+joueurs.length+')</div>';
+  h += '<button onclick="openParamsPanel(3)" style="padding:6px 14px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">⚙️ Gérer dans Paramètres</button>';
+  h += '</div>';
+  var cc = {MOM:"#1a6b1a",SAR:"#1a3a6b",ASCS:"#374151"};
+  h += '<div class="jp-grid">';
+  joueurs.forEach(function(j, num) {
+    var color = cc[j.club]||"#374151";
+    var initials = (j.prenom?j.prenom[0]:"")+(j.nom?j.nom[0]:"");
+    h += '<div class="jp-card'+(j.inj?" injured":"")+'">';
+    if (j.inj) h += '<div class="jp-inj-overlay"><span class="jp-inj-badge">🏥 BLESSÉ</span></div>';
+    h += '<div class="jp-ch"><div class="jp-av" style="background:'+color+'">'+(j.photo?'<img src="'+j.photo+'">':'<span style="font-size:15px;font-weight:800">'+initials+'</span>')+'</div>';
+    h += '<div style="flex:1"><div class="jp-name">'+j.prenom+' <span style="font-weight:900">'+(j.nom||"").toUpperCase()+'</span></div>';
+    h += '<div class="jp-sub"><span style="background:'+color+'22;color:'+color+';padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700">'+(j.club||"MOM")+'</span></div></div>';
+    h += '<div class="jp-num">'+(num+1)+'</div></div>';
+    if (j.postes) {
+      var ps = j.postes.split(",").map(function(p){return p.trim();}).filter(Boolean);
+      h += '<div style="display:flex;gap:2px;flex-wrap:wrap;margin-bottom:4px">';
+      ps.slice(0,3).forEach(function(p){ h += '<span class="jp-pb">'+p+'</span>'; });
+      h += '</div>';
+    }
+    if (j.apts && j.apts.length) {
+      h += '<div style="display:flex;gap:2px;flex-wrap:wrap">';
+      j.apts.forEach(function(a){ h += '<span class="jp-tag jp-tag-'+a.toLowerCase()+'">'+a+'</span>'; });
+      h += '</div>';
+    }
+    if (j.source==="edr") h += '<div style="font-size:8px;color:var(--g4);margin-top:3px">● Base EDR</div>';
+    h += '</div>';
+  });
+  if (!joueurs.length) h += '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray5)"><div style="font-size:36px;margin-bottom:8px">👥</div><div>Aucun joueur — ajoutez-en dans <b>Paramètres → Base joueurs</b></div></div>';
+  h += '</div></div>';
+  return h;
+}
+
+// ── EXPORT PDF TOP 14 ─────────────────────────────────────────────
+function exportCompo(matchId) {
+  var d = getComposData(_composCurCat);
+  var m = getComposMatch(_composCurCat, matchId) || getComposMatch(_composCurCat, _composCurMatch);
+  if (!m) { alert("Match introuvable"); return; }
+  var joueurs = d.allJoueurs || [];
+  var postes = POSTES_CAT[_composCurCat] || POSTES_CAT["M14F15"];
+  var logoEl = document.getElementById("logo-img-topbar");
+  var logo = logoEl ? logoEl.src : "";
+  var dateStr = m.date ? new Date(m.date+"T00:00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}) : "";
+
+  var h = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Compo MOM vs '+m.adversaire+'</title>';
+  h += '<style>';
+  h += '@page{size:A4 portrait;margin:8mm 10mm}';
+  h += '*{box-sizing:border-box;margin:0;padding:0}';
+  h += 'body{font-family:Arial,sans-serif;background:#0a1a0a;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;min-height:100vh}';
+  h += '.wrap{background:linear-gradient(160deg,#0a2a12 0%,#04200a 60%,#0a1a0a 100%);min-height:297mm;padding:10mm 12mm;display:flex;flex-direction:column}';
+  // Header
+  h += '.hdr{display:flex;align-items:center;gap:16px;padding-bottom:10px;border-bottom:2px solid #d4a820;margin-bottom:16px}';
+  h += '.hdr img{height:60px;width:60px;object-fit:contain}';
+  h += '.hdr-main{flex:1}';
+  h += '.hdr-club{font-family:"Arial Black",Arial;font-size:28px;font-weight:900;color:#d4a820;letter-spacing:.05em;line-height:1}';
+  h += '.hdr-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;letter-spacing:.05em}';
+  h += '.hdr-vs{text-align:right}';
+  h += '.hdr-vs-lbl{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em}';
+  h += '.hdr-vs-adv{font-family:"Arial Black",Arial;font-size:22px;font-weight:900;color:#fff}';
+  h += '.hdr-vs-date{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px}';
+  h += '.badge{background:#d4a820;color:#0a2a12;font-size:9px;font-weight:900;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:5px;letter-spacing:.04em}';
+  // Grille joueurs
+  h += '.section-title{font-family:"Arial Black",Arial;font-size:12px;font-weight:900;color:#d4a820;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:8px}';
+  h += '.section-title::after{content:"";flex:1;height:1px;background:rgba(212,168,32,.3)}';
+  h += '.players-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:14px}';
+  h += '.player{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:6px 8px;display:flex;align-items:center;gap:8px}';
+  h += '.player.fwd{border-left:2px solid #87bde0}';
+  h += '.player.bck{border-left:2px solid #d4a820}';
+  h += '.player.sub{border-left:2px solid rgba(255,255,255,.2);opacity:.85}';
+  h += '.player-num{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:"Arial Black",Arial;font-size:11px;font-weight:900;flex-shrink:0}';
+  h += '.player-num.fwd{background:#1a3a6b;color:#87bde0}';
+  h += '.player-num.bck{background:#1a4a20;color:#d4a820}';
+  h += '.player-num.sub{background:rgba(255,255,255,.1);color:rgba(255,255,255,.5)}';
+  h += '.player-info{flex:1;min-width:0}';
+  h += '.player-name{font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}';
+  h += '.player-pos{font-size:8px;color:rgba(255,255,255,.4)}';
+  h += '.player-club{font-size:7px;padding:1px 4px;border-radius:2px;font-weight:700}';
+  h += '.club-MOM{background:rgba(26,107,26,.4);color:#6ee7b7}';
+  h += '.club-SAR{background:rgba(26,58,107,.4);color:#87bde0}';
+  h += '.club-ASCS{background:rgba(255,255,255,.1);color:rgba(255,255,255,.5)}';
+  h += '.empty{color:rgba(255,255,255,.2);font-style:italic;font-size:9px}';
+  // Tags aptitudes
+  h += '.tag{font-size:7px;padding:1px 4px;border-radius:3px;font-weight:700;margin-left:2px}';
+  h += '.tag-runner{background:#92400e;color:#fef3c7}.tag-driver{background:#1e40af;color:#dbeafe}';
+  h += '.tag-tank{background:#9d174d;color:#fce7f3}.tag-botteur{background:#065f46;color:#d1fae5}';
+  h += '.tag-lanceur{background:#4c1d95;color:#ede9fe}.tag-sauteur{background:#9a3412;color:#ffedd5}.tag-lifteur{background:#14532d;color:#f0fdf4}';
+  // Footer
+  h += '.footer{margin-top:auto;padding-top:8px;border-top:1px solid rgba(212,168,32,.2);display:flex;justify-content:space-between;align-items:center;font-size:8px;color:rgba(255,255,255,.3)}';
+  h += '</style></head><body><div class="wrap">';
+
+  // ── Header ──
+  h += '<div class="hdr">';
+  if (logo) h += '<img src="'+logo+'">';
+  h += '<div class="hdr-main"><div class="hdr-club">MOM RUGBY</div>';
+  h += '<div class="hdr-sub">Mutzig Ovalie Molsheim — Catégorie '+_composCurCat+'</div>';
+  h += '<span class="badge">'+m.type+(m.lieu?" · "+(m.lieu==="domicile"?"Domicile":"Extérieur"):"")+'</span></div>';
+  h += '<div class="hdr-vs"><div class="hdr-vs-lbl">contre</div>';
+  h += '<div class="hdr-vs-adv">'+m.adversaire+'</div>';
+  h += '<div class="hdr-vs-date">'+dateStr+'</div></div>';
+  h += '</div>';
+
+  // ── Titulaires ──
+  h += '<div class="section-title">⚽ Composition — Titulaires</div>';
+  h += '<div class="players-grid">';
+  postes.slice(0, Math.min(15, postes.length)).forEach(function(poste, idx) {
+    var num = idx+1;
+    var isFwd = num <= 8;
+    var cls = isFwd ? "fwd" : "bck";
+    var joueurId = m.compo[poste]||null;
+    var j = joueurId ? joueurs.find(function(x){ return x.id===joueurId; }) : null;
+    h += '<div class="player '+cls+'">';
+    h += '<div class="player-num '+cls+'">'+num+'</div>';
+    h += '<div class="player-info">';
+    if (j) {
+      h += '<div class="player-name">'+j.prenom+' <strong>'+(j.nom||"").toUpperCase()+'</strong>';
+      (j.apts||[]).forEach(function(a){ h += '<span class="tag tag-'+a.toLowerCase()+'">'+a+'</span>'; });
+      h += '</div>';
+      h += '<div class="player-pos">'+poste.replace(/^\d+ /,"");
+      if (j.club) h += ' <span class="player-club club-'+(j.club||"ASCS")+'">'+j.club+'</span>';
+      h += '</div>';
+    } else {
+      h += '<div class="player-name empty">— Non défini —</div>';
+      h += '<div class="player-pos">'+poste.replace(/^\d+ /,"")+'</div>';
+    }
+    h += '</div></div>';
+  });
+  h += '</div>';
+
+  // ── Remplaçants ──
+  var rempls = postes.slice(Math.min(15, postes.length));
+  if (rempls.length) {
+    h += '<div class="section-title">🔄 Remplaçants</div>';
+    h += '<div class="players-grid">';
+    rempls.forEach(function(poste, idx) {
+      var num = Math.min(15,postes.length)+idx+1;
+      var joueurId = m.compo[poste]||null;
+      var j = joueurId ? joueurs.find(function(x){ return x.id===joueurId; }) : null;
+      h += '<div class="player sub">';
+      h += '<div class="player-num sub">'+num+'</div>';
+      h += '<div class="player-info">';
+      if (j) {
+        h += '<div class="player-name">'+j.prenom+' <strong>'+(j.nom||"").toUpperCase()+'</strong></div>';
+        h += '<div class="player-pos">'+(j.club?'<span class="player-club club-'+(j.club||"ASCS")+'">'+j.club+'</span>':'')+'</div>';
+      } else {
+        h += '<div class="player-name empty">— Non défini —</div>';
+      }
+      h += '</div></div>';
+    });
+    h += '</div>';
+  }
+
+  // ── Notes ──
+  if (m.notes) {
+    h += '<div class="section-title">📝 Notes</div>';
+    h += '<div style="font-size:10px;color:rgba(255,255,255,.6);background:rgba(255,255,255,.04);padding:8px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.08)">'+m.notes+'</div>';
+  }
+
+  // ── Footer ──
+  h += '<div class="footer">';
+  h += '<div><strong style="color:#d4a820">MOM RUGBY</strong> — Mutzig Ovalie Molsheim</div>';
+  h += '<div>Généré le '+new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})+'</div>';
+  h += '</div>';
+
+  h += '</div></body></html>';
+
+  var win = window.open("","_blank","width=900,height=1100");
+  if (win) { win.document.write(h); win.document.close(); setTimeout(function(){ win.print(); }, 500); }
 }
 
 
