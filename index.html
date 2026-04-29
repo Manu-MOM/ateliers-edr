@@ -334,7 +334,7 @@ button,input{font-family:'Barlow',sans-serif}
 .seance-axe-input{flex:1;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--w);outline:none}
 .seance-axe-input::placeholder{color:rgba(255,255,255,.35);font-weight:400}
 /* Grille 4 colonnes */
-.seance-grid{display:grid;grid-template-columns:260px 1fr 160px 200px;min-height:400px}
+.seance-grid{display:grid;grid-template-columns:260px 1fr 200px 160px;min-height:400px}
 .seance-col{border-right:1px solid var(--gray2);overflow:hidden}
 .seance-col:last-child{border-right:none}
 .seance-col-hd{background:var(--g9);color:var(--w);padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--gold)}
@@ -2086,18 +2086,18 @@ function printPlan() {
   var h = '<!DOCTYPE html><html><head><meta charset="UTF-8">';
   h += '<title>Planification ' + catLabel + ' ' + saison + '</title>';
   h += '<style>';
-  h += '@page{size:A4 landscape;margin:12mm 14mm}';
+  h += '@page{size:A4 landscape;margin:10mm 12mm}';
   h += '*{box-sizing:border-box;margin:0;padding:0}';
-  h += 'body{font-family:"Arial",sans-serif;background:#fff;color:#1a1a14}';
+  h += 'body{font-family:Arial,sans-serif;background:#fff;color:#1a1a14;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
 
-  // En-tête
-  h += '.header{display:flex;align-items:center;gap:16px;padding-bottom:10px;border-bottom:4px solid #0a3a1e;margin-bottom:14px}';
+  // En-tête style rugby
+  h += '.header{background:#0a3a1e;color:#fff;display:flex;align-items:center;gap:14px;padding:10px 16px;margin-bottom:12px;border-radius:8px}';
   h += '.header-logo{width:52px;height:52px;flex-shrink:0}';
   h += '.header-logo img{width:52px;height:52px;object-fit:contain}';
   h += '.header-text{flex:1}';
-  h += '.header-title{font-size:20px;font-weight:900;color:#0a3a1e;letter-spacing:.3px;line-height:1}';
-  h += '.header-sub{font-size:11px;color:#666;margin-top:3px}';
-  h += '.header-badge{background:#d4a820;color:#0a3a1e;font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px;white-space:nowrap}';
+  h += '.header-title{font-family:"Arial Black",Arial;font-size:20px;font-weight:900;letter-spacing:.02em;line-height:1}';
+  h += '.header-sub{font-size:11px;opacity:.75;margin-top:4px}';
+  h += '.header-badge{background:#d4a820;color:#0a3a1e;font-size:11px;font-weight:900;padding:5px 14px;border-radius:20px;white-space:nowrap;align-self:center}';
 
   // Frise
   h += '.frise-label{font-size:8px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}';
@@ -2125,17 +2125,17 @@ function printPlan() {
   h += '.bloc-comments .axe-lbl{color:#666}';
   h += '.bloc-comments .axe-val{color:#444;font-size:9px}';
   h += '.inter-badge{font-size:7px;background:rgba(255,255,255,.2);color:#fff;padding:1px 6px;border-radius:3px;white-space:nowrap}';
-  h += '.footer{margin-top:12px;padding-top:6px;border-top:1px solid #e0e0d8;display:flex;justify-content:space-between;font-size:7px;color:#aaa}';
+  h += '.footer{margin-top:10px;padding-top:5px;border-top:2px solid #0a3a1e;display:flex;justify-content:space-between;font-size:7px;color:#888}';  h += '.footer b{color:#0a3a1e}';
   h += '</style></head><body>';
 
   // ── EN-TETE ──────────────────────────────────────────────────
   h += '<div class="header">';
   if (logo) h += '<div class="header-logo"><img src="' + logo + '"></div>';
   h += '<div class="header-text">';
-  h += '<div class="header-title">MOM Rugby &mdash; Planification de saison</div>';
-  h += '<div class="header-sub">' + catLabel + ' &nbsp;&bull;&nbsp; Saison ' + saison + '</div>';
+  h += '<div class="header-title">Planification de saison &mdash; MOM Rugby</div>';
+  h += '<div class="header-sub">' + catLabel + ' &nbsp;&bull;&nbsp; Saison ' + saison + ' &nbsp;&bull;&nbsp; Mutzig Ovalie Molsheim</div>';
   h += '</div>';
-  h += '<div class="header-badge">EDR Mutzig Ovalie Molsheim</div>';
+  h += '<div class="header-badge">EDR ' + saison + '</div>';
   h += '</div>';
 
   // ── FRISE ────────────────────────────────────────────────────
@@ -2529,19 +2529,7 @@ function renderSeance() {
   });
   h += '</div></div>';
 
-  // COL 3 : MATÉRIEL
-  h += '<div class="seance-col mat-col">';
-  h += '<div class="seance-col-hd">🧰 Matériel</div>';
-  h += '<div style="padding:8px">';
-  h += '<div style="font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Général</div>';
-  h += '<div style="display:flex;flex-wrap:wrap;gap:3px">';
-  MATERIEL_LIST.forEach(function(m) {
-    var on = (d.materiel||[]).indexOf(m) >= 0;
-    h += '<button style="font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid ' + (on?"var(--g6)":"var(--gray2)") + ';background:' + (on?"var(--g0)":"transparent") + ';color:' + (on?"var(--g7)":"var(--gray5)") + ';cursor:pointer;font-weight:' + (on?"700":"400") + '" data-mat="' + m + '" onclick="toggleMat(this.dataset.mat);renderSeance()">' + m + '</button>';
-  });
-  h += '</div></div></div>';
-
-  // COL 4 : ORGANISATION SPATIALE
+  // COL 3 : ORGANISATION SPATIALE
   h += '<div class="seance-col orga-col">';
   h += '<div class="seance-col-hd">📐 Organisation spatiale</div>';
   h += '<div class="comp-rows">';
@@ -2555,6 +2543,18 @@ function renderSeance() {
     h += '</div>';
   });
   h += '</div></div>';
+
+  // COL 4 : MATÉRIEL
+  h += '<div class="seance-col mat-col">';
+  h += '<div class="seance-col-hd">🧰 Matériel</div>';
+  h += '<div style="padding:8px">';
+  h += '<div style="font-size:9px;font-weight:700;color:var(--gray5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Général</div>';
+  h += '<div style="display:flex;flex-wrap:wrap;gap:3px">';
+  MATERIEL_LIST.forEach(function(m) {
+    var on = (d.materiel||[]).indexOf(m) >= 0;
+    h += '<button style="font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid ' + (on?"var(--g6)":"var(--gray2)") + ';background:' + (on?"var(--g0)":"transparent") + ';color:' + (on?"var(--g7)":"var(--gray5)") + ';cursor:pointer;font-weight:' + (on?"700":"400") + '" data-mat="' + m + '" onclick="toggleMat(this.dataset.mat);renderSeance()">' + m + '</button>';
+  });
+  h += '</div></div></div>';
 
   h += '</div>'; // fin grille
   h += '</div>'; // fin seance-page
@@ -2767,29 +2767,160 @@ function newSeanceConfirm(){ if(seanceDirty&&!confirm("Nouvelle séance ? Modifi
 
 function printSeance(){
   if(!seanceData||!seanceData.blocs||!seanceData.blocs.length){alert("La séance est vide.");return;}
+  calcHeures(seanceData.blocs, seanceData.heureDebut||"14:00");
   var logoEl=document.getElementById("logo-img-topbar");
   var logo=logoEl?logoEl.src:"";
   var d=seanceData;
-  var h='<!DOCTYPE html><html><head><meta charset="UTF-8">';
-  h+='<style>body{font-family:Arial,sans-serif;font-size:10px;margin:0;padding:10px}';
-  h+='.hdr{background:#0a3a1e;color:#fff;padding:8px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px;border-radius:6px}';
-  h+='.hdr img{height:40px}';
-  h+='.title{font-size:16px;font-weight:900;font-family:Arial Black,Arial}';
-  h+='.bloc{border:1px solid #ccc;border-radius:4px;margin-bottom:5px;padding:6px 8px}';
-  h+='.bloc-hdr{font-weight:700;font-size:11px;margin-bottom:4px}';
+  var dateStr=d.date?new Date(d.date).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}):"";
+  var blocsReels=d.blocs.filter(function(b){return b.type!=="pause";});
+  var totalMin=totalDureeBlocs(d.blocs);
+
+  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fiche séance MOM</title><style>';
+  h+='@page{size:A4 landscape;margin:10mm 12mm}';
+  h+='*{box-sizing:border-box;margin:0;padding:0}';
+  h+='body{font-family:Arial,sans-serif;font-size:9px;background:#fff;color:#1a1a14;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
+
+  // Header
+  h+='.hdr{background:#0a3a1e;color:#fff;display:flex;align-items:center;gap:14px;padding:9px 14px;margin-bottom:10px;border-radius:8px}';
+  h+='.hdr img{height:48px;width:48px;object-fit:contain;flex-shrink:0}';
+  h+='.hdr-main{flex:1}';
+  h+='.hdr-title{font-family:"Arial Black",Arial;font-size:18px;font-weight:900;letter-spacing:.02em;line-height:1}';
+  h+='.hdr-sub{font-size:10px;opacity:.75;margin-top:3px}';
+  h+='.hdr-meta{display:grid;grid-template-columns:repeat(4,auto);gap:6px 18px;align-items:center}';
+  h+='.meta-item{display:flex;flex-direction:column;align-items:center}';
+  h+='.meta-lbl{font-size:7px;opacity:.6;text-transform:uppercase;letter-spacing:.08em}';
+  h+='.meta-val{font-size:12px;font-weight:800;color:#d4a820;line-height:1.2}';
+  h+='.badge{background:#d4a820;color:#0a3a1e;font-size:10px;font-weight:900;padding:4px 12px;border-radius:20px;white-space:nowrap;align-self:center}';
+
+  // Axe bar
+  h+='.axe-bar{background:#f5f0e0;border-left:4px solid #d4a820;padding:5px 10px;font-size:9px;margin-bottom:10px;border-radius:0 5px 5px 0}';
+  h+='.axe-bar b{color:#7c4200;font-size:8px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px}';
+
+  // Timeline bar at top
+  h+='.timeline-bar{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-bottom:10px;gap:1px}';
+  h+='.tl-seg{display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:rgba(255,255,255,.9);overflow:hidden;white-space:nowrap;min-width:4px}';
+
+  // Grid 4 cols
+  h+='.grid{display:grid;grid-template-columns:auto 1fr 160px 140px;gap:0;border:1.5px solid #0a3a1e;border-radius:8px;overflow:hidden}';
+  h+='.col-hdr{background:#0a3a1e;color:#fff;padding:5px 8px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;border-right:1px solid rgba(255,255,255,.15)}';
+  h+='.col-hdr:last-child{border-right:none}';
+  h+='.cell{padding:5px 7px;border-right:1px solid #e8e8e0;border-bottom:1px solid #e8e8e0;vertical-align:top;font-size:8.5px;line-height:1.4}';
+  h+='.cell:last-child{border-right:none}';
+  h+='.cell-trame{display:flex;gap:5px;align-items:flex-start;min-width:160px}';
+  h+='.trame-bar{width:6px;border-radius:3px;flex-shrink:0;align-self:stretch;min-height:36px}';
+  h+='.trame-info{flex:1}';
+  h+='.trame-heure{font-size:7px;color:#888;font-weight:700}';
+  h+='.trame-type{font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;color:#fff;display:inline-block;margin:1px 0}';
+  h+='.trame-titre{font-size:9px;font-weight:700;color:#1a1a14;line-height:1.3}';
+  h+='.trame-dur{font-size:7px;color:#d4a820;font-weight:700}';
+  h+='.intens{font-size:7px;border-radius:3px;padding:1px 4px;border:1px solid;display:inline-block;margin-top:2px;font-weight:700}';
+  h+='.pause-row{background:#e8f4ff}';
+  h+='.mat-chip{display:inline-block;background:#e8f4e8;border:1px solid #28944f;color:#166334;font-size:7px;padding:1px 5px;border-radius:8px;margin:1px}';
+
+  // Footer
+  h+='.footer{margin-top:8px;display:flex;justify-content:space-between;font-size:7px;color:#aaa;padding-top:5px;border-top:1px solid #e8e8e0}';
+  h+='.footer b{color:#0a3a1e}';
+
   h+='</style></head><body>';
-  if(logo)h+='<div class="hdr"><img src="'+logo+'"><div><div class="title">Fiche de séance — '+d.categorie+'</div><div>'+d.date+' · '+formatDuree(parseInt(d.duree)||90)+'</div></div></div>';
-  if(d.axe)h+='<div style="background:#f5f0e0;border-radius:4px;padding:5px 8px;margin-bottom:8px;font-size:10px"><b>Axe :</b> '+d.axe+'</div>';
+
+  // ── HEADER ──────────────────────────────────────────────────────
+  h+='<div class="hdr">';
+  if(logo)h+='<img src="'+logo+'">';
+  h+='<div class="hdr-main">';
+  h+='<div class="hdr-title">Fiche d\'entra&icirc;nement</div>';
+  h+='<div class="hdr-sub">EDR &mdash; Mutzig Ovalie Molsheim</div>';
+  h+='</div>';
+  h+='<div class="hdr-meta">';
+  if(dateStr){h+='<div class="meta-item"><div class="meta-lbl">Date</div><div class="meta-val" style="font-size:9px;color:#fff">'+dateStr+'</div></div>';}
+  h+='<div class="meta-item"><div class="meta-lbl">D&eacute;but</div><div class="meta-val">'+(d.heureDebut||"14:00")+'</div></div>';
+  h+='<div class="meta-item"><div class="meta-lbl">Dur&eacute;e</div><div class="meta-val">'+formatDuree(totalMin)+'</div></div>';
+  if(d.categorie){h+='<div class="meta-item"><div class="meta-lbl">Cat&eacute;gorie</div><div class="meta-val">'+d.categorie+'</div></div>';}
+  if(d.effectif){h+='<div class="meta-item"><div class="meta-lbl">Effectif</div><div class="meta-val">'+d.effectif+'</div></div>';}
+  h+='</div>';
+  h+='<div class="badge">EDR MOM</div>';
+  h+='</div>';
+
+  // ── AXE ─────────────────────────────────────────────────────────
+  if(d.axe)h+='<div class="axe-bar"><b>Axe de travail&nbsp;:</b>'+d.axe+'</div>';
+
+  // ── TIMELINE BAR ────────────────────────────────────────────────
+  if(totalMin>0){
+    h+='<div class="timeline-bar">';
+    d.blocs.forEach(function(b){
+      var pct=Math.max(1,(parseInt((b.duree||"").replace(/[^\d]/g,""))||15)/totalMin*100);
+      var col=getBlocColor(b.type);
+      h+='<div class="tl-seg" style="background:'+col+';width:'+pct+'%;flex:none">'+b._heureCalc+'</div>';
+    });
+    h+='</div>';
+  }
+
+  // ── GRILLE ──────────────────────────────────────────────────────
+  h+='<div class="grid">';
+  // Headers
+  h+='<div class="col-hdr">&#9203; Trame</div>';
+  h+='<div class="col-hdr">&#10003; Comportements attendus</div>';
+  h+='<div class="col-hdr">&#128208; Organisation spatiale</div>';
+  h+='<div class="col-hdr">&#129520; Mat&eacute;riel</div>';
+
+  // Rows
   d.blocs.forEach(function(b){
     var col=getBlocColor(b.type);
-    var titre=(b.titre&&b.titre!=="-- Choisir --"&&b.titre!=="Autre...")?b.titre:(b.titreCustom||(BLOC_TYPES.find(function(t){return t.val===b.type;})||{label:b.type}).label);
-    h+='<div class="bloc"><div class="bloc-hdr" style="color:'+col+'">'+b._heureCalc+' · '+titre+' ('+b.duree+')</div>';
-    if(b.comportements)h+='<div>'+b.comportements.replace(/\n/g,"<br>")+'</div>';
+    var typeLabel=(BLOC_TYPES.find(function(t){return t.val===b.type;})||{label:b.type}).label;
+    var titre=(b.titre&&b.titre!=="-- Choisir --"&&b.titre!=="Autre...")?b.titre:(b.titreCustom||"");
+    var isPause=b.type==="pause";
+    var rowClass=isPause?"pause-row":"";
+    var intensObj=b.intensite?INTENSITES.find(function(it){return it.val===b.intensite;}):null;
+
+    // Col 1 : Trame
+    h+='<div class="cell cell-trame '+rowClass+'">';
+    h+='<div class="trame-bar" style="background:'+col+'"></div>';
+    h+='<div class="trame-info">';
+    h+='<div class="trame-heure">'+b._heureCalc+'</div>';
+    h+='<span class="trame-type" style="background:'+col+'">'+typeLabel+'</span>';
+    if(titre)h+='<div class="trame-titre">'+titre+'</div>';
+    h+='<div class="trame-dur">'+b.duree+'</div>';
+    if(intensObj)h+='<div class="intens" style="color:'+intensObj.color+';border-color:'+intensObj.color+'">'+intensObj.label+' / '+intensObj.sublabel+'</div>';
+    // Ateliers
+    if(!isPause&&b.ateliers&&b.ateliers.length){
+      b.ateliers.forEach(function(at){
+        if(at.atelierIdx>=0&&ALL_ITEMS[at.atelierIdx]){
+          h+='<div style="font-size:7px;color:#555;margin-top:2px;padding-left:3px;border-left:2px solid '+col+'">&#128193; '+ALL_ITEMS[at.atelierIdx].item.t+'</div>';
+        }
+      });
+    }
+    h+='</div></div>';
+
+    // Col 2 : Comportements
+    h+='<div class="cell '+rowClass+'">';
+    if(isPause){h+='<span style="color:#aaa;font-style:italic">Pause</span>';}
+    else if(b.comportements){h+=b.comportements.replace(/\n/g,"<br>");}
+    else{h+='<span style="color:#bbb;font-style:italic">—</span>';}
+    h+='</div>';
+
+    // Col 3 : Organisation
+    h+='<div class="cell '+rowClass+'">';
+    if(!isPause&&b.orga){h+=b.orga.replace(/\n/g,"<br>");}
+    else{h+='<span style="color:#bbb;font-style:italic">—</span>';}
+    h+='</div>';
+
+    // Col 4 : Matériel (global sur 1ère ligne seulement)
+    h+='<div class="cell '+rowClass+'">';
+    if(b===d.blocs[0]&&d.materiel&&d.materiel.length){
+      d.materiel.forEach(function(m){h+='<span class="mat-chip">'+m+'</span>';});
+    }
     h+='</div>';
   });
+  h+='</div>'; // fin grille
+
+  // ── FOOTER ──────────────────────────────────────────────────────
+  h+='<div class="footer">';
+  h+='<div><b>MOM Rugby EDR</b> &mdash; '+(d.categorie||"")+(dateStr?' &mdash; '+dateStr:'')+'</div>';
+  h+='<div>G&eacute;n&eacute;r&eacute; le '+new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})+'</div>';
+  h+='</div>';
+
   h+='</body></html>';
-  var win=window.open("","_blank","width=900,height=700");
-  if(win){win.document.write(h);win.document.close();setTimeout(function(){win.print();},400);}
+  var win=window.open("","_blank","width=1200,height=780");
+  if(win){win.document.write(h);win.document.close();setTimeout(function(){win.print();},500);}
 }
 
 // Comportements auto
