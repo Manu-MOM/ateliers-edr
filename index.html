@@ -4640,9 +4640,11 @@ var COMPOS_FORMATS = {
                 "Troisième ligne","Demi de mêlée","Demi d'ouverture",
                 "Centre gauche","Centre droit","Ailier gauche","Ailier droit","Arrière"] },
   13: { label:"13", subs:6,
-        postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne",
-                "Flanker fermé","Flanker ouvert","Demi de mêlée","Demi d'ouverture",
-                "Centre gauche","Centre droit","Ailier gauche","Ailier droit","Arrière"] },
+        postes:["Pilier gauche","Talonneur","Pilier droit",
+                "2ème ligne gauche","2ème ligne droite",
+                "Numéro 8",
+                "Demi de mêlée","Demi d'ouverture",
+                "Ailier gauche","Centre gauche","Centre droit","Ailier droit","Arrière"] },
   15: { label:"XV", subs:8,
         postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne","2ème ligne",
                 "Flanker fermé","Flanker ouvert","Numéro 8","Demi de mêlée","Demi d'ouverture",
@@ -4670,6 +4672,8 @@ function _cXYGeneric(fmt, n) {
 }
 
 var FXY15 = [{x:130,y:198},{x:260,y:185},{x:390,y:198},{x:193,y:258},{x:327,y:258},{x:145,y:330},{x:375,y:330},{x:260,y:350},{x:260,y:425},{x:340,y:465},{x:95,y:518},{x:208,y:508},{x:312,y:508},{x:425,y:518},{x:260,y:572}];
+// Format 13 : 3-2-1 + 7 trois-quarts (sans flankers)
+var FXY13 = [{x:130,y:198},{x:260,y:185},{x:390,y:198},{x:193,y:265},{x:327,y:265},{x:260,y:340},{x:260,y:420},{x:340,y:462},{x:95,y:515},{x:208,y:508},{x:312,y:508},{x:425,y:515},{x:260,y:572}];
 var FXY7   = [{x:175,y:220},{x:260,y:200},{x:345,y:220},{x:260,y:310},{x:260,y:420},{x:190,y:510},{x:330,y:510}];
 var COMPOS_EVENT_TYPES = {
   "championnat-1":{label:"Champ. Phase 1",short:"Champ.P1",color:"#7c3aed"},
@@ -5449,11 +5453,12 @@ function cDrawField() {
   if (!svg || !_cCurEV) return;
   var fmt = _cGetFormat(_cCurEV);
   var ss  = _cSubsStart(_cCurEV);
-  // Sélectionner le plan de terrain adapté
+  // Sélectionner le plan de terrain adapté au format
   var xy;
-  if (fmt <= 4)  xy = _cXYGeneric(fmt, ss);
+  if (fmt <= 4)       xy = _cXYGeneric(fmt, ss);
   else if (fmt <= 7)  xy = FXY7.slice(0, ss);
-  else xy = FXY15.slice(0, ss);
+  else if (fmt === 13) xy = FXY13.slice(0, ss);
+  else                xy = FXY15.slice(0, ss);
   // Compléter si pas assez de positions
   while (xy.length < ss) xy.push({x:260, y:350});
   var Ps  = _cPostes(_cCurEV);
@@ -5589,7 +5594,7 @@ function cDrawExport() {
     + '<div style="text-align:right"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;color:'+(scoreVal==="À jouer"?"rgba(255,255,255,.4)":"#fff")+'">'+scoreVal+'</div><div style="font-size:9px;color:rgba(255,255,255,.3)">Score</div></div>'
     + '</div>'
     // Section titulaires
-    + '<div style="padding:8px 14px 4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;color:'+c2+';text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid rgba(212,168,32,.25);padding-bottom:4px;margin-bottom:6px">'+(isS?"Les 7 de départ":"Le XV de départ")+'</div>'
+    + '<div style="padding:8px 14px 4px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;color:'+c2+';text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid rgba(212,168,32,.25);padding-bottom:4px;margin-bottom:6px">'+(isS?"Les 7 de départ":"Le "+_cGetFormat(ev)+" de départ")+'</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:8px">'+startHTML+'</div>'
     + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:4px;margin-bottom:4px">Remplaçants</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px">'+subHTML+'</div></div>'
