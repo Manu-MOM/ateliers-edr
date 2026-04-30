@@ -4488,7 +4488,15 @@ function _cSave() {
   // Sauvegarde Drive si connecté
   if (window._gDriveReady) _gSaveCompos();
 }
-function _cInit() { if (!_CS) _CS = _cLoad(); }
+function _cInit() {
+  if (!_CS) _CS = _cLoad();
+  // Migration : tagger les events sans cat avec M14F15 (catégorie par défaut)
+  if (_CS && _CS.events) {
+    _CS.events.forEach(function(ev) {
+      if (!ev.cat) ev.cat = "M14F15";
+    });
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // GOOGLE DRIVE — Sauvegarde automatique des Compos
@@ -4792,6 +4800,7 @@ function buildSbCompos() {
   h += '<div class="sb-sec"><div class="sb-sec-lbl">Catégorie</div>';
   h += '<div style="padding:4px 8px"><select style="width:100%;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;background:var(--w);color:var(--gray7);cursor:pointer" onchange="switchComposCat(this.value)">';
   var _visibleAges = (selAge_ === "ALL") ? AGES : (AGES.indexOf(selAge_) >= 0 ? [selAge_] : AGES);
+  if (selAge_ === "ALL") h += '<option value="ALL"'+((_composCurCat==="ALL")?" selected":"")+'>Toutes catégories</option>';
   _visibleAges.forEach(function(a){ h += '<option value="'+a+'"'+(a===_composCurCat?" selected":"")+'>'+a+'</option>'; });
   h += '</select></div>';
   h += '<div style="padding:0 8px 8px"><select style="width:100%;font-size:11px;border:1px solid var(--gray2);border-radius:5px;padding:4px 6px;background:var(--w);color:var(--gray7);cursor:pointer" onchange="_composFmtFilter=this.value;renderCompos()">';
@@ -4833,7 +4842,7 @@ function _cBuildCalendrier() {
   _cInit();
   var events = (_CS.events||[]).filter(function(ev){
     var fmtOk = !_composFmtFilter || String(ev.format||"15")===_composFmtFilter;
-    var catOk = !ev.cat || ev.cat === _composCurCat;
+    var catOk = _composCurCat === "ALL" || !ev.cat || ev.cat === _composCurCat;
     return fmtOk && catOk;
   }).slice().sort(function(a,b){return (a.date||"").localeCompare(b.date||"");});
   var today = new Date(); today.setHours(0,0,0,0);
