@@ -4173,33 +4173,33 @@ function renderParamsBody() {
 }
 
 // ── Section Staff ──────────────────────────────────────────────────
+var STAFF_ROLES = ["Entraîneur principal","Entraîneur adjoint","Manager","Logisticien","Préparateur physique","Médecin","Kiné","Autre"];
+
 function buildParamsStaff() {
   _cInit();
   var coaches = _CS.coaches || [];
-  var roles = ["Entraîneur principal","Entraîneur adjoint","Manager","Préparateur physique","Médecin","Kiné","Autre"];
 
   var h = '<div style="display:flex;flex-direction:column;gap:8px">';
-  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;color:var(--g8);margin-bottom:4px">🧑‍🏫 Staff encadrant</div>';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;color:var(--g8);margin-bottom:2px">🧑‍🏫 Staff de la saison</div>';
+  h += '<div style="font-size:11px;color:var(--gray5);margin-bottom:6px">Définissez ici les membres du staff pour la saison. Vous pourrez ensuite sélectionner le staff présent à chaque événement.</div>';
   h += '<div id="staff-list" style="display:flex;flex-direction:column;gap:6px">';
 
   coaches.forEach(function(c, i) {
-    h += '<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;background:var(--g0);padding:7px 10px;border-radius:8px;border:1px solid var(--g1)">';
-    // Nom
-    h += '<input value="' + (c.name||'') + '" placeholder="Nom Prénom" data-idx="' + i + '" data-field="name" oninput="staffUpdate(this)" '
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;background:var(--g0);padding:8px 10px;border-radius:8px;border:1px solid var(--g1)">';
+    h += '<input value="' + (c.name||'') + '" placeholder="Prénom NOM" data-idx="' + i + '" data-field="name" oninput="staffUpdate(this)" '
        + 'style="padding:6px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;width:100%">';
-    // Rôle
     h += '<select data-idx="' + i + '" data-field="role" onchange="staffUpdate(this)" '
        + 'style="padding:6px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;background:#fff;cursor:pointer">';
-    roles.forEach(function(r) {
+    STAFF_ROLES.forEach(function(r) {
       h += '<option value="' + r + '"' + (c.role === r ? ' selected' : '') + '>' + r + '</option>';
     });
     h += '</select>';
-    // Supprimer
     h += '<button onclick="staffRemove(' + i + ')" style="width:28px;height:28px;border-radius:50%;border:none;background:#fee2e2;color:#dc2626;cursor:pointer;font-size:14px;font-weight:700;flex-shrink:0">×</button>';
     h += '</div>';
   });
 
   h += '</div>';
+  if (!coaches.length) h += '<div style="text-align:center;padding:12px;color:var(--gray4);font-size:11px;font-style:italic">Aucun membre du staff — cliquez sur + pour commencer</div>';
   h += '<button onclick="staffAdd()" style="margin-top:4px;padding:8px;background:var(--g0);border:1.5px dashed var(--g3);border-radius:8px;color:var(--g6);font-size:12px;font-weight:700;cursor:pointer;width:100%">+ Ajouter un membre du staff</button>';
   h += '</div>';
   return h;
@@ -5014,20 +5014,23 @@ function _cModalBody(ev) {
 
   h += '<input type="hidden" id="cev-id" value="'+(ev&&ev.id?ev.id:"")+'">';
 
-  // ── Staff ──────────────────────────────────────────────────────
+  // ── Staff présent à l'événement ─────────────────────────────────
   _cInit();
-  var coaches = _CS.coaches || [];
-  h += _cFG("Staff encadrant",
-    '<div id="cev-staff-list" style="display:flex;flex-direction:column;gap:4px">'
-    + coaches.map(function(c, i) {
-        return '<div style="display:flex;gap:6px;align-items:center">'
-          + '<input value="' + (c.name||'') + '" data-cidx="' + i + '" oninput="_cUpdateCoach(this)" placeholder="Nom" style="flex:1;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px">'
-          + '<button onclick="_cRemoveCoach(' + i + ')" style="width:24px;height:24px;border-radius:50%;border:none;background:#fee2e2;color:#dc2626;cursor:pointer;font-weight:700;font-size:12px;flex-shrink:0">×</button>'
-          + '</div>';
-      }).join('')
-    + '</div>'
-    + '<button onclick="_cAddCoach()" style="margin-top:4px;padding:3px 10px;background:transparent;border:1px dashed var(--gray2);border-radius:4px;color:var(--gray5);font-size:10px;cursor:pointer">+ Ajouter membre staff</button>'
-  );
+  var allCoaches = _CS.coaches || [];
+  var evStaff = (ev && ev.staff) ? ev.staff : [];
+  if (allCoaches.length) {
+    var staffOpts = '<div style="display:flex;flex-direction:column;gap:5px">';
+    allCoaches.forEach(function(c) {
+      var checked = evStaff.indexOf(c.id) >= 0 || (!ev && true); // cocher tous par défaut pour un nouvel event
+      staffOpts += '<label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;padding:4px 6px;border-radius:5px;background:var(--g0)">'
+        + '<input type="checkbox" value="' + c.id + '" ' + (checked ? 'checked' : '') + ' '
+        + 'style="width:14px;height:14px;accent-color:var(--g6);cursor:pointer"> '
+        + '<span><b>' + (c.name||'—') + '</b> <span style="font-size:10px;color:var(--gray5)">· ' + (c.role||'') + '</span></span>'
+        + '</label>';
+    });
+    staffOpts += '</div>';
+    h += _cFG("Staff présent", staffOpts);
+  }
   return h;
 }
 
@@ -5145,6 +5148,7 @@ function cSaveEvent() {
     date: document.getElementById("cev-date").value,
     lieu: document.getElementById("cev-lieu").value.trim(),
     teams: teams,
+    staff: Array.from(document.querySelectorAll('#c-ev-modal input[type=checkbox][value^="c"]')).filter(function(cb){return cb.checked;}).map(function(cb){return cb.value;}),
     scores: {}, lineups: {}
   };
   if (isTournoi) {
