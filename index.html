@@ -5668,7 +5668,9 @@ function cDrawExport() {
   var logoEl = document.getElementById("logo-img-topbar");
   var logoSrc = logoEl ? logoEl.src : "";
   var modeStr = _cCurMode==="base" ? "Compo de base" : "vs "+(m.adv||"?");
-  var coaches = _CS.coaches || [];
+  var coaches = (_CS.coaches || []).filter(function(c) {
+    return !ev.staff || !ev.staff.length || ev.staff.indexOf(c.id) >= 0;
+  });
 
   function playerCard(pid, i, isSub) {
     var pl = pid ? joueurs.find(function(j){return (j.id||j._cid)==pid;}) : null;
