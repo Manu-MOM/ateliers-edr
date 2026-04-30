@@ -6126,7 +6126,7 @@ function cExportMatchSheet(evId) {
     // Ligne coachs
     if ((_CS.coaches||[]).length) {
       h += '<div style="padding:4px 10px;background:#f9f9f5;border-top:1px solid #e8e8e0;font-size:8px;color:#555">';
-      h += '<b>Staff :</b> '+(_CS.coaches||[]).map(function(c){return c.role+" : "+c.name;}).join("  ·  ");
+      h += '<b>Staff :</b> '+(_CS.coaches||[]).filter(function(c){ return !ev.staff||!ev.staff.length||ev.staff.indexOf(c.id)>=0; }).map(function(c){return c.role+" : "+c.name;}).join("  ·  ");
       h += '</div>';
     }
     h += '</div>'; // match-block
