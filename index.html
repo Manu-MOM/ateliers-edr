@@ -4036,6 +4036,11 @@ var PARAMS_SECTIONS = [
     build: function() { return buildParamsJoueurs(); }
   },
   {
+    id: "staff",
+    label: "🧑‍🏫 Staff",
+    build: function() { return buildParamsStaff(); }
+  },
+  {
     id: "general",
     label: "🔒 EDR",
     build: function() { return buildParamsGeneral(); }
@@ -4167,7 +4172,65 @@ function renderParamsBody() {
   body.innerHTML = PARAMS_SECTIONS[_paramsCurTab].build();
 }
 
-// ── Section Bibliothèque ──
+// ── Section Staff ──────────────────────────────────────────────────
+function buildParamsStaff() {
+  _cInit();
+  var coaches = _CS.coaches || [];
+  var roles = ["Entraîneur principal","Entraîneur adjoint","Manager","Préparateur physique","Médecin","Kiné","Autre"];
+
+  var h = '<div style="display:flex;flex-direction:column;gap:8px">';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;color:var(--g8);margin-bottom:4px">🧑‍🏫 Staff encadrant</div>';
+  h += '<div id="staff-list" style="display:flex;flex-direction:column;gap:6px">';
+
+  coaches.forEach(function(c, i) {
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;background:var(--g0);padding:7px 10px;border-radius:8px;border:1px solid var(--g1)">';
+    // Nom
+    h += '<input value="' + (c.name||'') + '" placeholder="Nom Prénom" data-idx="' + i + '" data-field="name" oninput="staffUpdate(this)" '
+       + 'style="padding:6px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;width:100%">';
+    // Rôle
+    h += '<select data-idx="' + i + '" data-field="role" onchange="staffUpdate(this)" '
+       + 'style="padding:6px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;background:#fff;cursor:pointer">';
+    roles.forEach(function(r) {
+      h += '<option value="' + r + '"' + (c.role === r ? ' selected' : '') + '>' + r + '</option>';
+    });
+    h += '</select>';
+    // Supprimer
+    h += '<button onclick="staffRemove(' + i + ')" style="width:28px;height:28px;border-radius:50%;border:none;background:#fee2e2;color:#dc2626;cursor:pointer;font-size:14px;font-weight:700;flex-shrink:0">×</button>';
+    h += '</div>';
+  });
+
+  h += '</div>';
+  h += '<button onclick="staffAdd()" style="margin-top:4px;padding:8px;background:var(--g0);border:1.5px dashed var(--g3);border-radius:8px;color:var(--g6);font-size:12px;font-weight:700;cursor:pointer;width:100%">+ Ajouter un membre du staff</button>';
+  h += '</div>';
+  return h;
+}
+
+function staffUpdate(el) {
+  _cInit();
+  var idx = parseInt(el.dataset.idx);
+  var field = el.dataset.field;
+  if (!_CS.coaches[idx]) return;
+  _CS.coaches[idx][field] = el.value;
+  _cSave();
+}
+
+function staffAdd() {
+  _cInit();
+  _CS.coaches = _CS.coaches || [];
+  _CS.coaches.push({ id: 'c' + Date.now(), role: 'Entraîneur adjoint', name: '' });
+  _cSave();
+  renderParamsBody();
+}
+
+function staffRemove(idx) {
+  _cInit();
+  _CS.coaches.splice(idx, 1);
+  _cSave();
+  renderParamsBody();
+}
+
+
+// ── Section Planification ──
 function buildParamsPlan() {
   var scfg = getSeanceConfig ? getSeanceConfig() : {};
   var axes = (scfg.axes && scfg.axes.length) ? scfg.axes : (CFG_AXES || []);
@@ -4937,6 +5000,21 @@ function _cModalBody(ev) {
     + '<div style="display:flex;gap:10px;flex-wrap:wrap">'+teamOpts+'</div></div>';
 
   h += '<input type="hidden" id="cev-id" value="'+(ev&&ev.id?ev.id:"")+'">';
+
+  // ── Staff ──────────────────────────────────────────────────────
+  _cInit();
+  var coaches = _CS.coaches || [];
+  h += _cFG("Staff encadrant",
+    '<div id="cev-staff-list" style="display:flex;flex-direction:column;gap:4px">'
+    + coaches.map(function(c, i) {
+        return '<div style="display:flex;gap:6px;align-items:center">'
+          + '<input value="' + (c.name||'') + '" data-cidx="' + i + '" oninput="_cUpdateCoach(this)" placeholder="Nom" style="flex:1;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px">'
+          + '<button onclick="_cRemoveCoach(' + i + ')" style="width:24px;height:24px;border-radius:50%;border:none;background:#fee2e2;color:#dc2626;cursor:pointer;font-weight:700;font-size:12px;flex-shrink:0">×</button>'
+          + '</div>';
+      }).join('')
+    + '</div>'
+    + '<button onclick="_cAddCoach()" style="margin-top:4px;padding:3px 10px;background:transparent;border:1px dashed var(--gray2);border-radius:4px;color:var(--gray5);font-size:10px;cursor:pointer">+ Ajouter membre staff</button>'
+  );
   return h;
 }
 
@@ -4998,6 +5076,44 @@ function cAddPhase() {
   });
   var el = document.getElementById("cev-phases-list");
   if (el) el.innerHTML = _cRenderPhasesUI();
+}
+
+function _cUpdateCoach(el) {
+  _cInit();
+  var idx = parseInt(el.dataset.cidx);
+  if (_CS.coaches[idx]) { _CS.coaches[idx].name = el.value; _cSave(); }
+}
+function _cAddCoach() {
+  _cInit();
+  _CS.coaches = _CS.coaches || [];
+  _CS.coaches.push({ id: 'c' + Date.now(), role: 'Staff', name: '' });
+  _cSave();
+  // Reconstruire la liste
+  var list = document.getElementById('cev-staff-list');
+  if (list) {
+    var coaches = _CS.coaches;
+    list.innerHTML = coaches.map(function(c, i) {
+      return '<div style="display:flex;gap:6px;align-items:center">'
+        + '<input value="' + (c.name||'') + '" data-cidx="' + i + '" oninput="_cUpdateCoach(this)" placeholder="Nom" style="flex:1;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px">'
+        + '<button onclick="_cRemoveCoach(' + i + ')" style="width:24px;height:24px;border-radius:50%;border:none;background:#fee2e2;color:#dc2626;cursor:pointer;font-weight:700;font-size:12px;flex-shrink:0">×</button>'
+        + '</div>';
+    }).join('');
+  }
+}
+function _cRemoveCoach(idx) {
+  _cInit();
+  _CS.coaches.splice(idx, 1);
+  _cSave();
+  var list = document.getElementById('cev-staff-list');
+  if (list) {
+    var coaches = _CS.coaches;
+    list.innerHTML = coaches.map(function(c, i) {
+      return '<div style="display:flex;gap:6px;align-items:center">'
+        + '<input value="' + (c.name||'') + '" data-cidx="' + i + '" oninput="_cUpdateCoach(this)" placeholder="Nom" style="flex:1;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px">'
+        + '<button onclick="_cRemoveCoach(' + i + ')" style="width:24px;height:24px;border-radius:50%;border:none;background:#fee2e2;color:#dc2626;cursor:pointer;font-weight:700;font-size:12px;flex-shrink:0">×</button>'
+        + '</div>';
+    }).join('');
+  }
 }
 
 function cSaveEvent() {
