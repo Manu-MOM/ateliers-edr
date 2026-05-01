@@ -4177,7 +4177,9 @@ var STAFF_ROLES = ["Entraîneur principal","Entraîneur adjoint","Manager","Logi
 
 function buildParamsStaff() {
   _cInit();
-  var coaches = _CS.coaches || [];
+  var cat = _composCurCat || "M14F15";
+  if (!_CS.staffByCat[cat]) _CS.staffByCat[cat] = [];
+  var coaches = _CS.staffByCat[cat];
 
   var h = '<div style="display:flex;flex-direction:column;gap:8px">';
   h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;color:var(--g8);margin-bottom:2px">🧑‍🏫 Staff de la saison</div>';
@@ -4496,6 +4498,22 @@ function _cInit() {
       if (!ev.cat) ev.cat = "M14F15";
     });
   }
+  // Migration : staffByCat — si pas encore de staff par cat, migrer l'ancien _CS.coaches
+  if (!_CS.staffByCat) {
+    _CS.staffByCat = {};
+    if (_CS.coaches && _CS.coaches.length) {
+      // Copier le staff existant vers toutes les catégories
+      AGES.forEach(function(a){ _CS.staffByCat[a] = JSON.parse(JSON.stringify(_CS.coaches)); });
+    }
+  }
+}
+
+// Retourne le staff de la catégorie courante
+function _cGetStaff() {
+  _cInit();
+  var cat = _composCurCat || "M14F15";
+  if (!_CS.staffByCat[cat]) _CS.staffByCat[cat] = [];
+  return _CS.staffByCat[cat];
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -4700,9 +4718,12 @@ var COMPOS_FORMATS = {
         postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne",
                 "Troisième ligne","Demi de mêlée","Demi d'ouverture","Centre","Ailier"] },
   10: { label:"10", subs:10,
-        postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne",
-                "Troisième ligne","Demi de mêlée","Demi d'ouverture",
-                "Centre","Ailier","Arrière"] },
+        postes:["Pilier gauche","Talonneur","Pilier droit",
+                "2ème ligne gauche","2ème ligne droite",
+                "Demi de mêlée","Demi d'ouverture",
+                "Centre",
+                "Ailier gauche","Ailier droit"],
+        fwdCount: 5 },
   12: { label:"12", subs:4,
         postes:["Pilier gauche","Talonneur","Pilier droit","2ème ligne",
                 "Troisième ligne","Demi de mêlée","Demi d'ouverture",
@@ -4740,6 +4761,15 @@ function _cXYGeneric(fmt, n) {
 }
 
 var FXY15 = [{x:130,y:198},{x:260,y:185},{x:390,y:198},{x:193,y:258},{x:327,y:258},{x:145,y:330},{x:375,y:330},{x:260,y:350},{x:260,y:425},{x:340,y:465},{x:95,y:518},{x:208,y:508},{x:312,y:508},{x:425,y:518},{x:260,y:572}];
+// Format 10 : 3-2 avants + 5 arrières (pas de 3e ligne, 1 centre, 2 ailiers)
+var FXY10 = [
+  {x:155,y:210},{x:260,y:195},{x:365,y:210},  // piliers + talonneur
+  {x:200,y:275},{x:320,y:275},                 // 2e lignes
+  {x:260,y:370},                               // demi de mêlée
+  {x:340,y:430},                               // demi d'ouverture
+  {x:260,y:490},                               // centre
+  {x:110,y:540},{x:410,y:540}                  // ailiers
+];
 // Format 13 : 3-2-1 + 7 trois-quarts (sans flankers)
 var FXY13 = [{x:130,y:198},{x:260,y:185},{x:390,y:198},{x:193,y:265},{x:327,y:265},{x:260,y:340},{x:260,y:420},{x:340,y:462},{x:95,y:515},{x:208,y:508},{x:312,y:508},{x:425,y:515},{x:260,y:572}];
 var FXY7   = [{x:175,y:220},{x:260,y:200},{x:345,y:220},{x:260,y:310},{x:260,y:420},{x:190,y:510},{x:330,y:510}];
@@ -4807,6 +4837,13 @@ function buildSbCompos() {
   h += '<option value="">Tous formats</option>';
   Object.keys(COMPOS_FORMATS).sort(function(a,b){return +a-+b;}).forEach(function(k){ var f=COMPOS_FORMATS[k]; h += '<option value="'+k+'"'+(_composFmtFilter===k?" selected":"")+'>À '+f.label+' ('+f.postes.length+' tit.)</option>'; });
   h += '</select></div></div>';
+  // Panel partage sans Drive
+  h += '<div style="padding:8px;margin:6px;background:var(--g0);border:1px solid var(--g1);border-radius:8px">';
+  h += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--g6);letter-spacing:.06em;margin-bottom:6px">📤 Partage</div>';
+  h += '<div style="font-size:9px;color:var(--gray5);margin-bottom:5px">Pour partager sans Google Drive :</div>';
+  h += '<button onclick="cExportCompoShare()" style="width:100%;padding:5px;background:var(--g7);color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;margin-bottom:4px">📥 Exporter mes compos</button>';
+  h += '<button onclick="cImportCompoShare()" style="width:100%;padding:5px;background:var(--g0);color:var(--g6);border:1px solid var(--g2);border-radius:6px;font-size:10px;font-weight:700;cursor:pointer">📤 Importer compos partagées</button>';
+  h += '</div>';
   sb.innerHTML = h + _cBuildDrivePanel();
   if (_gDriveReady) setTimeout(function(){ gUpdateDriveStatus("connected"); }, 50);
   // input hidden pour import JSON
@@ -5016,7 +5053,7 @@ function _cModalBody(ev) {
 
   // ── Staff présent à l'événement ─────────────────────────────────
   _cInit();
-  var allCoaches = _CS.coaches || [];
+  var allCoaches = _cGetStaff();
   var evStaff = (ev && ev.staff) ? ev.staff : [];
   if (allCoaches.length) {
     var staffOpts = '<div style="display:flex;flex-direction:column;gap:5px">';
@@ -5588,6 +5625,7 @@ function cDrawField() {
   var xy;
   if (fmt <= 4)       xy = _cXYGeneric(fmt, ss);
   else if (fmt <= 7)  xy = FXY7.slice(0, ss);
+  else if (fmt === 10)  xy = FXY10.slice(0, ss);
   else if (fmt === 13) xy = FXY13.slice(0, ss);
   else                xy = FXY15.slice(0, ss);
   // Compléter si pas assez de positions
@@ -5985,7 +6023,9 @@ function _cSlotHTML(idx, pl, posLabel, isSub, ovr) {
     return '<span style="font-size:7px;padding:1px 4px;border-radius:3px;background:var(--g0);color:var(--g6);font-weight:700">'+a+'</span>';
   }).join("") : "";
   var photoHtml = pl && pl.photo ? '<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0"><img src="'+pl.photo+'" style="width:100%;height:100%;object-fit:cover"></div>' : "";
-  var numColor = isSub ? "rgba(255,255,255,.15)" : (idx<8 ? "var(--g7)" : "var(--gold)");
+  var _fmt = _cCurEV ? _cGetFormat(_cCurEV) : 15;
+  var _fwdCount = (COMPOS_FORMATS[_fmt]&&COMPOS_FORMATS[_fmt].fwdCount) || (_fmt===15?8:(_fmt===13?6:(_fmt===7?3:8)));
+  var numColor = isSub ? "rgba(255,255,255,.15)" : (idx<_fwdCount ? "var(--g7)" : "var(--gold)");
   var isInj = pl && pl.inj;
   var borderColor = isInj ? "#fca5a5" : (pl ? "var(--gray2)" : "var(--gray1)");
   var bgColor = isInj ? "#fff5f5" : (pl ? "var(--w)" : "var(--gray1)");
@@ -6126,7 +6166,7 @@ function cExportMatchSheet(evId) {
     // Ligne coachs
     if ((_CS.coaches||[]).length) {
       h += '<div style="padding:4px 10px;background:#f9f9f5;border-top:1px solid #e8e8e0;font-size:8px;color:#555">';
-      h += '<b>Staff :</b> '+(_CS.coaches||[]).filter(function(c){ return !ev.staff||!ev.staff.length||ev.staff.indexOf(c.id)>=0; }).map(function(c){return c.role+" : "+c.name;}).join("  ·  ");
+      h += '<b>Staff :</b> '+_cGetStaff().filter(function(c){ return !ev.staff||!ev.staff.length||ev.staff.indexOf(c.id)>=0; }).map(function(c){return c.role+" : "+c.name;}).join("  ·  ");
       h += '</div>';
     }
     h += '</div>'; // match-block
@@ -6172,6 +6212,76 @@ function saveCatPasswords() {
 (function() {
   try { var p = JSON.parse(localStorage.getItem("mom_cat_passwords")||"null"); if(p) Object.keys(p).forEach(function(k){ CAT_PASSWORDS[k]=p[k]; }); } catch(e) {}
 })();
+
+function cExportCompoShare() {
+  _cInit();
+  var cat = _composCurCat || "M14F15";
+  // Exporter uniquement les events + lineups de la catégorie courante
+  var payload = {
+    cat: cat,
+    exportedAt: new Date().toISOString(),
+    exportedBy: "Éducateur MOM",
+    events: (_CS.events||[]).filter(function(ev){ return ev.cat===cat; }),
+    teams: _CS.teams || [],
+    staffByCat: {}
+  };
+  payload.staffByCat[cat] = (_CS.staffByCat&&_CS.staffByCat[cat]) || [];
+  var blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "mom_compos_" + cat + "_" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  showToast("Compos " + cat + " exportées ✓");
+}
+
+function cImportCompoShare() {
+  var input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev2) {
+      try {
+        var payload = JSON.parse(ev2.target.result);
+        _cInit();
+        // Fusionner les events : ajouter ceux qui n'existent pas encore
+        var existingIds = (_CS.events||[]).map(function(e){return e.id;});
+        var added = 0;
+        (payload.events||[]).forEach(function(ev) {
+          if (existingIds.indexOf(ev.id) < 0) {
+            _CS.events.push(ev);
+            added++;
+          } else {
+            // Mettre à jour les lineups de l'event existant
+            var existing = _CS.events.find(function(e){return e.id===ev.id;});
+            if (existing) {
+              Object.assign(existing.lineups||{}, ev.lineups||{});
+              Object.assign(existing.scores||{}, ev.scores||{});
+            }
+          }
+        });
+        // Fusionner staff
+        if (payload.staffByCat) {
+          Object.keys(payload.staffByCat).forEach(function(cat) {
+            if (!_CS.staffByCat) _CS.staffByCat = {};
+            if (!_CS.staffByCat[cat] || !_CS.staffByCat[cat].length) {
+              _CS.staffByCat[cat] = payload.staffByCat[cat];
+            }
+          });
+        }
+        _cSave();
+        renderCompos();
+        showToast(added + " événement(s) importé(s) ✓");
+      } catch(err) {
+        alert("Fichier invalide : " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
 
 function cExportJSON() {
   _cInit();
