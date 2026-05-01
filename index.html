@@ -4253,10 +4253,12 @@ function buildParamsStaff() {
 
 function staffUpdate(el) {
   _cInit();
+  var cat = window._staffParamsCat || AGES[0];
   var idx = parseInt(el.dataset.idx);
   var field = el.dataset.field;
-  if (!_CS.coaches[idx]) return;
-  _CS.coaches[idx][field] = el.value;
+  if (!_CS.staffByCat) _CS.staffByCat = {};
+  if (!_CS.staffByCat[cat] || !_CS.staffByCat[cat][idx]) return;
+  _CS.staffByCat[cat][idx][field] = el.value;
   _cSave();
 }
 
@@ -4437,6 +4439,10 @@ function saveParamsPanel() {
       }
     });
   } else {
+    // Pour l'onglet Staff : forcer la sauvegarde _CS
+    if (sec && sec.id === "staff") {
+      _cSave();
+    }
     if (ok) {
       ok.style.display = "flex";
       ok.textContent = "✅ OK";
