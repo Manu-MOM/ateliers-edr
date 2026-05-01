@@ -4020,22 +4020,22 @@ var _paramsCurTab = 0;
 var PARAMS_SECTIONS = [
   {
     id: "bib",
-    label: "📚 Bibliothèque",
+    label: "📚 Bib.",
     build: function() { return '<div style="padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;font-size:12px">✅ Aucun paramètre modifiable pour la Bibliothèque. Les ateliers et comportements sont définis dans le catalogue.</div>'; }
   },
   {
     id: "ressources",
-    label: "📖 Ressources",
+    label: "📖 Res.",
     build: function() { return '<div style="padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;font-size:12px">✅ Aucun paramètre modifiable pour les Ressources.</div>'; }
   },
   {
     id: "saison",
-    label: "📅 Planification",
+    label: "📅 Plan.",
     build: function() { return buildParamsSaison(); }
   },
   {
     id: "seance",
-    label: "📋 Ma séance",
+    label: "📋 Séance",
     build: function() { return '<div style="padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;font-size:12px">✅ Aucun paramètre modifiable pour Ma séance.</div>'; }
   },
   {
@@ -4050,7 +4050,7 @@ var PARAMS_SECTIONS = [
   },
   {
     id: "staff",
-    label: "🧑‍🏫 Staffs",
+    label: "🧑 Staffs",
     build: function() { return buildParamsStaff(); }
   }
 ];
@@ -4061,6 +4061,7 @@ var PARAMS_ADMIN_CODE = "MOM2025"; // Code admin paramètres
 function openParamsPanel(tabIdx) {
   // Accessible directement — le bouton n'est visible qu'en mode ALL
   _paramsAuthenticated = true;
+  if (window._paramsIsAdmin === undefined) window._paramsIsAdmin = true;
   _paramsCurTab = tabIdx || 0;
   var overlay = document.getElementById("params-panel-overlay");
   if (!overlay) return;
