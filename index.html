@@ -4262,15 +4262,18 @@ function staffUpdate(el) {
 
 function staffAdd() {
   _cInit();
-  _CS.coaches = _CS.coaches || [];
-  _CS.coaches.push({ id: 'c' + Date.now(), role: 'Entraîneur adjoint', name: '' });
+  var cat = window._staffParamsCat || AGES[0];
+  if (!_CS.staffByCat) _CS.staffByCat = {};
+  if (!_CS.staffByCat[cat]) _CS.staffByCat[cat] = [];
+  _CS.staffByCat[cat].push({ id: 'c'+cat+Date.now(), role: 'Entraîneur adjoint', name: '' });
   _cSave();
   renderParamsBody();
 }
 
 function staffRemove(idx) {
   _cInit();
-  _CS.coaches.splice(idx, 1);
+  var cat = window._staffParamsCat || AGES[0];
+  if (_CS.staffByCat && _CS.staffByCat[cat]) _CS.staffByCat[cat].splice(idx, 1);
   _cSave();
   renderParamsBody();
 }
@@ -5182,8 +5185,10 @@ function _cUpdateCoach(el) {
 }
 function _cAddCoach() {
   _cInit();
-  _CS.coaches = _CS.coaches || [];
-  _CS.coaches.push({ id: 'c' + Date.now(), role: 'Staff', name: '' });
+  if (!_CS.staffByCat) _CS.staffByCat = {};
+  var _cat = _composCurCat||'M14F15';
+  if (!_CS.staffByCat[_cat]) _CS.staffByCat[_cat] = [];
+  _CS.staffByCat[_cat].push({ id: 'c'+Date.now(), role: 'Staff', name: '' });
   _cSave();
   // Reconstruire la liste
   var list = document.getElementById('cev-staff-list');
