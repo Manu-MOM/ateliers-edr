@@ -3287,8 +3287,7 @@ function goSection_joueurs() {
     h += '</div><div class="sb-div"></div>';
     h += '<div class="sb-sec"><div class="sb-sec-lbl">Actions</div>';
     h += '<div class="sb-item" onclick="openJPM(null,\'' + cat + '\')"><div class="sb-icon">➕</div>Nouveau joueur</div>';
-    h += '<div class="sb-item" onclick="openImportFichier(\'' + cat + '\')"><div class="sb-icon">📂</div>Importer fichier</div>';
-  
+      
     h += '</div>';
     sb.innerHTML = h;
   }
@@ -4242,7 +4241,12 @@ function buildParamsStaff() {
   });
   h += '</div>';
   if (!coaches.length) h += '<div style="text-align:center;padding:12px;color:var(--gray4);font-size:11px;font-style:italic">Aucun membre du staff pour '+cat+' — cliquez sur + pour commencer</div>';
-  h += '<button onclick="staffAdd()" style="margin-top:4px;padding:8px;background:var(--g0);border:1.5px dashed var(--g3);border-radius:8px;color:var(--g6);font-size:12px;font-weight:700;cursor:pointer;width:100%">+ Ajouter un membre du staff</button>';
+  h += '<div style="display:flex;gap:6px;margin-top:4px">';
+  h += '<button onclick="staffAdd()" style="flex:3;padding:8px;background:var(--g0);border:1.5px dashed var(--g3);border-radius:8px;color:var(--g6);font-size:12px;font-weight:700;cursor:pointer">+ Ajouter un membre</button>';
+  if (coaches.length) {
+    h += '<button onclick="if(confirm(\'Vider le staff '+cat+' ?\')) { _CS.staffByCat[\''+cat+'\'] = []; _cSave(); renderParamsBody(); }" style="flex:1;padding:8px;background:#fee2e2;border:none;border-radius:8px;color:#dc2626;font-size:11px;font-weight:700;cursor:pointer">🗑 Vider</button>';
+  }
+  h += '</div>';
   h += '</div>';
   return h;
 }
@@ -4538,12 +4542,12 @@ function _cInit() {
       if (!ev.cat) ev.cat = "M14F15";
     });
   }
-  // Migration : staffByCat — si pas encore de staff par cat, migrer l'ancien _CS.coaches
+  // Migration : staffByCat — initialiser si absent
   if (!_CS.staffByCat) {
     _CS.staffByCat = {};
+    // Migrer l'ancien _CS.coaches uniquement vers M14F15 (pas toutes les catégories)
     if (_CS.coaches && _CS.coaches.length) {
-      // Copier le staff existant vers toutes les catégories
-      AGES.forEach(function(a){ _CS.staffByCat[a] = JSON.parse(JSON.stringify(_CS.coaches)); });
+      _CS.staffByCat["M14F15"] = JSON.parse(JSON.stringify(_CS.coaches));
     }
   }
 }
