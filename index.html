@@ -5755,7 +5755,7 @@ function cDrawExport() {
   var logoEl = document.getElementById("logo-img-topbar");
   var logoSrc = logoEl ? logoEl.src : "";
   var modeStr = _cCurMode==="base" ? "Compo de base" : "vs "+(m.adv||"?");
-  var coaches = (_CS.coaches || []).filter(function(c) {
+  var coaches = _cGetStaff().filter(function(c) {
     return !ev.staff || !ev.staff.length || ev.staff.indexOf(c.id) >= 0;
   });
 
