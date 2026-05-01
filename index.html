@@ -567,7 +567,7 @@ button,input{font-family:'Barlow',sans-serif}
       <input type="text" id="si" placeholder="Rechercher..." oninput="doSearch()">
     </div>
     <div class="age-badge" id="topbar-age" onclick="doLogout()" title="Changer de categorie"></div>
-    <button id="btn-params-global" onclick="openParamsPanel()" title="Paramètres" style="width:34px;height:34px;background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">⚙️</button>
+    <button id="btn-params-global" onclick="openParamsPanel()" style="display:none" title="Paramètres" style="width:34px;height:34px;background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">⚙️</button>
   </div>
   <div class="section-tabs">
     <div class="stab act" id="stab-bib"    onclick="goSection('bib')">📚 Bibliothèque <span class="stab-badge" id="stab-cnt"></span></div>
@@ -954,6 +954,9 @@ function tryLogin() {
   // Admin peut accéder à tout
   var isAdmin = (v === CAT_PASSWORDS["ALL"]);
   if (v === expected || isAdmin) {
+    // Bouton params visible uniquement en ALL
+    var btnP = document.getElementById("btn-params-global");
+    if (btnP) btnP.style.display = isAdmin ? "flex" : "none";
     document.getElementById("login").style.display = "none";
     document.getElementById("app").style.display = "flex";
     var lbl = selAge_ === "ALL" ? "Tous niveaux" : selAge_;
@@ -2497,7 +2500,7 @@ function buildSbSeance() {
     AGES.forEach(function(a){ h += '<option value="' + a + '">' + a + '</option>'; });
     h += '</select></div>';
   }
-  h += '<div class="sb-item" onclick="openParamsPanel(3)"><div class="sb-icon">⚙️</div>Gérer la base joueurs</div>';
+
   h += '</div>';
     // Modèles
   var _stpls = JSON.parse(localStorage.getItem("mom_seance_templates")||"[]");
@@ -3285,7 +3288,7 @@ function goSection_joueurs() {
     h += '<div class="sb-sec"><div class="sb-sec-lbl">Actions</div>';
     h += '<div class="sb-item" onclick="openJPM(null,\'' + cat + '\')"><div class="sb-icon">➕</div>Nouveau joueur</div>';
     h += '<div class="sb-item" onclick="openImportFichier(\'' + cat + '\')"><div class="sb-icon">📂</div>Importer fichier</div>';
-    h += '<div class="sb-item" onclick="openParamsPanel(3)"><div class="sb-icon">⚙️</div>Paramètres joueurs</div>';
+  
     h += '</div>';
     sb.innerHTML = h;
   }
@@ -4018,7 +4021,12 @@ var PARAMS_SECTIONS = [
   {
     id: "bib",
     label: "📚 Bibliothèque",
-    build: function() { return buildParamsBib(); }
+    build: function() { return '<div style="padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;font-size:12px">✅ Aucun paramètre modifiable pour la Bibliothèque. Les ateliers et comportements sont définis dans le catalogue.</div>'; }
+  },
+  {
+    id: "ressources",
+    label: "📖 Ressources",
+    build: function() { return '<div style="padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;font-size:12px">✅ Aucun paramètre modifiable pour les Ressources.</div>'; }
   },
   {
     id: "saison",
@@ -4027,23 +4035,23 @@ var PARAMS_SECTIONS = [
   },
   {
     id: "seance",
-    label: "📋 Séance",
-    build: function() { return buildParamsSeance(); }
+    label: "📋 Ma séance",
+    build: function() { return '<div style="padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;font-size:12px">✅ Aucun paramètre modifiable pour Ma séance.</div>'; }
   },
   {
     id: "joueurs",
     label: "👥 Joueurs",
-    build: function() { return buildParamsJoueurs(); }
+    build: function() { return buildParamsJoueursImport(); }
+  },
+  {
+    id: "compos",
+    label: "🏉 Compos",
+    build: function() { return '<div style="padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;font-size:12px">✅ Aucun paramètre modifiable dans Compos.</div>'; }
   },
   {
     id: "staff",
-    label: "🧑‍🏫 Staff",
+    label: "🧑‍🏫 Staffs",
     build: function() { return buildParamsStaff(); }
-  },
-  {
-    id: "general",
-    label: "🔒 EDR",
-    build: function() { return buildParamsGeneral(); }
   }
 ];
 
@@ -4051,10 +4059,8 @@ var _paramsAuthenticated = false;
 var PARAMS_ADMIN_CODE = "MOM2025"; // Code admin paramètres
 
 function openParamsPanel(tabIdx) {
-  if (!_paramsAuthenticated) {
-    showParamsLogin(tabIdx || 0);
-    return;
-  }
+  // Accessible directement — le bouton n'est visible qu'en mode ALL
+  _paramsAuthenticated = true;
   _paramsCurTab = tabIdx || 0;
   var overlay = document.getElementById("params-panel-overlay");
   if (!overlay) return;
@@ -4174,6 +4180,32 @@ function renderParamsBody() {
   var body = document.getElementById("params-body");
   if (!body) return;
   body.innerHTML = PARAMS_SECTIONS[_paramsCurTab].build();
+}
+
+function buildParamsJoueursImport() {
+  var h = '<div style="display:flex;flex-direction:column;gap:12px">';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;color:var(--g8)">👥 Import base joueurs</div>';
+  h += '<div style="font-size:11px;color:var(--gray5)">Importez la liste des joueurs par catégorie depuis un fichier Excel ou CSV fourni par la FFR.</div>';
+  // Import par catégorie
+  var cats = ["M6","M8","M10","M12","M14F15","M16","M18","SENF","SENM"];
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  cats.forEach(function(cat) {
+    var db = getJoueursDB();
+    var count = (db[cat]||[]).length;
+    h += '<div style="background:var(--g0);border:1px solid var(--g1);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px">';
+    h += '<div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--g8)">'+cat+'</div>';
+    h += '<div style="font-size:10px;color:var(--gray5)">'+count+' joueur'+(count>1?"s":"")+'</div></div>';
+    h += '<label style="padding:4px 10px;background:var(--g7);color:#fff;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer">';
+    h += '📂 Importer<input type="file" accept=".xlsx,.csv" style="display:none" data-cat="'+cat+'" onchange="importJoueursFile(this)">';
+    h += '</label>';
+    h += '</div>';
+  });
+  h += '</div>';
+  h += '<div style="background:#fff8e0;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;font-size:10px;color:#92400e">';
+  h += '⚠️ L\' import <b>remplace</b> la liste existante pour la catégorie. Les données de postes/aptitudes saisies manuellement seront <b>préservées</b> si le nom correspond.';
+  h += '</div>';
+  h += '</div>';
+  return h;
 }
 
 // ── Section Staff ──────────────────────────────────────────────────
