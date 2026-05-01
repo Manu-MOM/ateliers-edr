@@ -3314,9 +3314,7 @@ function buildJoueursSection(cat, db) {
   h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">';
   h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--g8);letter-spacing:.04em;flex:1" id="jp-title">Joueurs</div>';
   h += '<button onclick="openJPM(null,\'' + cat + '\')" style="padding:6px 14px;background:var(--g7);color:#fff;border:none;border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.04em">+ Nouveau</button>';
-  h += '<button onclick="openImportFichier(\'' + cat + '\')" style="padding:6px 12px;background:#d4a820;color:#000;border:none;border-radius:6px;font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em">📂 Importer</button>';
-  h += '<button onclick="openParamsPanel()" style="padding:6px 12px;background:var(--gray1);color:var(--gray5);border:1px solid var(--gray2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">⚙️ Gérer</button>';
-  h += '</div>';
+    h += '</div>';
 
   // Filtres
   h += '<div class="jp-fbar">';
@@ -4214,31 +4212,36 @@ var STAFF_ROLES = ["Entraîneur principal","Entraîneur adjoint","Manager","Logi
 
 function buildParamsStaff() {
   _cInit();
-  var cat = _composCurCat || "M14F15";
+  var cat = window._staffParamsCat || AGES[0];
+  if (!_CS.staffByCat) _CS.staffByCat = {};
   if (!_CS.staffByCat[cat]) _CS.staffByCat[cat] = [];
   var coaches = _CS.staffByCat[cat];
 
   var h = '<div style="display:flex;flex-direction:column;gap:8px">';
-  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;color:var(--g8);margin-bottom:2px">🧑‍🏫 Staff de la saison</div>';
-  h += '<div style="font-size:11px;color:var(--gray5);margin-bottom:6px">Définissez ici les membres du staff pour la saison. Vous pourrez ensuite sélectionner le staff présent à chaque événement.</div>';
-  h += '<div id="staff-list" style="display:flex;flex-direction:column;gap:6px">';
+  h += '<div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:800;color:var(--g8);margin-bottom:2px">🧑‍🏫 Staff par catégorie</div>';
+  h += '<div style="font-size:11px;color:var(--gray5);margin-bottom:6px">Sélectionnez une catégorie pour gérer son staff.</div>';
+  // Sélecteur de catégorie
+  h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px;background:var(--g0);border-radius:8px;border:1px solid var(--g1)">';
+  h += '<label style="font-size:11px;font-weight:700;color:var(--g7);white-space:nowrap">Catégorie :</label>';
+  h += '<select onchange="window._staffParamsCat=this.value;renderParamsBody()" style="flex:1;padding:5px 8px;border:1.5px solid var(--g2);border-radius:6px;font-size:12px;background:#fff;cursor:pointer">';
+  AGES.forEach(function(a) {
+    var cnt = ((_CS.staffByCat&&_CS.staffByCat[a])||[]).length;
+    h += '<option value="'+a+'"'+(a===cat?' selected':'')+'>'+a+' ('+cnt+' membre'+(cnt>1?'s':'')+')</option>';
+  });
+  h += '</select></div>';
 
+  h += '<div id="staff-list" style="display:flex;flex-direction:column;gap:6px">';
   coaches.forEach(function(c, i) {
     h += '<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;background:var(--g0);padding:8px 10px;border-radius:8px;border:1px solid var(--g1)">';
-    h += '<input value="' + (c.name||'') + '" placeholder="Prénom NOM" data-idx="' + i + '" data-field="name" oninput="staffUpdate(this)" '
-       + 'style="padding:6px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;width:100%">';
-    h += '<select data-idx="' + i + '" data-field="role" onchange="staffUpdate(this)" '
-       + 'style="padding:6px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;background:#fff;cursor:pointer">';
-    STAFF_ROLES.forEach(function(r) {
-      h += '<option value="' + r + '"' + (c.role === r ? ' selected' : '') + '>' + r + '</option>';
-    });
+    h += '<input value="' + (c.name||'') + '" placeholder="Prénom NOM" data-idx="' + i + '" data-field="name" oninput="staffUpdate(this)" style="padding:6px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;width:100%">';
+    h += '<select data-idx="' + i + '" data-field="role" onchange="staffUpdate(this)" style="padding:6px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;background:#fff;cursor:pointer">';
+    STAFF_ROLES.forEach(function(r) { h += '<option value="'+r+'"'+(c.role===r?' selected':'')+'>'+r+'</option>'; });
     h += '</select>';
-    h += '<button onclick="staffRemove(' + i + ')" style="width:28px;height:28px;border-radius:50%;border:none;background:#fee2e2;color:#dc2626;cursor:pointer;font-size:14px;font-weight:700;flex-shrink:0">×</button>';
+    h += '<button onclick="staffRemove('+i+')" style="width:28px;height:28px;border-radius:50%;border:none;background:#fee2e2;color:#dc2626;cursor:pointer;font-size:14px;font-weight:700;flex-shrink:0">×</button>';
     h += '</div>';
   });
-
   h += '</div>';
-  if (!coaches.length) h += '<div style="text-align:center;padding:12px;color:var(--gray4);font-size:11px;font-style:italic">Aucun membre du staff — cliquez sur + pour commencer</div>';
+  if (!coaches.length) h += '<div style="text-align:center;padding:12px;color:var(--gray4);font-size:11px;font-style:italic">Aucun membre du staff pour '+cat+' — cliquez sur + pour commencer</div>';
   h += '<button onclick="staffAdd()" style="margin-top:4px;padding:8px;background:var(--g0);border:1.5px dashed var(--g3);border-radius:8px;color:var(--g6);font-size:12px;font-weight:700;cursor:pointer;width:100%">+ Ajouter un membre du staff</button>';
   h += '</div>';
   return h;
