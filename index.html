@@ -4160,7 +4160,11 @@ function switchParamsTab(idx) {
 function renderParamsTabs() {
   var tabs = document.getElementById("params-tabs");
   if (!tabs) return;
-  tabs.innerHTML = PARAMS_SECTIONS.map(function(s, i) {
+  tabs.innerHTML = PARAMS_SECTIONS.filter(function(s) {
+    // L'onglet Staff n'est visible que pour l'admin EDR
+    if (s.id === "staff") return window._paramsIsAdmin;
+    return true;
+  }).map(function(s, i) {
     var active = i === _paramsCurTab;
     return '<button onclick="switchParamsTab(' + i + ')" style="padding:8px 13px;font-size:11px;font-weight:700;font-family:Barlow Condensed,sans-serif;border:none;background:' + (active ? '#fff' : 'transparent') + ';color:' + (active ? 'var(--g8)' : 'var(--gray5)') + ';cursor:pointer;border-bottom:2px solid ' + (active ? 'var(--g7)' : 'transparent') + ';white-space:nowrap;letter-spacing:.03em">' + s.label + '</button>';
   }).join("");
